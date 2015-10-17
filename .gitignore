@@ -1,0 +1,8 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+dateClient/node_modules/
+dateServer/node_modules/
+dateClient/platforms/
+dateClient/plugins/
+dateClient/www/lib/
