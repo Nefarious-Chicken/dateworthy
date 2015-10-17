@@ -1,13 +1,29 @@
+// event.js
+// Event model logic
+
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
 
-//Tag model
+/** TABLE OF CONTENTS:
+ * PRIVATE CONSTRUCTOR
+ * var Tag
+ *
+ * PUBLIC INSTANCE METHODS
+ * Tag.prototype.del - Delete a tag from DB
+ * Tag.prototype.tag - Associate an event with a tag
+ * Tag.prototype.untag - Dissociate an event from a tag
+ *
+ * STATIC METHODS
+ * Tag.get - Query for returning a single user with a given username
+ * Tag.create - Create a new user in the db
+ */
+
+// PRIVATE CONSTRUCTOR
+
 var Event = module.exports = function Event(_node) {
   this._node = _node;
 }
-
-
 
 // Public constants:
 
@@ -21,13 +37,12 @@ Event.VALIDATION_INFO = {
   },
 };
 
-// Public instance properties:
+// PUBLIC INSTANCE PROPERTIES
 Object.defineProperty(Event.prototype, 'eventname', {
   get: function() {
     return this._node.properties['eventname'];
   }
 });
-
 
 // Private helpers:
 
@@ -110,6 +125,7 @@ Event.get = function(eventname, callback) {
     callback(null, event);
   });
 };
+
 //returns all events
 Event.getAll = function (callback) {
   var query = [
@@ -155,6 +171,9 @@ Event.create = function(props, callback) {
   });
 }
 
+// PUBLIC INSTANCE METHODS
+
+// Delete an event from the db
 Event.prototype.del = function(callback) {
   // Use a Cypher query to delete both this event and his/her following
   // relationships in one query and one network request:
@@ -184,6 +203,7 @@ Event.prototype.del = function(callback) {
   });
 };
 
+// Associate an event with a tag
 Event.prototype.tag = function(tag, callback) {
   var query = [
     'MATCH (event:Event {eventname: {thisEventname}})',
@@ -210,6 +230,7 @@ Event.prototype.tag = function(tag, callback) {
   });
 };
 
+// Dissociate an event from a tag
 Event.prototype.untag = function(tag, callback) {
   var query = [
     'MATCH (event:Event {eventname: {thisEventname}})',
@@ -314,3 +335,40 @@ db.createConstraint({
     // Constraint already present; no need to log anything.
   }
 })
+
+// Creates the user and persists (saves) it to the db
+Event.create = function(props, callback) {
+  var query = [
+    'CREATE (event:Event {props})',
+    'RETURN event',
+  ].join('\n');
+
+  var params = {
+    props: props
+  }
+
+
+  console.log('Checking if db exists');
+  console.log(db);
+
+
+  console.log('Params for query are: ');
+  console.log(params);
+  console.log('Constructed query is: ' + query);
+
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err, results) {
+    if (err) return callback(err);
+    console.log('Results are:');
+    console.log(results);
+
+    var event = new Event(results[0]['event']);
+
+    console.log('Event that should have been created');
+    console.log(event);
+
+    callback(null, event);
+  });
+}

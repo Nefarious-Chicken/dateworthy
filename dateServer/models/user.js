@@ -7,27 +7,28 @@ var Event = require('./event');
 var db = require('./db');
 
 /** TABLE OF CONTENTS:
- * CONSTRUCTOR:
+ * PRIVATE CONSTRUCTOR
  * var User
  *
- * INSTANCE METHODS:
+ * PUBLIC INSTANCE METHODS
  * User.prototype.patch - Update a user
  * User.prototype.del - Delete a user from DB
  * User.prototype.tag - Associate a user with a tag
- * User.prototype.untag - Disassociate a user from a tag
+ * User.prototype.untag - Dissociate a user from a tag
  * User.prototype.follow - Associate a user with another user
- * User.prototype.unfollow - Disassociate a user from another user
+ * User.prototype.unfollow - Dissociate a user from another user
  * User.prototype.getFollowingAndOthers - List all users the user is associated with
  * User.prototype.getAllTags - List all tags the user is associated with
  *
- * STATIC METHODS: 
+ * STATIC METHODS
  * User.get - Query for returning a single user with a given username
  * User.getAll - Return all users in the db
  * User.create - Create a new user in the db
  * User.getMatchingEvents - Find an event matching a given tag profile input
  */
 
-// Private constructor:
+
+// PRIVATE CONSTRUCTOR
 
 var User = module.exports = function User(_node) {
   // All we'll really store is the node; the rest of our properties will be
@@ -35,7 +36,7 @@ var User = module.exports = function User(_node) {
   this._node = _node;
 }
 
-// Public constants:
+// PUBLIC CONSTANTS
 
 User.VALIDATION_INFO = {
   'username': {
@@ -47,7 +48,7 @@ User.VALIDATION_INFO = {
   },
 };
 
-// Public instance properties:
+// PUBLIC INSTANCE PROPERTIES
 
 // The user's username, e.g. 'aseemk'.
 Object.defineProperty(User.prototype, 'username', {
@@ -56,7 +57,7 @@ Object.defineProperty(User.prototype, 'username', {
   }
 });
 
-// Private helpers:
+// PRIVATE HELPERS
 
 // Takes the given caller-provided properties, selects only known ones,
 // validates them, and returns the known subset.
@@ -113,9 +114,9 @@ function isConstraintViolation(err) {
     err.neo4j.code === 'Neo.ClientError.Schema.ConstraintViolation';
 }
 
-// Public instance methods:
+// PUBLIC INSTANCE METHODS
 
-// Atomically updates this user, both locally and remotely in the db, with the
+// Automically updates this user, both locally and remotely in the db, with the
 // given property updates.
 User.prototype.patch = function(props, callback) {
   var safeProps = validate(props);
@@ -160,6 +161,7 @@ User.prototype.patch = function(props, callback) {
   });
 };
 
+// Deletes the user from db
 User.prototype.del = function(callback) {
   // Use a Cypher query to delete both this user and his/her following
   // relationships in one query and one network request:
@@ -184,6 +186,7 @@ User.prototype.del = function(callback) {
   });
 };
 
+// Associates this user with a certain tag
 User.prototype.tag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
@@ -210,6 +213,7 @@ User.prototype.tag = function(tag, callback) {
   });
 };
 
+// Dissociates this user from a certain tag
 User.prototype.untag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
@@ -231,6 +235,7 @@ User.prototype.untag = function(tag, callback) {
   });
 };
 
+// Associates this user with another user
 User.prototype.follow = function(other, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
@@ -251,7 +256,7 @@ User.prototype.follow = function(other, callback) {
   });
 };
 
-
+// Dissociates this user from another user
 User.prototype.unfollow = function(other, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
@@ -342,8 +347,9 @@ User.prototype.getAllTags = function(callback) {
   });
 }
 
-// Static methods:
+// STATIC METHODS
 
+// Returns a user with the given username from db if the user exists
 User.get = function(username, callback) {
   var query = [
     'MATCH (user:User {username: {username}})',
@@ -374,6 +380,7 @@ User.get = function(username, callback) {
   });
 };
 
+// Return all users in the db
 User.getAll = function(callback) {
   var query = [
     'MATCH (user:User)',
@@ -392,7 +399,7 @@ User.getAll = function(callback) {
 };
 
 
-// Creates the user and persists (saves) it to the db, incl. indexing it:
+// Creates the user and persists (saves) it to the db, incl. indexing it
 User.create = function(props, callback) {
   var query = [
     'CREATE (user:User {props})',
@@ -457,7 +464,7 @@ User.getMatchingEvents = function(profileString, callback) {
 }
 
 
-// Static initialization:
+// STATIC INITIALIZATION
 
 // Register our unique username constraint.
 // TODO: This is done async'ly (fire and forget) here for simplicity,

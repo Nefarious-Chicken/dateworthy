@@ -1,10 +1,25 @@
+// tag.js
+// Tag model logic.
+
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
 
-/**
- * Tag Model
+/** TABLE OF CONTENTS:
+ * PRIVATE CONSTRUCTOR
+ * var Tag
+ *
+ * PUBLIC INSTANCE METHODS
+ * Tag.prototype.del - Delete a tag from DB
+ *
+ * STATIC METHODS
+ * Tag.get - Query for returning a single user with a given username
+ * Tag.create - Create a new user in the db
  */
+
+
+// PRIVATE CONSTRUCTOR
+
 var Tag = module.exports = function Tag(_node) {
   this._node = _node;
 }
@@ -19,15 +34,49 @@ Tag.VALIDATION_INFO = {
   },
 };
 
+// PUBLIC INSTANCE PROPERTIES
+
 Object.defineProperty(Tag.prototype, 'tagname', {
   get: function() {
     return this._node.properties['tagname'];
   }
 });
 
-/**
- * Tag helper function to query db for tag with an associated tagname
- */
+// PUBLIC INSTANCE METHODS
+
+// Deletes the tag from the db
+Tag.prototype.del = function(callback) {
+  // Use a Cypher query to delete both this user and his/her following
+  // relationships in one query and one network request:
+  // (Note that this'll still fail if there are any relationships attached
+  // of any other types, which is good because we don't expect any.)
+  var query = [
+    'MATCH (tag:Tag {tagname: {tagname}})',
+    'OPTIONAL MATCH (tag) -[rel:prefers]- (user)',
+    'DELETE tag, rel',
+  ].join('\n')
+
+  var params = {
+    tagname: this.tagname,
+  };
+
+  console.log('Param to pass into query:');
+  console.log(params);
+
+  console.log('Constructed Query:');
+  console.log(query);
+
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
+};
+
+// STATIC METHODS
+
+// Helper function to query db for tag with an associated tagname
 Tag.get = function(tagname, callback) {
   var query = [
     'MATCH (tag:Tag {tagname: {tagname}})',
@@ -275,3 +324,4 @@ db.createConstraint({
     // Constraint already present; no need to log anything.
   }
 })
+
