@@ -4,7 +4,7 @@ var db = require('./db');
 
 //Tag model
 var Event = module.exports = function Event(_node) {
-    this._node = _node;
+  this._node = _node;
 }
 
 
@@ -23,7 +23,9 @@ Event.VALIDATION_INFO = {
 
 // Public instance properties:
 Object.defineProperty(Event.prototype, 'eventname', {
-    get: function () { return this._node.properties['eventname']; }
+  get: function() {
+    return this._node.properties['eventname'];
+  }
 });
 
 
@@ -85,28 +87,28 @@ function isConstraintViolation(err) {
 }
 
 // Helper function to check that Event exists
-Event.get = function (eventname, callback) {
-    var query = [
-        'MATCH (event:Event {eventname: {eventname}})',
-        'RETURN event',
-    ].join('\n')
+Event.get = function(eventname, callback) {
+  var query = [
+    'MATCH (event:Event {eventname: {eventname}})',
+    'RETURN event',
+  ].join('\n')
 
-    var params = {
-        eventname: eventname
-    };
+  var params = {
+    eventname: eventname
+  };
 
-    db.cypher({
-        query: query,
-        params: params,
-    }, function (err, results) {
-        if (err) return callback(err);
-        if (!results.length) {
-            err = new Error('No such event with eventname: ' + eventname);
-            return callback(err);
-        }
-        var event = new Event(results[0]['event']);
-        callback(null, event);
-    });
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err, results) {
+    if (err) return callback(err);
+    if (!results.length) {
+      err = new Error('No such event with eventname: ' + eventname);
+      return callback(err);
+    }
+    var event = new Event(results[0]['event']);
+    callback(null, event);
+  });
 };
 //returns all events
 Event.getAll = function (callback) {
@@ -126,110 +128,110 @@ Event.getAll = function (callback) {
   });
 };
 
-Event.create = function (props, callback) {
-    var query = [
-        'CREATE (event:Event {props})',
-        'RETURN event',
-    ].join('\n');
+Event.create = function(props, callback) {
+  var query = [
+    'CREATE (event:Event {props})',
+    'RETURN event',
+  ].join('\n');
 
-    var params = {
-        props: props
-    }
+  var params = {
+    props: props
+  }
 
-    db.cypher({
-        query: query,
-        params: params,
-    }, function (err, results) {
-        if (err) return callback(err);
-        // console.log('Results are:');
-        // console.log(results);
+  db.cypher({
+    query: query,
+    params: params,
+  }, function (err, results) {
+    if (err) return callback(err);
+    // console.log('Results are:');
+    // console.log(results);
 
-        var event = new Event(results[0]['event']);
-        
-        // console.log('Event that should have been created');
-        // console.log(event);
+    var event = new Event(results[0]['event']);
+    
+    // console.log('Event that should have been created');
+    // console.log(event);
 
-        callback(null, event);
-    });
+    callback(null, event);
+  });
 }
 
-Event.prototype.del = function (callback) {
-    // Use a Cypher query to delete both this event and his/her following
-    // relationships in one query and one network request:
-    // (Note that this'll still fail if there are any relationships attached
-    // of any other types, which is good because we don't expect any.)
-    var query = [
-        'MATCH (event:Event {eventname: {eventname}})',
-        'OPTIONAL MATCH (event) -[rel:is]- (tag)',
-        'DELETE event, rel',
-    ].join('\n')
+Event.prototype.del = function(callback) {
+  // Use a Cypher query to delete both this event and his/her following
+  // relationships in one query and one network request:
+  // (Note that this'll still fail if there are any relationships attached
+  // of any other types, which is good because we don't expect any.)
+  var query = [
+    'MATCH (event:Event {eventname: {eventname}})',
+    'OPTIONAL MATCH (event) -[rel:is]- (tag)',
+    'DELETE event, rel',
+  ].join('\n')
 
-    var params = {
-        eventname: this.eventname,
-    };
+  var params = {
+    eventname: this.eventname,
+  };
 
-    // console.log('Param to pass into query:');
-    // console.log(params);
+  // console.log('Param to pass into query:');
+  // console.log(params);
 
-    // console.log('Constructed Query:');
-    // console.log(query);
+  // console.log('Constructed Query:');
+  // console.log(query);
 
-    db.cypher({
-        query: query,
-        params: params,
-    }, function (err) {
-        callback(err);
-    });
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
 };
 
-Event.prototype.tag = function (tag, callback) {
-    var query = [
-        'MATCH (event:Event {eventname: {thisEventname}})',
-        'MATCH (tag:Tag {tagname: {targetTagname}})',
-        'MERGE (event) -[rel:is]-> (tag)',
-    ].join('\n')
+Event.prototype.tag = function(tag, callback) {
+  var query = [
+    'MATCH (event:Event {eventname: {thisEventname}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MERGE (event) -[rel:is]-> (tag)',
+  ].join('\n')
 
-    var params = {
-        thisEventname: this.eventname,
-        targetTagname: tag.tagname,
-    };
+  var params = {
+    thisEventname: this.eventname,
+    targetTagname: tag.tagname,
+  };
 
-    // console.log('Query for tagging:');
-    // console.log(query);
+  // console.log('Query for tagging:');
+  // console.log(query);
 
-    // console.log('Params for query:');
-    // console.log(query);
+  // console.log('Params for query:');
+  // console.log(query);
 
-    db.cypher({
-        query: query,
-        params: params,
-    }, function (err) {
-        callback(err);
-    });
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
 };
 
-Event.prototype.untag = function (tag, callback) {
-    var query = [
-        'MATCH (event:Event {eventname: {thisEventname}})',
-        'MATCH (tag:Tag {tagname: {targetTagname}})',
-        'MATCH (event) -[rel:is]-> (tag)',
-        'DELETE rel',
-    ].join('\n')
+Event.prototype.untag = function(tag, callback) {
+  var query = [
+    'MATCH (event:Event {eventname: {thisEventname}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (event) -[rel:is]-> (tag)',
+    'DELETE rel',
+  ].join('\n')
 
-    var params = {
-        thisEventname: this.eventname,
-        targetTagname: tag.tagname,
-    };
+  var params = {
+    thisEventname: this.eventname,
+    targetTagname: tag.tagname,
+  };
 
-    db.cypher({
-        query: query,
-        params: params,
-    }, function (err) {
-        callback(err);
-    });
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
 };
 
-Event.prototype.patch = function (props, callback) {
+Event.prototype.patch = function(props, callback) {
   var safeProps = validate(props);
 
   var query = [
@@ -248,14 +250,14 @@ Event.prototype.patch = function (props, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err, results) {
+  }, function(err, results) {
     if (isConstraintViolation(err)) {
       // TODO: This assumes eventname is the only relevant constraint.
       // We could parse the constraint property out of the error message,
       // but it'd be nicer if Neo4j returned this data semantically.
       // Alternately, we could tweak our query to explicitly check first
       // whether the eventname is taken or not.
-      err = new errors.ValidationError(   
+      err = new errors.ValidationError(
         'The eventname ‘' + props.eventname + '’ is taken.');
     }
     if (err) return callback(err);
@@ -274,7 +276,7 @@ Event.prototype.patch = function (props, callback) {
 
 
 // Returns all tags a event has associated with themselves
-Event.prototype.getAllTags = function (callback) {
+Event.prototype.getAllTags = function(callback) {
   var query = [
     'MATCH (event:Event {eventname: {thisEventname}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
@@ -287,11 +289,11 @@ Event.prototype.getAllTags = function (callback) {
   db.cypher({
     query: query,
     params: params
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) return callback(err);
     // console.log("Results from tag query based on event");
     // console.log(results);
-    var tags = results.map(function (result) {
+    var tags = results.map(function(result) {
       return new Tag(result['tag']);
     });
     callback(null, tags);
@@ -302,13 +304,13 @@ Event.prototype.getAllTags = function (callback) {
 // TODO: This is done async'ly (fire and forget) here for simplicity,
 // but this would be better as a formal schema migration script or similar.
 db.createConstraint({
-    label: 'Event',
-    property: 'eventname',
-}, function (err, constraint) {
-    if (err) throw err;     // Failing fast for now, by crash the application.
-    if (constraint) {
-        console.log('(Registered unique eventnames constraint.)');
-    } else {
-        // Constraint already present; no need to log anything.
-    }
+  label: 'Event',
+  property: 'eventname',
+}, function(err, constraint) {
+  if (err) throw err; // Failing fast for now, by crash the application.
+  if (constraint) {
+    console.log('(Registered unique eventnames constraint.)');
+  } else {
+    // Constraint already present; no need to log anything.
+  }
 })
