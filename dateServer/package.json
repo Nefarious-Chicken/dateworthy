@@ -19,5 +19,6 @@
   "scripts": {
     "start": "node-dev app.js",
     "test": "mocha test/*/*.js"
+
   }
 }

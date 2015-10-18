@@ -182,7 +182,7 @@ describe('User models:', function () {
     });
 
     it('Create user A', function (next) {
-        var username = 'testUserA';
+        var username = 'testUser1';
         User.create({username: username}, function (err, user) {
             if (err) return next(err);
 
