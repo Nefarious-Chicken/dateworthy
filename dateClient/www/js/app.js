@@ -22,6 +22,18 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
 })
 
+
+//New routers will be the following:
+// - login
+// - /
+// - welcomeBack
+// - findDate
+// - dateresults
+// - submitIdea
+// - /randomIdeas
+// - /likes
+
+
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
