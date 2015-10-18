@@ -1,4 +1,4 @@
-var userController = require('../routes/users');
+var userController = require('../controllers/users');
 
 module.exports = function (app) {
 
@@ -16,6 +16,6 @@ module.exports = function (app) {
   app.post('/:username/untag', userController.untag);
   
   app.post('/:username/preferences', userController.getAllTags);
-  app.post('/bestmatch', userController.getMatchingEvents);
+  
 
 }

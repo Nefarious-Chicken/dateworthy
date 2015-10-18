@@ -1,4 +1,4 @@
-var tagController = require('../routes/tags');
+var tagController = require('../controllers/tags');
 
 module.exports = function (app) {
 

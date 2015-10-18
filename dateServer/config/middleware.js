@@ -4,10 +4,10 @@ module.exports = function(app, express) {
   var eventRouter = express.Router();
   var Router = express.Router();
 
+  app.use(Router);
   app.use('/users', userRouter);
   app.use('/tags', tagRouter);
   app.use('/events', eventRouter);
-  app.use('/', Router);
 
   require('../routers/userRoutes.js')(userRouter);
   require('../routers/tagRoutes.js')(tagRouter);

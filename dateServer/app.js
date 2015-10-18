@@ -8,7 +8,6 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var errorHandler = require('errorhandler');
-var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 
@@ -25,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 
+// routing handled in middleware
 require('./config/middleware.js')(app, express);
 
 // development only
@@ -32,13 +32,7 @@ if ('development' == app.get('env')) {
   app.use(errorHandler());
 }
 
-// app.locals({
-//     title: 'Node-Neo4j Template'    // default title
-// });
-
 app.locals.title = 'Node-Neo4j Template'
-
-// routing handled in middleware
 
 // Routes
 

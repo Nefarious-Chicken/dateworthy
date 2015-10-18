@@ -1,4 +1,4 @@
-var eventController = require('../routes/events');
+var eventController = require('../controllers/events');
 
 module.exports = function (app) {
 

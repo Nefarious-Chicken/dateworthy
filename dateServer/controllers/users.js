@@ -129,6 +129,8 @@ exports.edit = function (req, res, next) {
  * DELETE /users/:username
  */
 exports.del = function (req, res, next) {
+  console.log('Deleting user: ' + req.params.username);
+  
     User.get(req.params.username, function (err, user) {
         // TODO: Gracefully handle "no such user" error somehow.
         // E.g. redirect back to /users with an info message?
@@ -235,7 +237,7 @@ exports.unfollow = function (req, res, next) {
 };
 
 /**
- * POST /users/:username/tagsAndEvents {otherUsername}
+ * POST /users/:username/getAllTags
  * returns all tags and events related to this user
  */
 exports.getAllTags = function (req, res, next) {
@@ -252,6 +254,7 @@ exports.getAllTags = function (req, res, next) {
 }
 
 exports.getMatchingEvents = function (req, res, next) {
+  console.log('Routing correctly');
   User.getMatchingEvents(req.body.profile, function (err, users) {
     if (err) return next(err);
     res.send(users);
