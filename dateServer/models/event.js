@@ -7,9 +7,82 @@ var Event = module.exports = function Event(_node) {
     this._node = _node;
 }
 
+
+
+// Public constants:
+
+Event.VALIDATION_INFO = {
+  'eventname': {
+    required: true,
+    minLength: 2,
+    maxLength: 16,
+    pattern: /^[A-Za-z0-9_]+$/,
+    message: '2-16 characters; letters, numbers, and underscores only.'
+  },
+};
+
+// Public instance properties:
 Object.defineProperty(Event.prototype, 'eventname', {
     get: function () { return this._node.properties['eventname']; }
 });
+
+
+// Private helpers:
+
+// Takes the given caller-provided properties, selects only known ones,
+// validates them, and returns the known subset.
+// By default, only validates properties that are present.
+// (This allows `Event.prototype.patch` to not require any.)
+// You can pass `true` for `required` to validate that all required properties
+// are present too. (Useful for `Event.create`.)
+function validate(props, required) {
+    var safeProps = {};
+
+    for (var prop in Event.VALIDATION_INFO) {
+        var val = props[prop];
+        validateProp(prop, val, required);
+        safeProps[prop] = val;
+    }
+
+    return safeProps;
+}
+
+// Validates the given property based on the validation info above.
+// By default, ignores null/undefined/empty values, but you can pass `true` for
+// the `required` param to enforce that any required properties are present.
+function validateProp(prop, val, required) {
+  var info = Event.VALIDATION_INFO[prop];
+  var message = info.message;
+
+  if (!val) {
+    if (info.required && required) {
+      throw new errors.ValidationError(
+        'Missing ' + prop + ' (required).');
+    } else {
+      return;
+    }
+  }
+
+  if (info.minLength && val.length < info.minLength) {
+    throw new errors.ValidationError(
+      'Invalid ' + prop + ' (too short). Requirements: ' + message);
+  }
+
+  if (info.maxLength && val.length > info.maxLength) {
+    throw new errors.ValidationError(
+      'Invalid ' + prop + ' (too long). Requirements: ' + message);
+  }
+
+  if (info.pattern && !info.pattern.test(val)) {
+    throw new errors.ValidationError(
+      'Invalid ' + prop + ' (format). Requirements: ' + message);
+  }
+}
+
+function isConstraintViolation(err) {
+  return err instanceof neo4j.ClientError &&
+    err.neo4j.code === 'Neo.ClientError.Schema.ConstraintViolation';
+}
 
 // Helper function to check that Event exists
 Event.get = function (eventname, callback) {
@@ -35,6 +108,23 @@ Event.get = function (eventname, callback) {
         callback(null, event);
     });
 };
+//returns all events
+Event.getAll = function (callback) {
+  var query = [
+    'MATCH (event:Event)',
+    'RETURN event',
+  ].join('\n');
+
+  db.cypher({
+    query: query,
+  }, function (err, results) {
+    if (err) return callback(err);
+    var events = results.map(function (result) {
+      return new Event(result['event']);
+    });
+    callback(null, events);
+  });
+};
 
 Event.create = function (props, callback) {
     var query = [
@@ -46,34 +136,25 @@ Event.create = function (props, callback) {
         props: props
     }
 
-
-    console.log('Checking if db exists');
-    console.log(db);
-
-
-    console.log('Params for query are: ');
-    console.log(params);
-    console.log('Constructed query is: ' + query);
-
     db.cypher({
         query: query,
         params: params,
     }, function (err, results) {
         if (err) return callback(err);
-        console.log('Results are:');
-        console.log(results);
+        // console.log('Results are:');
+        // console.log(results);
 
         var event = new Event(results[0]['event']);
         
-        console.log('Event that should have been created');
-        console.log(event);
+        // console.log('Event that should have been created');
+        // console.log(event);
 
         callback(null, event);
     });
 }
 
 Event.prototype.del = function (callback) {
-    // Use a Cypher query to delete both this user and his/her following
+    // Use a Cypher query to delete both this event and his/her following
     // relationships in one query and one network request:
     // (Note that this'll still fail if there are any relationships attached
     // of any other types, which is good because we don't expect any.)
@@ -87,11 +168,11 @@ Event.prototype.del = function (callback) {
         eventname: this.eventname,
     };
 
-    console.log('Param to pass into query:');
-    console.log(params);
+    // console.log('Param to pass into query:');
+    // console.log(params);
 
-    console.log('Constructed Query:');
-    console.log(query);
+    // console.log('Constructed Query:');
+    // console.log(query);
 
     db.cypher({
         query: query,
@@ -113,11 +194,11 @@ Event.prototype.tag = function (tag, callback) {
         targetTagname: tag.tagname,
     };
 
-    console.log('Query for tagging:');
-    console.log(query);
+    // console.log('Query for tagging:');
+    // console.log(query);
 
-    console.log('Params for query:');
-    console.log(query);
+    // console.log('Params for query:');
+    // console.log(query);
 
     db.cypher({
         query: query,
@@ -147,3 +228,87 @@ Event.prototype.untag = function (tag, callback) {
         callback(err);
     });
 };
+
+Event.prototype.patch = function (props, callback) {
+  var safeProps = validate(props);
+
+  var query = [
+    'MATCH (event:Event {eventname: {eventname}})',
+    'SET event += {props}',
+    'RETURN event',
+  ].join('\n');
+
+  var params = {
+    eventname: this.eventname,
+    props: safeProps,
+  };
+
+  var self = this;
+
+  db.cypher({
+    query: query,
+    params: params,
+  }, function (err, results) {
+    if (isConstraintViolation(err)) {
+      // TODO: This assumes eventname is the only relevant constraint.
+      // We could parse the constraint property out of the error message,
+      // but it'd be nicer if Neo4j returned this data semantically.
+      // Alternately, we could tweak our query to explicitly check first
+      // whether the eventname is taken or not.
+      err = new errors.ValidationError(   
+        'The eventname ‘' + props.eventname + '’ is taken.');
+    }
+    if (err) return callback(err);
+
+    if (!results.length) {
+      err = new Error('Event has been deleted! Eventname: ' + self.eventname);
+      return callback(err);
+    }
+
+    // Update our node with this updated+latest data from the server:
+    self._node = results[0]['event'];
+
+    callback(null);
+  });
+};
+
+
+// Returns all tags a event has associated with themselves
+Event.prototype.getAllTags = function (callback) {
+  var query = [
+    'MATCH (event:Event {eventname: {thisEventname}})-[:prefers]->(tag:Tag)',
+    'RETURN DISTINCT tag'
+  ].join('\n')
+
+  var params = {
+    thisEventname: this.eventname
+  }
+
+  db.cypher({
+    query: query,
+    params: params
+  }, function (err, results) {
+    if (err) return callback(err);
+    // console.log("Results from tag query based on event");
+    // console.log(results);
+    var tags = results.map(function (result) {
+      return new Tag(result['tag']);
+    });
+    callback(null, tags);
+  });
+}
+
+// Register our unique eventname constraint.
+// TODO: This is done async'ly (fire and forget) here for simplicity,
+// but this would be better as a formal schema migration script or similar.
+db.createConstraint({
+    label: 'Event',
+    property: 'eventname',
+}, function (err, constraint) {
+    if (err) throw err;     // Failing fast for now, by crash the application.
+    if (constraint) {
+        console.log('(Registered unique eventnames constraint.)');
+    } else {
+        // Constraint already present; no need to log anything.
+    }
+})

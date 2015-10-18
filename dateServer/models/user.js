@@ -63,17 +63,17 @@ Object.defineProperty(User.prototype, 'username', {
 // (This allows `User.prototype.patch` to not require any.)
 // You can pass `true` for `required` to validate that all required properties
 // are present too. (Useful for `User.create`.)
-// function validate(props, required) {
-//     var safeProps = {};
+function validate(props, required) {
+    var safeProps = {};
 
-//     for (var prop in User.VALIDATION_INFO) {
-//         var val = props[prop];
-//         validateProp(prop, val, required);
-//         safeProps[prop] = val;
-//     }
+    for (var prop in User.VALIDATION_INFO) {
+        var val = props[prop];
+        validateProp(prop, val, required);
+        safeProps[prop] = val;
+    }
 
-//     return safeProps;
-// }
+    return safeProps;
+}
 
 // Validates the given property based on the validation info above.
 // By default, ignores null/undefined/empty values, but you can pass `true` for
@@ -195,11 +195,11 @@ User.prototype.tag = function (tag, callback) {
     targetTagname: tag.tagname,
   };
 
-  console.log('Query for tagging:');
-  console.log(query);
+  // console.log('Query for tagging:');
+  // console.log(query);
 
-  console.log('Params for query:');
-  console.log(query);
+  // console.log('Params for query:');
+  // console.log(query);
 
   db.cypher({
     query: query,
@@ -317,7 +317,7 @@ User.prototype.getFollowingAndOthers = function (callback) {
 // Returns all tags a user has associated with themselves
 User.prototype.getAllTags = function (callback) {
   var query = [
-    'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)<-[:is]-(event:Event)',
+    'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
   ].join('\n')
 
@@ -330,8 +330,8 @@ User.prototype.getAllTags = function (callback) {
     params: params
   }, function (err, results) {
     if (err) return callback(err);
-    console.log("Results from tag query based on user");
-    console.log(results);
+    // console.log("Results from tag query based on user");
+    // console.log(results);
     var tags = results.map(function (result) {
       return new Tag(result['tag']);
     });
@@ -351,11 +351,11 @@ User.get = function (username, callback) {
     username: username,
   };
 
-  console.log('Username params for db search: ');
-  console.log(params);
+  // console.log('Username params for db search: ');
+  // console.log(params);
 
-  console.log('Constructed query:');
-  console.log(query);
+  // console.log('Constructed query:');
+  // console.log(query);
 
   db.cypher({
     query: query,
@@ -420,6 +420,7 @@ User.create = function (props, callback) {
 };
 
 // Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
+//TODO write a test for this
 User.getMatchingEvents = function(profileString, callback){
     //sample input profileString {"sporty":1,"outdoors":1,"test":0}
     var query = ['MATCH'];
