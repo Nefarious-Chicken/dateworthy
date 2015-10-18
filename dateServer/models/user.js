@@ -1,6 +1,5 @@
 // user.js
 // User model logic.
-
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var Tag = require('./tag');
@@ -8,27 +7,28 @@ var Event = require('./event');
 var db = require('./db');
 
 /** TABLE OF CONTENTS:
-* CONSTRUCTOR:
-* var User
-*
-* INSTANCE METHODS:
-* User.prototype.patch - Update a user
-* User.prototype.del - Delete a user from DB
-* User.prototype.tag - Associate a user with a tag
-* User.prototype.untag - Disassociate a user from a tag
-* User.prototype.follow - Associate a user with another user
-* User.prototype.unfollow - Disassociate a user from another user
-* User.prototype.getFollowingAndOthers - List all users the user is associated with
-* User.prototype.getAllTags - List all tags the user is associated with
-*
-* STATIC METHODS: 
-* User.get - Query for returning a single user with a given username
-* User.getAll - Return all users in the db
-* User.create - Create a new user in the db
-* User.getMatchingEvents - Find an event matching a given tag profile input
-*/
+ * PRIVATE CONSTRUCTOR
+ * var User
+ *
+ * PUBLIC INSTANCE METHODS
+ * User.prototype.patch - Update a user
+ * User.prototype.del - Delete a user from DB
+ * User.prototype.tag - Associate a user with a tag
+ * User.prototype.untag - Dissociate a user from a tag
+ * User.prototype.follow - Associate a user with another user
+ * User.prototype.unfollow - Dissociate a user from another user
+ * User.prototype.getFollowingAndOthers - List all users the user is associated with
+ * User.prototype.getAllTags - List all tags the user is associated with
+ *
+ * STATIC METHODS
+ * User.get - Query for returning a single user with a given username
+ * User.getAll - Return all users in the db
+ * User.create - Create a new user in the db
+ * User.getMatchingEvents - Find an event matching a given tag profile input
+ */
 
-// Private constructor:
+
+// PRIVATE CONSTRUCTOR
 
 var User = module.exports = function User(_node) {
   // All we'll really store is the node; the rest of our properties will be
@@ -36,7 +36,7 @@ var User = module.exports = function User(_node) {
   this._node = _node;
 }
 
-// Public constants:
+// PUBLIC CONSTANTS
 
 User.VALIDATION_INFO = {
   'username': {
@@ -48,14 +48,16 @@ User.VALIDATION_INFO = {
   },
 };
 
-// Public instance properties:
+// PUBLIC INSTANCE PROPERTIES
 
 // The user's username, e.g. 'aseemk'.
 Object.defineProperty(User.prototype, 'username', {
-  get: function () { return this._node.properties['username']; }
+  get: function() {
+    return this._node.properties['username'];
+  }
 });
 
-// Private helpers:
+// PRIVATE HELPERS
 
 // Takes the given caller-provided properties, selects only known ones,
 // validates them, and returns the known subset.
@@ -64,15 +66,15 @@ Object.defineProperty(User.prototype, 'username', {
 // You can pass `true` for `required` to validate that all required properties
 // are present too. (Useful for `User.create`.)
 function validate(props, required) {
-    var safeProps = {};
+  var safeProps = {};
 
-    for (var prop in User.VALIDATION_INFO) {
-        var val = props[prop];
-        validateProp(prop, val, required);
-        safeProps[prop] = val;
-    }
+  for (var prop in User.VALIDATION_INFO) {
+    var val = props[prop];
+    validateProp(prop, val, required);
+    safeProps[prop] = val;
+  }
 
-    return safeProps;
+  return safeProps;
 }
 
 // Validates the given property based on the validation info above.
@@ -112,11 +114,11 @@ function isConstraintViolation(err) {
     err.neo4j.code === 'Neo.ClientError.Schema.ConstraintViolation';
 }
 
-// Public instance methods:
+// PUBLIC INSTANCE METHODS
 
-// Atomically updates this user, both locally and remotely in the db, with the
+// Automically updates this user, both locally and remotely in the db, with the
 // given property updates.
-User.prototype.patch = function (props, callback) {
+User.prototype.patch = function(props, callback) {
   var safeProps = validate(props);
 
   var query = [
@@ -135,14 +137,14 @@ User.prototype.patch = function (props, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err, results) {
+  }, function(err, results) {
     if (isConstraintViolation(err)) {
       // TODO: This assumes username is the only relevant constraint.
       // We could parse the constraint property out of the error message,
       // but it'd be nicer if Neo4j returned this data semantically.
       // Alternately, we could tweak our query to explicitly check first
       // whether the username is taken or not.
-      err = new errors.ValidationError(   
+      err = new errors.ValidationError(
         'The username ‘' + props.username + '’ is taken.');
     }
     if (err) return callback(err);
@@ -159,7 +161,8 @@ User.prototype.patch = function (props, callback) {
   });
 };
 
-User.prototype.del = function (callback) {
+// Deletes the user from db
+User.prototype.del = function(callback) {
   // Use a Cypher query to delete both this user and his/her following
   // relationships in one query and one network request:
   // (Note that this'll still fail if there are any relationships attached
@@ -178,12 +181,13 @@ User.prototype.del = function (callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err) {
+  }, function(err) {
     callback(err);
   });
 };
 
-User.prototype.tag = function (tag, callback) {
+// Associates this user with a certain tag
+User.prototype.tag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
@@ -204,12 +208,13 @@ User.prototype.tag = function (tag, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err) {
+  }, function(err) {
     callback(err);
   });
 };
 
-User.prototype.untag = function (tag, callback) {
+// Dissociates this user from a certain tag
+User.prototype.untag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
@@ -225,12 +230,13 @@ User.prototype.untag = function (tag, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err) {
+  }, function(err) {
     callback(err);
   });
 };
 
-User.prototype.follow = function (other, callback) {
+// Associates this user with another user
+User.prototype.follow = function(other, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (other:User {username: {otherUsername}})',
@@ -245,13 +251,13 @@ User.prototype.follow = function (other, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err) {
+  }, function(err) {
     callback(err);
   });
 };
 
-
-User.prototype.unfollow = function (other, callback) {
+// Dissociates this user from another user
+User.prototype.unfollow = function(other, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (other:User {username: {otherUsername}})',
@@ -267,14 +273,14 @@ User.prototype.unfollow = function (other, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err) {
+  }, function(err) {
     callback(err);
   });
 };
 
 // Calls callback w/ (err, following, others), where following is an array of
 // users this user follows, and others is all other users minus him/herself.
-User.prototype.getFollowingAndOthers = function (callback) {
+User.prototype.getFollowingAndOthers = function(callback) {
   // Query all users and whether we follow each one or not:
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
@@ -291,7 +297,7 @@ User.prototype.getFollowingAndOthers = function (callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) return callback(err);
 
     var following = [];
@@ -315,7 +321,7 @@ User.prototype.getFollowingAndOthers = function (callback) {
 };
 
 // Returns all tags a user has associated with themselves
-User.prototype.getAllTags = function (callback) {
+User.prototype.getAllTags = function(callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
@@ -328,20 +334,23 @@ User.prototype.getAllTags = function (callback) {
   db.cypher({
     query: query,
     params: params
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) return callback(err);
+
     // console.log("Results from tag query based on user");
     // console.log(results);
-    var tags = results.map(function (result) {
+    var tags = results.map(function(result) {
+
       return new Tag(result['tag']);
     });
     callback(null, tags);
   });
 }
 
-// Static methods:
+// STATIC METHODS
 
-User.get = function (username, callback) {
+// Returns a user with the given username from db if the user exists
+User.get = function(username, callback) {
   var query = [
     'MATCH (user:User {username: {username}})',
     'RETURN user',
@@ -360,7 +369,7 @@ User.get = function (username, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) return callback(err);
     if (!results.length) {
       err = new Error('No such user with username: ' + username);
@@ -371,7 +380,8 @@ User.get = function (username, callback) {
   });
 };
 
-User.getAll = function (callback) {
+// Return all users in the db
+User.getAll = function(callback) {
   var query = [
     'MATCH (user:User)',
     'RETURN user',
@@ -379,9 +389,9 @@ User.getAll = function (callback) {
 
   db.cypher({
     query: query,
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) return callback(err);
-    var users = results.map(function (result) {
+    var users = results.map(function(result) {
       return new User(result['user']);
     });
     callback(null, users);
@@ -389,8 +399,8 @@ User.getAll = function (callback) {
 };
 
 
-// Creates the user and persists (saves) it to the db, incl. indexing it:
-User.create = function (props, callback) {
+// Creates the user and persists (saves) it to the db, incl. indexing it
+User.create = function(props, callback) {
   var query = [
     'CREATE (user:User {props})',
     'RETURN user',
@@ -403,7 +413,7 @@ User.create = function (props, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function (err, results) {
+  }, function(err, results) {
     if (isConstraintViolation(err)) {
       // TODO: This assumes username is the only relevant constraint.
       // We could parse the constraint property out of the error message,
@@ -420,53 +430,53 @@ User.create = function (props, callback) {
 };
 
 // Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
-//TODO write a test for this
-User.getMatchingEvents = function(profileString, callback){
-    //sample input profileString {"sporty":1,"outdoors":1,"test":0}
-    var query = ['MATCH'];
-    var where = 'WHERE ';
-    var count = 0;
-    var profile = JSON.parse(profileString);
-    for (var tag in profile){
-        if(profile[tag] === 1){
-            count++;
-            where += "tag" + count + ".tagname =~ \"" + tag +"\" AND ";
-            query.push('(event:Event)-[:is]->(tag' + count + ':Tag),');
-        }
+
+User.getMatchingEvents = function(profileString, callback) {
+  //sample input profileString {"sporty":1,"outdoors":1,"test":0}
+  var query = ['MATCH'];
+  var where = 'WHERE ';
+  var count = 0;
+  var profile = JSON.parse(profileString);
+  for (var tag in profile) {
+    if (profile[tag] === 1) {
+      count++;
+      where += "tag" + count + ".tagname =~ \"" + tag + "\" AND ";
+      query.push('(event:Event)-[:is]->(tag' + count + ':Tag),');
     }
-    var lastEventRelation = query[query.length-1];
-    //remove unecessary comma from last match statement
-    query[query.length-1] = lastEventRelation.substring(0, lastEventRelation.length -1)
+  }
+  var lastEventRelation = query[query.length - 1];
+  //remove unecessary comma from last match statement
+  query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1)
     //remove unecessary AND statement and space
-    where = where.substring(0, where.length - 4);
-    query.push(where);
-    query.push('RETURN event.eventname as event;');
-    query = query.join('\n');
-    db.cypher({
-        query: query,
-    }, function (err, results) {
-        if (err) return callback(err);
-        var events = results.map(function (result) {
-            return new Event(result['event']);
-        });
-        callback(null, events);
+  where = where.substring(0, where.length - 4);
+  query.push(where);
+  query.push('RETURN event.eventname as event;');
+  query = query.join('\n');
+  db.cypher({
+    query: query,
+  }, function(err, results) {
+    if (err) return callback(err);
+    var events = results.map(function(result) {
+      return new Event(result['event']);
     });
+    callback(null, events);
+  });
 }
 
 
-// Static initialization:
+// STATIC INITIALIZATION
 
 // Register our unique username constraint.
 // TODO: This is done async'ly (fire and forget) here for simplicity,
 // but this would be better as a formal schema migration script or similar.
 db.createConstraint({
-    label: 'User',
-    property: 'username',
-}, function (err, constraint) {
-    if (err) throw err;     // Failing fast for now, by crash the application.
-    if (constraint) {
-        console.log('(Registered unique usernames constraint.)');
-    } else {
-        // Constraint already present; no need to log anything.
-    }
+  label: 'User',
+  property: 'username',
+}, function(err, constraint) {
+  if (err) throw err; // Failing fast for now, by crash the application.
+  if (constraint) {
+    console.log('(Registered unique usernames constraint.)');
+  } else {
+    // Constraint already present; no need to log anything.
+  }
 })
