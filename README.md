@@ -24,7 +24,7 @@ Use gulp to npm and bower install all the components across the server and the c
 
 ## Requirements
 
-- Gylp
+- Gulp
 
 ## Development
 
