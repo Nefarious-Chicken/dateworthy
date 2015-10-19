@@ -1,6 +1,6 @@
 # Project Name
 
-> Date Worthy
+> Dateworthy
 
 ## Team
 
