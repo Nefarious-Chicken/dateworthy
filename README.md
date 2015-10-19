@@ -1,6 +1,6 @@
 # Project Name
 
-> Pithy project description
+> Date Worthy
 
 ## Team
 
