@@ -1,6 +1,13 @@
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
+var w2v = require('word2vec');
+
+w2v.loadModel("../src/vectors.txt", function(err, model){
+  var model = model
+});
+
+console.log(model.analogy("!!!!!!!!!!!!!!",("woman",["man","king"], 10);))
 
 //Tag model
 var Event = module.exports = function Event(_node) {
