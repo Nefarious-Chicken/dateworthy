@@ -14,7 +14,7 @@ exports.seedTags = function(callback) {
   var createConstraintQuery = 'CREATE CONSTRAINT ON (tag:Tag) ASSERT tag.tagname IS UNIQUE';
   var query = [
     'LOAD CSV WITH HEADERS FROM "file://' + __dirname + '/tags.csv" AS csvLine',
-    'CREATE (tag2:Tag { tagname: csvLine.tags })'
+    'CREATE (tag:Tag { tagname: csvLine.tags })'
 	].join('\n');
   db.cypher({
     query: createConstraintQuery
