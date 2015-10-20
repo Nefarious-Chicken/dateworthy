@@ -48,6 +48,32 @@ exports.seedEvents = function(callback) {
   })
 };
 
+exports.seedEventTagRelationships = function(json, callback) {
+  console.log("This is the json object used to relate items", json);
+
+  var query = [
+    'WITH {json} as data',
+    'UNWIND data.allEvents as allEvents',
+    'FOREACH (singleEvent IN allEvents |',
+    'FOREACH (tagname IN singleEvent.tags |',
+    'MATCH (event:Event {eventname: singleEvent.eventname})',
+    'MATCH (tag:Tag {tagname: tagname})', 
+    'MERGE (event)-[rel:is]->(tag)))'
+  ].join('\n');
+
+  db.cypher({
+    query: query
+  }, function(err, results) {
+    if (err) {
+      console.log("Error creating relationships", err);
+      callback(err, null);
+    } else {
+      console.log("The results after running seedEventTagRelationships are", results);
+      callback(null, results);
+    }
+  });
+}
+
 var tags = {
   'Indoor': true, 
   'Outdoor': true, 
