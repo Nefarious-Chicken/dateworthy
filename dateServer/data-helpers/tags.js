@@ -38,19 +38,3 @@ exports.seedTags = function(callback) {
     }
   })
 };
-
-
-exports.createConstraint = function(callback) {
-  var createConstraintQuery = 'CREATE CONSTRAINT ON (tag:Tag) ASSERT tag.tagname IS UNIQUE';
-   db.cypher({
-    query: createConstraintQuery
-  }, function(err, results) {
-    if (err) {
-      console.log("Couldn't create constraint on Tags graph", err);
-      callback(err, null);
-    } else {
-      console.log("Success!");
-    }
-  })
-
-}
