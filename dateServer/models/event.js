@@ -3,6 +3,21 @@ var errors = require('./errors');
 var db = require('./db');
 
 //Event model
+/** TABLE OF CONTENTS:
+ * PRIVATE CONSTRUCTOR
+ * var Event
+ *
+ * PUBLIC INSTANCE METHODS
+ * Event.prototype.del - Delete an event from DB
+ * Event.prototype.tag - Associate an event with a tag
+ * Event.prototype.untag - Dissociate an event from a tag
+ *
+ * STATIC METHODS
+ * Event.get - Query for returning a single event with a given eventname
+ * Event.create - Create a new event in the db
+ */
+
+// PRIVATE CONSTRUCTOR
 var Event = module.exports = function Event(_node) {
     this._node = _node;
 }
