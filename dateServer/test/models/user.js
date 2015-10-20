@@ -47,12 +47,13 @@ var expect = require('chai').expect;
 
 var errors = require('../../models/errors');
 var User = require('../../models/user');
+var Tag = require('../../models/tag');
 
 
 // Shared state:
 
 var INITIAL_USERS;
-var USER_A, USER_B, USER_C, USER_D;
+var USER_A, USER_B, USER_C, USER_D, TAG_A;
 
 
 // Helpers:
@@ -134,6 +135,23 @@ function expectUserToFollow(user, expFollowing, expOthers, callback) {
         expectUsersToNotContain(actOthers, user);
 
         return callback(null, actFollowing, actOthers);
+    });
+}
+
+/**
+ * Fetches the given user's "tags", and asserts that it
+ * reflects the given list of expected tags.
+ * Calls the given callback when complete.
+ */
+function expectUserToTag(user, expTagging, callback) {
+    user.getAllTags(function (err, actTagging) {
+        if (err) return callback(err);
+
+        expect(actTagging).to.be.an('array');
+        expect(actTagging).to.have.length(expTagging.length);
+
+
+        return callback(null, actTagging);
     });
 }
 
@@ -419,6 +437,88 @@ describe('User models:', function () {
         expectUserToFollow(USER_D, [], [USER_B, USER_C], callback);
     });
 
+
+    //
+
+
+    it('Create tag A', function (next) {
+        var tagnameA = 'testTagA';
+
+        function callback(err, userOrTag) {
+            if (err) return next(err);
+
+
+            switch (userOrTag.username || userOrTag.tagname) {
+    
+                case tagnameA:
+                    TAG_A = userOrTag;
+                    break;
+                default:
+                    // Trigger an assertion error:
+                    expect(user.username).to.equal(usernameB);
+            }
+
+            if (USER_B && TAG_A) {
+                return next();
+            }
+        }
+
+        Tag.create({tagname: tagnameA}, callback);
+    });
+
+    it('Fetch user B’s “tags”', function (next) {
+        expectUserToTag(USER_B, [], function (err, tagging, others) {
+            if (err) return next(err);
+
+            // Our helper tests everything
+            
+
+            return next();
+        });
+    });
+
+    it('Have user B tag tag A', function (next) {
+        USER_B.tag(TAG_A, function (err) {
+            return next(err);
+        });
+    });
+
+    it('Have user B tag tag A again', function (next) {
+        USER_B.tag(TAG_A, function (err) {
+            return next(err);
+        });
+    });
+
+    it('Fetch user B’s “tags”', function (next) {
+        expectUserToTag(USER_B, [1], next);
+    });
+
+
+    it('Have user B untagg tag A', function (next) {
+        USER_B.untag(TAG_A, function (err) {
+            return next(err);
+        });
+    });
+
+    // FIXME: Skipping this actually causes the next two tests to fail!
+    it('Have user B untagg tag A again', function (next) {
+        USER_B.untag(TAG_A, function (err) {
+            return next(err);
+        });
+    });
+
+    it('Fetch user A’s “tags”', function (next) {
+        expectUserToTag(USER_A, [], next);
+    });
+
+    it('Fetch user B’s “tags”', function (next) {
+        expectUserToTag(USER_B, [], next);
+    });
+
+
+
+    //
+
     it('Delete user B', function (next) {
         USER_B.del(function (err) {
             return next(err);
@@ -441,6 +541,12 @@ describe('User models:', function () {
 
     it('Delete user D', function (next) {
         USER_D.del(function (err) {
+            return next(err);
+        });
+    });
+
+    it('Delete tag A', function (next) {
+        TAG_A.del(function (err) {
             return next(err);
         });
     });

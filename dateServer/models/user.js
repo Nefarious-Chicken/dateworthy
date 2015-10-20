@@ -360,12 +360,6 @@ User.get = function(username, callback) {
     username: username,
   };
 
-  // console.log('Username params for db search: ');
-  // console.log(params);
-
-  // console.log('Constructed query:');
-  // console.log(query);
-
   db.cypher({
     query: query,
     params: params,

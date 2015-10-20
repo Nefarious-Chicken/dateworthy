@@ -1,27 +1,12 @@
-// tag.js
-// Tag model logic.
-
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
 
-/** TABLE OF CONTENTS:
- * PRIVATE CONSTRUCTOR
- * var Tag
- *
- * PUBLIC INSTANCE METHODS
- * Tag.prototype.del - Delete a tag from DB
- *
- * STATIC METHODS
- * Tag.get - Query for returning a single user with a given username
- * Tag.create - Create a new user in the db
+/**
+ * Tag Model
  */
-
-
-// PRIVATE CONSTRUCTOR
-
 var Tag = module.exports = function Tag(_node) {
-  this._node = _node;
+    this._node = _node;
 }
 
 Tag.VALIDATION_INFO = {
@@ -34,74 +19,38 @@ Tag.VALIDATION_INFO = {
   },
 };
 
-// PUBLIC INSTANCE PROPERTIES
-
 Object.defineProperty(Tag.prototype, 'tagname', {
-  get: function() {
-    return this._node.properties['tagname'];
-  }
+    get: function () { return this._node.properties['tagname']; }
 });
 
-// PUBLIC INSTANCE METHODS
+/**
+ * Tag helper function to query db for tag with an associated tagname
+ */
+Tag.get = function (tagname, callback) {
+    var query = [
+        'MATCH (tag:Tag {tagname: {tagname}})',
+        'RETURN tag',
+    ].join('\n')
 
-// Deletes the tag from the db
-Tag.prototype.del = function(callback) {
-  // Use a Cypher query to delete both this user and his/her following
-  // relationships in one query and one network request:
-  // (Note that this'll still fail if there are any relationships attached
-  // of any other types, which is good because we don't expect any.)
-  var query = [
-    'MATCH (tag:Tag {tagname: {tagname}})',
-    'OPTIONAL MATCH (tag) -[rel:prefers]- (user)',
-    'DELETE tag, rel',
-  ].join('\n')
+    var params = {
+        tagname: tagname,
+    };
 
-  var params = {
-    tagname: this.tagname,
-  };
-
-  console.log('Param to pass into query:');
-  console.log(params);
-
-  console.log('Constructed Query:');
-  console.log(query);
-
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err) {
-    callback(err);
-  });
+    db.cypher({
+        query: query,
+        params: params,
+    }, function (err, results) {
+        if (err) return callback(err);
+        if (!results.length) {
+            err = new Error('No such tag with username: ' + tagname);
+            return callback(err);
+        }
+        var tag = new Tag(results[0]['tag']);
+        callback(null, tag);
+    });
 };
 
-// STATIC METHODS
-
-// Helper function to query db for tag with an associated tagname
-Tag.get = function(tagname, callback) {
-  var query = [
-    'MATCH (tag:Tag {tagname: {tagname}})',
-    'RETURN tag',
-  ].join('\n')
-
-  var params = {
-    tagname: tagname,
-  };
-
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err, results) {
-    if (err) return callback(err);
-    if (!results.length) {
-      err = new Error('No such tag with username: ' + tagname);
-      return callback(err);
-    }
-    var tag = new Tag(results[0]['tag']);
-    callback(null, tag);
-  });
-};
-
-Tag.getAll = function(callback) {
+Tag.getAll = function (callback) {
   var query = [
     'MATCH (tag:Tag)',
     'RETURN tag',
@@ -109,9 +58,9 @@ Tag.getAll = function(callback) {
 
   db.cypher({
     query: query,
-  }, function(err, results) {
+  }, function (err, results) {
     if (err) return callback(err);
-    var tags = results.map(function(result) {
+    var tags = results.map(function (result) {
       return new Tag(result['tag']);
     });
     callback(null, tags);
@@ -121,37 +70,37 @@ Tag.getAll = function(callback) {
 /**
  * Creates db entry with tagname property
  */
-Tag.create = function(props, callback) {
-  var query = [
-    'CREATE (tag:Tag {props})',
-    'RETURN tag',
-  ].join('\n');
+Tag.create = function (props, callback) {
+    var query = [
+        'CREATE (tag:Tag {props})',
+        'RETURN tag',
+    ].join('\n');
 
-  var params = {
-    props: props
-  }
-
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err, results) {
-
-    if (isConstraintViolation(err)) {
-      // TODO: This assumes username is the only relevant constraint.
-      // We could parse the constraint property out of the error message,
-      // but it'd be nicer if Neo4j returned this data semantically.
-      // Alternately, we could tweak our query to explicitly check first
-      // whether the username is taken or not.
-      err = new errors.ValidationError(
-        'The tagname ‘' + props.tagname + '’ is taken.');
+    var params = {
+        props: props
     }
 
-    if (err) return callback(err);
+    db.cypher({
+        query: query,
+        params: params,
+    }, function (err, results) {
 
-    var tag = new Tag(results[0]['tag']);
+        if (isConstraintViolation(err)) {
+            // TODO: This assumes username is the only relevant constraint.
+            // We could parse the constraint property out of the error message,
+            // but it'd be nicer if Neo4j returned this data semantically.
+            // Alternately, we could tweak our query to explicitly check first
+            // whether the username is taken or not.
+            err = new errors.ValidationError(
+              'The tagname ‘' + props.tagname + '’ is taken.');
+        }
 
-    callback(null, tag);
-  });
+        if (err) return callback(err);
+
+        var tag = new Tag(results[0]['tag']);
+
+        callback(null, tag);
+    });
 }
 
 // var query = [
@@ -181,38 +130,38 @@ Tag.create = function(props, callback) {
 //   callback(null, user);
 // });
 
-Tag.prototype.del = function(callback) {
-  // Use a Cypher query to delete both this user and his/her following
-  // relationships in one query and one network request:
-  // (Note that this'll still fail if there are any relationships attached
-  // of any other types, which is good because we don't expect any.)
-  var query = [
-    'MATCH (tag:Tag {tagname: {tagname}})',
-    'OPTIONAL MATCH (tag) -[rel:prefers]- (user)',
-    'DELETE tag, rel',
-  ].join('\n')
+Tag.prototype.del = function (callback) {
+    // Use a Cypher query to delete both this user and his/her following
+    // relationships in one query and one network request:
+    // (Note that this'll still fail if there are any relationships attached
+    // of any other types, which is good because we don't expect any.)
+    var query = [
+        'MATCH (tag:Tag {tagname: {tagname}})',
+        'OPTIONAL MATCH (tag) -[rel:prefers]- (user)',
+        'DELETE tag, rel',
+    ].join('\n')
 
-  var params = {
-    tagname: this.tagname,
-  };
+    var params = {
+        tagname: this.tagname,
+    };
 
-  // console.log('Param to pass into query:');
-  // console.log(params);
+    // console.log('Param to pass into query:');
+    // console.log(params);
 
-  // console.log('Constructed Query:');
-  // console.log(query);
+    // console.log('Constructed Query:');
+    // console.log(query);
 
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err) {
-    callback(err);
-  });
+    db.cypher({
+        query: query,
+        params: params,
+    }, function (err) {
+        callback(err);
+    });
 };
 
 // Atomically updates this user, both locally and remotely in the db, with the
 // given property updates.
-Tag.prototype.patch = function(props, callback) {
+Tag.prototype.patch = function (props, callback) {
   var safeProps = validate(props);
 
   var query = [
@@ -231,14 +180,14 @@ Tag.prototype.patch = function(props, callback) {
   db.cypher({
     query: query,
     params: params,
-  }, function(err, results) {
+  }, function (err, results) {
     if (isConstraintViolation(err)) {
       // TODO: This assumes tagname is the only relevant constraint.
       // We could parse the constraint property out of the error message,
       // but it'd be nicer if Neo4j returned this data semantically.
       // Alternately, we could tweak our query to explicitly check first
       // whether the tagname is taken or not.
-      err = new errors.ValidationError(
+      err = new errors.ValidationError(   
         'The tagname ‘' + props.tagname + '’ is taken.');
     }
     if (err) return callback(err);
@@ -263,15 +212,15 @@ Tag.prototype.patch = function(props, callback) {
 // You can pass `true` for `required` to validate that all required properties
 // are present too. (Useful for `Tag.create`.)
 function validate(props, required) {
-  var safeProps = {};
+    var safeProps = {};
 
-  for (var prop in Tag.VALIDATION_INFO) {
-    var val = props[prop];
-    validateProp(prop, val, required);
-    safeProps[prop] = val;
-  }
+    for (var prop in Tag.VALIDATION_INFO) {
+        var val = props[prop];
+        validateProp(prop, val, required);
+        safeProps[prop] = val;
+    }
 
-  return safeProps;
+    return safeProps;
 }
 
 // Validates the given property based on the validation info above.
@@ -314,14 +263,13 @@ function isConstraintViolation(err) {
 }
 
 db.createConstraint({
-  label: 'Tag',
-  property: 'tagname',
-}, function(err, constraint) {
-  if (err) throw err; // Failing fast for now, by crash the application.
-  if (constraint) {
-    console.log('(Registered unique tagnames constraint.)');
-  } else {
-    // Constraint already present; no need to log anything.
-  }
+    label: 'Tag',
+    property: 'tagname',
+}, function (err, constraint) {
+    if (err) throw err;     // Failing fast for now, by crash the application.
+    if (constraint) {
+        console.log('(Registered unique tagnames constraint.)');
+    } else {
+        // Constraint already present; no need to log anything.
+    }
 })
-

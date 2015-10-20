@@ -52,7 +52,7 @@ exports.del = function(req, res, next) {
  */
 exports.tag = function(req, res, next) {
 
-  console.log('Username to find in db: ' + req.params.eventname);
+  console.log('Event to find in db: ' + req.params.eventname);
   console.log('Tagname to match to in db: ' + req.body.tagname);
 
   Event.get(req.params.eventname, function(err, event) {
