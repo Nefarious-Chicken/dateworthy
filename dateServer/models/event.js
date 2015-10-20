@@ -2,11 +2,11 @@ var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
 
-//Tag model
+//Event model
 var Event = module.exports = function Event(_node) {
     this._node = _node;
 }
-
+var Tag = require('../models/tag');
 
 
 // Public constants:
@@ -141,13 +141,8 @@ Event.create = function (props, callback) {
         params: params,
     }, function (err, results) {
         if (err) return callback(err);
-         console.log('Results are:');
-         console.log(results);
 
         var event = new Event(results[0]['event']);
-        
-         console.log('Event that should have been created');
-         console.log(event);
 
         callback(null, event);
     });
@@ -188,7 +183,6 @@ Event.prototype.tag = function (tag, callback) {
         'MATCH (tag:Tag {tagname: {targetTagname}})',
         'MERGE (event) -[rel:is]-> (tag)',
     ].join('\n')
-    console.log(this.eventname, "::::::::::::::Event",tag.tagname)
     var params = {
         thisEventname: this.eventname,
         targetTagname: tag.tagname,
@@ -197,11 +191,11 @@ Event.prototype.tag = function (tag, callback) {
     db.cypher({
         query: query,
         params: params,
-    }, function (err, results) {
-      console.log("%%%%%%%%%%", results)
+    }, function (err) {
         callback(err);
     });
 };
+
 
 Event.prototype.untag = function (tag, callback) {
     var query = [
@@ -271,7 +265,7 @@ Event.prototype.patch = function (props, callback) {
 // Returns all tags a event has associated with themselves
 Event.prototype.getAllTags = function (callback) {
   var query = [
-    'MATCH (event:Event {eventname: {thisEventname}})-[:prefers]->(tag:Tag)',
+    'MATCH (event:Event {eventname: {thisEventname}})-[:is]->(tag:Tag)',
     'RETURN DISTINCT tag'
   ].join('\n')
 

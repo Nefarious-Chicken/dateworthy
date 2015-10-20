@@ -28,6 +28,17 @@ function expectEvent(obj, event) {
     }
 }
 
+function expectTag(obj, event) {
+    expect(obj).to.be.an('object');
+    expect(obj).to.be.an.instanceOf(Tag);
+
+    if (event) {
+        ['eventname'].forEach(function (prop) {
+            expect(obj[prop]).to.equal(event[prop]);
+        });
+    }
+}
+
 /**
  * Asserts that the given array of events contains the given event,
  * exactly and only once.
@@ -62,15 +73,11 @@ function expectEventsToNotContain(events, expEvent) {
  * Calls the given callback when complete.
  */
 function expectEventToTag(event, expTagging, callback) {
-    console.log("FUNCTION^^^^^^^^^^", event.getAllTags)
     event.getAllTags(function (err, actTagging) {
         if (err) return callback(err);
 
         expect(actTagging).to.be.an('array');
         expect(actTagging).to.have.length(expTagging.length);
-        expTagging.forEach(function (expTaggingEvent) {
-            expectEventsToContain(actTagging, expTaggingEvent);
-        });
 
 
         return callback(null, actTagging);
@@ -241,17 +248,6 @@ describe('Event models:', function () {
         Tag.create({tagname: tagnameA}, callback);
     });
 
-    it('Attempt to set event B’s eventname to event A’s', function (next) {
-        EVENT_B.patch({eventname: EVENT_A.eventname}, function (err) {
-            expectEventnameTakenValidationError(err, TAG_A.eventname);
-
-            // Event B's eventname should not have changed:
-            expect(EVENT_B.eventname).not.to.equal(TAG_A.eventname);
-
-            return next();
-        });
-    });
-
     it('Fetch event B’s “tags”', function (next) {
         expectEventToTag(EVENT_B, [], function (err, tagging, others) {
             if (err) return next(err);
@@ -264,7 +260,6 @@ describe('Event models:', function () {
     });
 
     it('Have event B tag tag A', function (next) {
-        console.log("TAG_A~~~~~~~~~~~~~~~", TAG_A, EVENT_B)
         EVENT_B.tag(TAG_A, function (err) {
             return next(err);
         });
@@ -318,6 +313,16 @@ describe('Event models:', function () {
         });
     });
 
+    it('Attempt to set event B’s eventname to event D’s', function (next) {
+        EVENT_B.patch({eventname: EVENT_D.eventname}, function (err) {
+            expectEventnameTakenValidationError(err, EVENT_D.eventname);
+
+            // Event B's eventname should not have changed:
+            expect(EVENT_B.eventname).not.to.equal(EVENT_D.eventname);
+
+            return next();
+        });
+    });
 
     it('Delete event B', function (next) {
         EVENT_B.del(function (err) {
