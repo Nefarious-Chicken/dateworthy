@@ -5,16 +5,16 @@ var User = require('../models/user');
 var Tag = require('../models/tag');
 
 function getTagURL(tag) {
-    return '/tags/' + encodeURIComponent(tag.tagname);
+  return '/tags/' + encodeURIComponent(tag.tagname);
 }
 
 /**
  * POST /tags {tagname}
  */
-exports.create = function (req, res, next) {
+exports.create = function(req, res, next) {
   Tag.create({
     tagname: req.body.tagname
-  }, function (err, tag) {
+  }, function(err, tag) {
     if (err) {
       console.log('Error:');
       console.log(err);
@@ -25,31 +25,30 @@ exports.create = function (req, res, next) {
     console.log('Successfully created tag object');
     console.log(tag);
     res.redirect('/users');
-  
+
   });
 }
 
 /**
  * DELETE /tags/:tagname
  */
-exports.del = function (req, res, next) {
+exports.del = function(req, res, next) {
   console.log('Start delete task');
   console.log('Deleting tagname: ' + req.params.tagname);
 
-    Tag.get(req.params.tagname, function (err, tag) {
-        // TODO: Gracefully handle "no such user" error somehow.
-        // E.g. redirect back to /users with an info message?
-        console.log('Error:');
-        console.log(err);
+  Tag.get(req.params.tagname, function(err, tag) {
+    // TODO: Gracefully handle "no such user" error somehow.
+    // E.g. redirect back to /users with an info message?
+    console.log('Error:');
+    console.log(err);
 
-        console.log('Tag returned from get:');
-        console.log(tag);
+    console.log('Tag returned from get:');
+    console.log(tag);
 
-        if (err) return next(err);
-        tag.del(function (err) {
-            if (err) return next(err);
-            res.redirect('/users');
-        });
+    if (err) return next(err);
+    tag.del(function(err) {
+      if (err) return next(err);
+      res.redirect('/users');
     });
+  });
 };
-
