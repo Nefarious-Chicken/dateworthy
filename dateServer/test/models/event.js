@@ -212,20 +212,20 @@ describe('Event models:', function () {
 
     // Two-event tagging:
 
-    it('Create event B and tag A', function (next) {
+    it('Create event B and tag A1', function (next) {
         var eventnameB = 'testEventB';
-        var tagnameA = 'testTagA';
+        var tagnameA = 'testTagA1';
 
-        function callback(err, event) {
+        function callback(err, eventOrTag) {
             if (err) return next(err);
 
 
-            switch (event.eventname || event.tagname) {
+            switch (eventOrTag.eventname || eventOrTag.tagname) {
                 case eventnameB:
-                    EVENT_B = event;
+                    EVENT_B = eventOrTag;
                     break;
                 case tagnameA:
-                    TAG_A = event;
+                    TAG_A = eventOrTag;
                     break;
                 default:
                     // Trigger an assertion error:
@@ -264,6 +264,7 @@ describe('Event models:', function () {
     });
 
     it('Have event B tag tag A', function (next) {
+        console.log("TAG_A~~~~~~~~~~~~~~~", TAG_A, EVENT_B)
         EVENT_B.tag(TAG_A, function (err) {
             return next(err);
         });
@@ -276,7 +277,7 @@ describe('Event models:', function () {
     });
 
     it('Fetch event B’s “tags”', function (next) {
-        expectEventToTag(EVENT_B, [], next);
+        expectEventToTag(EVENT_B, [1], next);
     });
 
 
@@ -293,14 +294,15 @@ describe('Event models:', function () {
         });
     });
 
+    it('Fetch event A’s “tags”', function (next) {
+        expectEventToTag(EVENT_A, [], next);
+    });
+
     it('Fetch event B’s “tags”', function (next) {
         expectEventToTag(EVENT_B, [], next);
     });
 
-    it('Fetch tag A’s “tags”', function (next) {
-        expectEventToTag(EVENT_A, [], next);
-    });
-
+    
     // Multi-event-tagging deletions:
 
     it('Create event D', function (next) {
@@ -323,6 +325,12 @@ describe('Event models:', function () {
         });
     });
 
+    it('Delete tag A1', function (next) {
+        TAG_A.del(function (err) {
+            return next(err);
+        });
+    });
+
 
     it('Delete event D', function (next) {
         EVENT_D.del(function (err) {
@@ -330,14 +338,5 @@ describe('Event models:', function () {
         });
     });
 
-    it('Fetch tag A’s “tags”', function (next) {
-        expectEventToTag(TAG_A, [], next);
-    });
-
-    it('Delete tag A', function (next) {
-        TAG_A.del(function (err) {
-            return next(err);
-        });
-    });
 
 });

@@ -240,10 +240,13 @@ describe('Tag models:', function () {
     });
 
 
-    it('Delete tag C', function (next) {
+    it('Delete tag B and C', function (next) {
         TAG_C.del(function (err) {
-            return next(err);
+            TAG_B.del(function (err) {
+                return next(err);
+            });
         });
+        
     });
 
 });
