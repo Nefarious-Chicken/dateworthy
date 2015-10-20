@@ -21,8 +21,9 @@
     "node": "0.10.x"
   },
   "scripts": {
+    "seed": "node data-helpers/seedAll.js",
     "start": "node-dev app.js",
-    "test": "mocha test/*/*.js"
+    "test": "mocha test/*/*.js",
 
   }
 }
