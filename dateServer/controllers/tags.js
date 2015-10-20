@@ -27,7 +27,7 @@ exports.create = function(req, res, next) {
     res.redirect('/users');
 
   });
-}
+};
 
 /**
  * DELETE /tags/:tagname
