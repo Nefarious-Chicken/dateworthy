@@ -1,5 +1,3 @@
-// user.js
-// User model logic.
 var neo4j = require('neo4j');
 var errors = require('../models/errors');
 var Tag = require('../models/tag');

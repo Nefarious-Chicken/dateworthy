@@ -1,5 +1,3 @@
-// user.js
-// User model logic.
 var neo4j = require('neo4j');
 var errors = require('../models/errors');
 var Tag = require('../models/tag');
@@ -49,20 +47,23 @@ exports.seedEvents = function(callback) {
 };
 
 exports.seedEventTagRelationships = function(json, callback) {
-  console.log("This is the json object used to relate items", json);
-
   var query = [
     'WITH {json} as data',
     'UNWIND data.allEvents as allEvents',
-    'FOREACH (singleEvent IN allEvents |',
-    'FOREACH (tagname IN singleEvent.tags |',
-    'MATCH (event:Event {eventname: singleEvent.eventname})',
-    'MATCH (tag:Tag {tagname: tagname})', 
-    'MERGE (event)-[rel:is]->(tag)))'
+    'FOREACH (event IN allEvents |',
+    'FOREACH (tag IN event.tags |',
+    'MERGE (e:Event {eventname: event.eventname})',
+    'MERGE (t:Tag {tagname: tag})', 
+    'CREATE (e)-[rel:is]->(t)))'
   ].join('\n');
 
+  var params = {
+    json: json
+  }
+
   db.cypher({
-    query: query
+    query: query,
+    params: params
   }, function(err, results) {
     if (err) {
       console.log("Error creating relationships", err);
@@ -72,40 +73,4 @@ exports.seedEventTagRelationships = function(json, callback) {
       callback(null, results);
     }
   });
-}
-
-var tags = {
-  'Indoor': true, 
-  'Outdoor': true, 
-  'Day': true, 
-  'Night': true, 
-  'Sporty': true, 
-  'Visual': true, 
-  'Artistic': true, 
-  'Culinary': true, 
-  'Crowded': true, 
-  'Party': true, 
-  'Observer': true, 
-  'Nature': true, 
-  'Wet': true, 
-  'Geeky': true, 
-  'Fancy': true, 
-  'Loud': true, 
-  'Quiet': true, 
-  'Intellectual': true, 
-  'Tactile': true, 
-  'Expensive': true, 
-  'Cheap': true, 
-  'Free': true, 
-  'Romantic': true, 
-  'Goofy': true, 
-  'Game-related': true, 
-  'Creative': true, 
-  'Illegal': true, 
-  'First-date': true, 
-  'Summer': true, 
-  'Winter': true, 
-  'Seasonal': true, 
-  'Historical': true, 
-  'Hair-raising': true, 
 }
