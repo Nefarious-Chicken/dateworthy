@@ -1,1 +1,4 @@
-/* Empty. Add your own CSS if you like */
+h4, .h4 {
+    font-size: 18px;
+    text-align: center;
+}

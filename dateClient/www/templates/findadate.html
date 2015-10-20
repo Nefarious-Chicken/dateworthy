@@ -1,0 +1,12 @@
+<ion-view view-title="findadate">
+  <ion-content>
+    <h2>Date formula picker</h2>
+    <h4></h4>
+    <ion-list ng-repeat="question in questions">
+      <ion-item ng-show= "isCurrent(question.question)">
+        {{question.question}}
+      </ion-item>
+    </ion-list>
+    
+  </ion-content>
+</ion-view>
