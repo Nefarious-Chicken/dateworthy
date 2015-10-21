@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('dateIdea.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, $location) {
 
@@ -46,12 +46,8 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('IdeaCtrl', function($scope, $stateParams) {
-  $scope.ideas = [{idea: "Frisbee in Dolores"},
-    {idea: "Get schwasted at Branch and Bourbon"},
-    {idea: "Kiss in the middle of the golden gate bridge"}
-  ];
-
+.controller('IdeaCtrl', function($scope, $stateParams, DateData) {
+  $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
 
   $scope.nextIdea= function(){
@@ -80,24 +76,28 @@ angular.module('starter.controllers', [])
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
   $scope.submit = function() {
     $location.path('/findadate');
-  }
+  };
   $scope.isActive = {};
-  
+
   $scope.select = function(index) {
-    debugger
     $scope.isActive[index] = !$scope.isActive[index];
-  }
+  };
 })
 
-.controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout) {
+
+.controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout, FindADate, DateData) {
 
   $scope.nextQuestion = function(){
     if($scope.currentQuestion === $scope.questions.length -1){
       console.log($scope.questions.length -1);
       $scope.currentQuestion = 0;
-      $location.path('/idea');
+      //go to a loading screen
+      var tags = {tags: ["STUPID"]};
+      FindADate.sendTags(tags, function(data){
+        DateData.setDateIdeas(data);
+        $location.path('/idea');
+      });
     } else {
-
       $scope.currentQuestion++;
     }
   };
@@ -107,9 +107,9 @@ angular.module('starter.controllers', [])
   };
 
   $scope.questions = [
-    {question: "When are you going?", possabilities: ["today", "tonight", "tommorrow"]},
-    {question: "How long is your date?", possabilities: ["30 mins", "1 hr", "2 hrs"]},
-    {question: "What time will the date start?", possabilities: [5,6,7]}
+    {question: "When are you going?", possibilities: ["today", "tonight", "tommorrow"]},
+    {question: "How long is your date?", possibilities: ["30 mins", "1 hr", "2 hrs"]},
+    {question: "What time will the date start?", possibilities: [5,6,7]}
   ];
 
   $scope.currentQuestion = 0;
