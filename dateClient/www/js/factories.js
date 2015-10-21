@@ -1,11 +1,11 @@
 angular.module('dateClient.services', [])
 .factory('FindADate', function ($http, $location, $window) {
   return {
-    sendTags: function(surveyData, callback){
+    sendDateData: function(surveyData, callback){
       console.log("The sendTags factory method works.");
       return $http({
         method: 'POST',
-        url: '/tags/sendTags/',
+        url: '/tags/sendDateData/',
         data: surveyData
       })
       .then(function (resp) {
@@ -17,13 +17,43 @@ angular.module('dateClient.services', [])
 })
 .factory('DateData', function ($http, $location, $window){
   return {
+
+    tags: [],
+    logistics: {},
     dateIdeas: {},
+
+    appendTags: function (tags){
+      for (tag in tags){
+        if (tags[tag] === 1){
+          this.tags.push(tag);
+        }
+      }
+    },
+    getTags: function (){
+      return this.tags;
+    },
+
+
+    appendLogistics: function (logistics){
+      for (logistic in logistics){
+        this.logistics[logistic] = logistics[logistic];
+      }
+    },
+    getLogistics: function (){
+      return this.logistics;
+    },
+
+
     setDateIdeas: function (ideas){
       this.dateIdeas = ideas;
     },
     getDateIdeas: function (){
       return this.dateIdeas;
+    },
+    getConcatenatedData: function () {
+      return {tags: this.tags, logistics: this.logistics}
     }
+
   };
 })
 ;

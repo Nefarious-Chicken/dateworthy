@@ -13,7 +13,8 @@ function getTagURL(tag) {
  * POST /sendTags {tagname}
  * creates a list of venue categories based on tags submitted by the client.
  */
-exports.sendTags = function(req, res, next) {
+exports.sendDateData = function(req, res, next) {
+  console.log(req.body)
   var ideas = {
     ideaArray: [
       {idea: "Frisbee in Dolores"},
