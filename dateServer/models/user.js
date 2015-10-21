@@ -424,7 +424,6 @@ User.create = function(props, callback) {
 };
 
 // Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
-
 User.getMatchingEvents = function(profileString, callback) {
   //sample input profileString {"sporty":1,"outdoors":1,"test":0}
   var query = ['MATCH'];
