@@ -4,7 +4,7 @@ var Tag = require('../models/tag');
 var Event = require('../models/event');
 var db = require('../models/db');
 var path = require('path');
-
+var Promise = require('bluebird');
 // query: LOAD CSV WITH HEADERS FROM "http://neo4j.com/docs/2.2.6/csv/import/persons.csv" AS csvLine
 // CREATE (p:Person { id: toInt(csvLine.id), name: csvLine.name })
 
@@ -23,6 +23,7 @@ exports.seedEvents = function(callback) {
     'LOAD CSV WITH HEADERS FROM "file://' + __dirname + '/events.csv" AS csvLine',
     'CREATE (event:Event { ' + props + ' } )'
   ].join('\n');
+  console.log(query);
   db.cypher({
     query: createConstraintQuery
   }, function(err, results) {
@@ -74,3 +75,7 @@ exports.seedEventTagRelationships = function(json, callback) {
     }
   });
 }
+
+
+exports.seedEventsAsync = Promise.promisify(exports.seedEvents);
+exports.seedEventTagRelationshipsAsync = Promise.promisify(exports.seedEventTagRelationships);

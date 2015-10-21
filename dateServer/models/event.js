@@ -324,7 +324,7 @@ Event.getMatchingEvents = function(profileString, callback) {
     //remove unecessary AND statement and space
   where = where.substring(0, where.length - 4);
   query.push(where);
-  query.push('RETURN event.eventname as event;');
+  query.push('RETURN event as event;');
   query = query.join('\n');
   console.log("The query is", query);
   db.cypher({
