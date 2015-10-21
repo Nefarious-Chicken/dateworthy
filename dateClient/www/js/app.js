@@ -48,6 +48,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'FindADateCtrl'
   })
 
+  .state('idea', {
+    url: '/idea',
+    templateUrl: 'templates/idea.html',
+    controller: 'IdeaCtrl'
+  })
+
   .state('app', {
     url: '/app',
     abstract: true,

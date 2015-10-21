@@ -60,17 +60,45 @@ angular.module('starter.controllers', [])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
+.controller('IdeaCtrl', function($scope, $stateParams) {
+  $scope.ideas = [{idea: "Frisbee in Dolores"},
+    {idea: "Get schwasted at Branch and Bourbon"},
+    {idea: "Kiss in the middle of the golden gate bridge"}
+  ]
+
+  $scope.currentIdea = 0;
+
+  $scope.nextIdea= function(){
+    if($scope.currentIdea >= $scope.ideas.length - 1){
+      $scope.currentIdea = -1;
+    }
+    $scope.currentIdea++;
+  }
+
+  $scope.prevIdea= function(){
+    if($scope.currentIdea <= 0){
+      $scope.currentIdea = $scope.ideas.length;
+    }
+    $scope.currentIdea--;
+  }
+
+  $scope.isCurrent = function(idea){
+    return $scope.ideas[$scope.currentIdea].idea === idea;
+  }
+})
 
 .controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout) {
-  $scope.questions = [{question: "When are you going?"},
-    {question: "How long is your date?"},
-    {question: "What time will the date start?"} 
+  $scope.questions = [{question: "When are you going?", possabilities: ["today", "tonight", "tommorrow"]},
+    {question: "How long is your date?", possabilities: ["30 mins", "1 hr", "2 hrs"]},
+    {question: "What time will the date start?", possabilities: [5,6,7]} 
   ]
   $scope.currentQuestion = 0;
 
   $scope.nextQuestion= function(){
     if($scope.currentQuestion === $scope.questions.length -1){
-      $location.path('/dateresults');
+      console.log($scope.questions.length -1)
+      $scope.currentQuestion = 0;
+      $location.path('/idea');
     } else {
 
       $scope.currentQuestion++;

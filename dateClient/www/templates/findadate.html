@@ -5,6 +5,9 @@
     <ion-list ng-repeat="question in questions">
       <ion-item ng-show= "isCurrent(question.question)">
         {{question.question}}
+        <ion-list ng-repeat="possability in question.possabilities" ng-click="nextQuestion()">
+          <ion-item>{{possability}}</ion-item>
+        </ion-list>
       </ion-item>
     </ion-list>
     
