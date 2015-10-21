@@ -36,21 +36,35 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+  .state('home', {
+    url: '/',
+    templateUrl: 'templates/home.html',
+    controller: 'AppCtrl'
+  })
 
-    .state('app', {
+  .state('findadate', {
+    url: '/findadate',
+    templateUrl: 'templates/findadate.html',
+    controller: 'FindADateCtrl'
+  })
+
+  .state('idea', {
+    url: '/idea',
+    templateUrl: 'templates/idea.html',
+    controller: 'IdeaCtrl'
+  })
+
+  .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/search.html'
-      }
-    }
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'AppCtrl'
   })
 
   .state('app.browse', {
@@ -60,16 +74,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
           templateUrl: 'templates/browse.html'
         }
       }
-    })
-    .state('app.playlists', {
-      url: '/playlists',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
-        }
+  })
+  .state('app.playlists', {
+    url: '/playlists',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/playlists.html',
+        controller: 'PlaylistsCtrl'
       }
-    })
+    }
+  })
 
   .state('app.single', {
     url: '/playlists/:playlistId',
@@ -81,5 +95,5 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/');
 });

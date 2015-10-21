@@ -1,0 +1,21 @@
+<ion-view view-title="dateidea">
+  <ion-content>
+    <h2>Date idea</h2>
+    <ion-list ng-repeat="idea in ideas">
+      <ion-item ng-show="isCurrent(idea.idea)">
+        {{idea.idea}}
+      </ion-list>
+    </ion-item>
+    <div class="item">
+      <a class="button button-block button-positive" type="submit" href="#/tellmemore">Home</a>
+    </div>
+    <div class="item">
+      <a class="button button-block button-positive" type="submit" ng-click="nextIdea()" ng-hide= "isLast()">Next</a>
+    </div>
+    <div class="item">
+      <a class="button button-block button-positive" type="submit" ng-click="prevIdea()" ng-hide= "isFirst()">Previous</a>
+    </div>
+
+    
+  </ion-content>
+</ion-view>
