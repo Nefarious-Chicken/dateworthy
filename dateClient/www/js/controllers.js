@@ -69,21 +69,21 @@ angular.module('starter.controllers', [])
   $scope.currentIdea = 0;
 
   $scope.nextIdea= function(){
-    if($scope.currentIdea >= $scope.ideas.length - 1){
-      $scope.currentIdea = -1;
-    }
     $scope.currentIdea++;
   }
 
   $scope.prevIdea= function(){
-    if($scope.currentIdea <= 0){
-      $scope.currentIdea = $scope.ideas.length;
-    }
     $scope.currentIdea--;
   }
 
   $scope.isCurrent = function(idea){
     return $scope.ideas[$scope.currentIdea].idea === idea;
+  }
+  $scope.isLast = function( idea ) {
+    return $scope.currentIdea === $scope.ideas.length - 1;
+  }
+  $scope.isFirst = function( idea ) {
+    return $scope.currentIdea === 0;
   }
 })
 

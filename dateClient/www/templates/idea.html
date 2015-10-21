@@ -7,13 +7,13 @@
       </ion-list>
     </ion-item>
     <div class="item">
-      <a class="button button-block button-positive" type="submit" href="#/tellmemore">Tell me more!</a>
+      <a class="button button-block button-positive" type="submit" href="#/tellmemore">Home</a>
     </div>
     <div class="item">
-      <a class="button button-block button-positive" type="submit" ng-click="nextIdea()">Next</a>
+      <a class="button button-block button-positive" type="submit" ng-click="nextIdea()" ng-hide= "isLast()">Next</a>
     </div>
     <div class="item">
-      <a class="button button-block button-positive" type="submit" ng-click="prevIdea()">Previous</a>
+      <a class="button button-block button-positive" type="submit" ng-click="prevIdea()" ng-hide= "isFirst()">Previous</a>
     </div>
 
     
