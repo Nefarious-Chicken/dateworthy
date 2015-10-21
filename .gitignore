@@ -6,3 +6,4 @@ dateServer/node_modules/
 dateClient/platforms/
 dateClient/plugins/
 dateClient/www/lib/
+*.log
