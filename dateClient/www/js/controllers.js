@@ -72,28 +72,50 @@ angular.module('dateIdea.controllers', [])
 
 })
 
-.controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location) {
+.controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
   $scope.submit = function() {
+    DateData.appendTags($scope.answers);
     $location.path('/findadate');
   };
   $scope.isActive = {};
+  $scope.answers = {};
+
 
   $scope.select = function(index) {
+
     $scope.isActive[index] = !$scope.isActive[index];
+    if($scope.isActive[index]){
+      $scope.answers[$scope.tags[index].tagname] = 1;
+    } else {
+      $scope.answers[$scope.tags[index].tagname] = 0;
+    }
+
   };
 })
 
 
 .controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout, FindADate, DateData) {
 
-  $scope.nextQuestion = function(){
+  $scope.nextQuestion = function(question, index){
+    if(question.type === "logistics"){
+      var key = question.field;
+      var val = question.possibilities[index];
+      var obj = {};
+      obj[key] = val;
+      DateData.appendLogistics(obj)
+    } else if (question.type === "tag"){
+      var key = question.possibilities[index];
+      var obj = {};
+      obj[key] = 1;
+      DateData.appendTags(obj);
+    }
+    //if type is logistics then append a key value pair w/ key as "field" and value as possability
     if($scope.currentQuestion === $scope.questions.length -1){
-      console.log($scope.questions.length -1);
+      
       $scope.currentQuestion = 0;
       //go to a loading screen
-      var tags = {tags: ["STUPID"]};
-      FindADate.sendTags(tags, function(data){
+      FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $location.path('/idea');
       });
@@ -107,9 +129,10 @@ angular.module('dateIdea.controllers', [])
   };
 
   $scope.questions = [
-    {question: "When are you going?", possibilities: ["today", "tonight", "tommorrow"]},
-    {question: "How long is your date?", possibilities: ["30 mins", "1 hr", "2 hrs"]},
-    {question: "What time will the date start?", possibilities: [5,6,7]}
+    {question: "When are you going?", type: "logistics", field: "time", possibilities: ["today", "tonight", "tommorrow"]},
+    {question: "How long is your date?", type: "logistics", field: "length", possibilities: ["30 mins", "1 hr", "2 hrs"]},
+    {question: "What's your mode of transportation", type: "logistics", field: "transportation", possibilities: ["walk","taxi","drive", "public transportation"]},
+    {question: "Would you prefer a loud or quiet setting?", type: "tag", field: null, possibilities: ["Loud", "Quiet"]}
   ];
 
   $scope.currentQuestion = 0;

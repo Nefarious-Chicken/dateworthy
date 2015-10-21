@@ -9,6 +9,6 @@ module.exports = function (app) {
   //deletes a tag
   app.delete('/:tagname', tagController.del);
 
-  app.post('/sendTags', tagController.sendTags);
+  app.post('/sendDateData', tagController.sendDateData);
 
 };
