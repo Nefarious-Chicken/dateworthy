@@ -42,7 +42,9 @@ angular.module('starter.controllers', [])
     }, 1000);
   };
 
+
 })
+
 
 .controller('IdeaCtrl', function($scope, $stateParams) {
   $scope.ideas = [{idea: "Frisbee in Dolores"},
@@ -74,9 +76,22 @@ angular.module('starter.controllers', [])
 
 })
 
+.controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location) {
+  $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
+  $scope.submit = function() {
+    $location.path('/findadate');
+  }
+  $scope.isActive = {};
+  
+  $scope.select = function(index) {
+    debugger
+    $scope.isActive[index] = !$scope.isActive[index];
+  }
+})
+
 .controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout) {
 
-  $scope.nextQuestion= function(){
+  $scope.nextQuestion = function(){
     if($scope.currentQuestion === $scope.questions.length -1){
       console.log($scope.questions.length -1);
       $scope.currentQuestion = 0;
