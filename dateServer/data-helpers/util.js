@@ -46,7 +46,7 @@ var createRelationshipJSON = function(filename) {
 exports.seedEventTagRelationships = function(filename){
   createRelationshipJSON(filename)
   .then(function(json) {
-    events.seedEventTagRelationships(json, function(err, relationships) {
+    events.seedEventTagRelationshipsAsync(json, function(err, relationships) {
       if (err) {
         console.log("There was an error creating relationships between tags and events", err);
       } else {

@@ -95,3 +95,12 @@ exports.untag = function(req, res, next) {
     });
   });
 };
+
+
+exports.getMatchingEvents = function(req, res, next) {
+  console.log('Routing correctly');
+  Event.getMatchingEvents(req.body.profile, function(err, events) {
+    if (err) return next(err);
+    res.send(events);
+  })
+}

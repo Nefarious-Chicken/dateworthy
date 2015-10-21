@@ -4,6 +4,7 @@ var Tag = require('../models/tag');
 var Event = require('../models/event');
 var db = require('../models/db');
 var path = require('path');
+var Promise = require('bluebird');
 
 // query: LOAD CSV WITH HEADERS FROM "http://neo4j.com/docs/2.2.6/csv/import/persons.csv" AS csvLine
 // CREATE (p:Person { id: toInt(csvLine.id), name: csvLine.name })
@@ -36,3 +37,5 @@ exports.seedTags = function(callback) {
     }
   })
 };
+
+exports.seedTagsAsync = Promise.promisify(exports.seedTags);

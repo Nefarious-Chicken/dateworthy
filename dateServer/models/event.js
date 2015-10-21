@@ -302,6 +302,42 @@ Event.prototype.getAllTags = function (callback) {
   });
 };
 
+
+// Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
+
+Event.getMatchingEvents = function(profileString, callback) {
+  //sample input profileString {"sporty":1,"outdoors":1,"test":0}
+  var query = ['MATCH'];
+  var where = 'WHERE ';
+  var count = 0;
+  var profile = JSON.parse(profileString);
+  for (var tag in profile) {
+    if (profile[tag] === 1) {
+      count++;
+      where += "tag" + count + ".tagname =~ \"" + tag + "\" AND ";
+      query.push('(event:Event)-[:is]->(tag' + count + ':Tag),');
+    }
+  }
+  var lastEventRelation = query[query.length - 1];
+  //remove unecessary comma from last match statement
+  query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1)
+    //remove unecessary AND statement and space
+  where = where.substring(0, where.length - 4);
+  query.push(where);
+  query.push('RETURN event as event;');
+  query = query.join('\n');
+  console.log("The query is", query);
+  db.cypher({
+    query: query,
+  }, function(err, results) {
+    if (err) return callback(err);
+    var events = results.map(function(result) {
+      return new Event(result['event']);
+    });
+    callback(null, events);
+  });
+}
+
 // Register our unique eventname constraint.
 // TODO: This is done async'ly (fire and forget) here for simplicity,
 // but this would be better as a formal schema migration script or similar.
