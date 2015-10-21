@@ -42,6 +42,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
+  .state('profilequestions', {
+    url: '/profilequestions',
+    templateUrl: 'templates/profilequestions.html',
+    controller: 'ProfileQuestionsCtrl'
+  })
+
   .state('findadate', {
     url: '/findadate',
     templateUrl: 'templates/findadate.html',
