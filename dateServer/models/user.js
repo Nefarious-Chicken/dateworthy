@@ -426,13 +426,10 @@ User.create = function(props, callback) {
 // Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
 User.getMatchingEvents = function(profileString, callback) {
   //sample input profileString {"sporty":1,"outdoors":1,"test":0}
-  console.log("here")
   var query = ['MATCH'];
   var where = 'WHERE ';
   var count = 0;
-  console.log(profileString)
   var profile = JSON.parse(profileString);
-  console.log(profile)
   for (var tag in profile) {
     if (profile[tag] === 1) {
       count++;
