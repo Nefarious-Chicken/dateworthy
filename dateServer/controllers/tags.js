@@ -8,6 +8,22 @@ function getTagURL(tag) {
   return '/tags/' + encodeURIComponent(tag.tagname);
 }
 
+
+/**
+ * POST /sendTags {tagname}
+ * creates a list of venue categories based on tags submitted by the client.
+ */
+exports.sendTags = function(req, res, next) {
+  var ideas = {
+    ideaArray: [
+      {idea: "Frisbee in Dolores"},
+      {idea: "Get schwasted at Branch and Bourbon"},
+      {idea: "Kiss in the middle of the golden gate bridge"}
+    ]
+  };
+  res.status(200).send(ideas);
+};
+
 /**
  * POST /tags {tagname}
  */
