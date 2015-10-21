@@ -1,9 +1,6 @@
-var routeController = require('../controllers/site');
 var userController = require('../controllers/users');
 
 module.exports = function (app) {
-
-  app.get('/', routeController.index);
+  //This will send category data to the server and match events to it.
   app.post('/bestmatch', userController.getMatchingEvents);
-
-}
+};

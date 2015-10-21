@@ -238,7 +238,7 @@ exports.unfollow = function(req, res, next) {
 
 /**
  * POST /users/:username/getAllTags
- * returns all tags and events related to this user
+ * returns all tags related to this user
  */
 exports.getAllTags = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
