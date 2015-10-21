@@ -254,7 +254,7 @@ exports.getAllTags = function(req, res, next) {
 }
 
 exports.getMatchingEvents = function(req, res, next) {
-  console.log('Routing correctly', req.body);
+  console.log('Routing correctly');
   User.getMatchingEvents(req.body.profile, function(err, users) {
     if (err) return next(err);
     res.send(users);
