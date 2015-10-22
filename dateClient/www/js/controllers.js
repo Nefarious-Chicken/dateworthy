@@ -70,12 +70,18 @@ angular.module('dateIdea.controllers', [])
     return $scope.currentIdea === 0;
   };
 
+  $scope.clearData = function(){
+    console.log($scope.isActive)
+    DateData.clearData();
+  }
+
 })
 
 .controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
   $scope.submit = function() {
     DateData.appendTags($scope.answers);
+    $scope.isActive = {};
     $location.path('/findadate');
   };
   $scope.isActive = {};

@@ -52,6 +52,13 @@ angular.module('dateClient.services', [])
     },
     getConcatenatedData: function () {
       return {tags: this.tags, logistics: this.logistics}
+    },
+
+
+    clearData: function () {
+      this.tags = [];
+      this.logistics = {};
+      this.dateIdeas = {};
     }
 
   };
