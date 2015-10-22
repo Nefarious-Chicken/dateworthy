@@ -4,6 +4,13 @@ var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
+var Promise = require('bluebird');
+var config = require('../secret/config');
+
+
+var clientID = config.clientID;
+var clientSecret = config.clientSecret;
+var foursquare = require('node-foursquare-venues')(clientID, clientSecret);
 
 function getDateURL(date) {
   return '/dates/' + encodeURIComponent(date.datename);
@@ -101,6 +108,92 @@ exports.getMatchingEvents = function(req, res, next) {
   console.log('Routing correctly');
   Event.getMatchingEvents(req.body.profile, function(err, events) {
     if (err) return next(err);
-    res.send(events);
+    exports.getFoursquareVenues(events, res);
+    // res.send(events);
   })
 }
+
+exports.getMatchingEventsNoRest = function(tags, req, res) {
+  console.log('Routing correctly');
+  Event.getMatchingEvents(tags, function(err, events) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if(events.length === 0){
+      var ideas = {
+        ideaArray: [
+          {idea: "Frisbee in Dolores"},
+          {idea: "Get schwasted at Branch and Bourbon"},
+          {idea: "Kiss in the middle of the Golden Gate Bridge"}
+        ]
+      };
+      return res.status(200).send(ideas);
+    } else {
+      exports.getFoursquareVenues(events, res);
+    }
+    // res.send(events);
+  })
+}
+
+exports.getFoursquareVenues = function(events, res) {
+
+  var ideas = {
+    ideaArray: []
+  };
+
+  console.log('Events: ', events);
+
+  var searchObj1 = {
+    ll: '37.78,-122.41',
+    categoryId: events[0].fsCategory,
+    intent: 'browse',
+    radius: '5000'
+  };
+
+  var searchObj2 = {
+    ll: '37.78,-122.41',
+    categoryId: events[1].fsCategory,
+    intent: 'browse',
+    radius: '5000'
+  };
+
+  var searchObj3 = {
+    ll: '37.78,-122.41',
+    categoryId: events[2].fsCategory,
+    intent: 'browse',
+    radius: '5000'
+  };
+
+  var venueSearch = function (searchObj, ideas, eventIndex) {
+    var venuePromise = new Promise(function(resolve, reject) {
+      foursquare.venues.search(searchObj, function(err, result) {
+        if (err) {
+          console.log("There was an error!", err);
+          reject(err);
+        } else {
+          // console.log("Here is the result!",  result.response.venues);
+          var venues = result.response.venues;
+          var venueIndex = Math.floor(Math.random() * venues.length);
+          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name}
+          ideas.ideaArray.push(idea);
+          resolve(ideas);
+        }
+      });
+    });
+    return venuePromise; 
+  }
+
+  var venueSearchAsync = Promise.promisify(venueSearch);
+
+  venueSearch(searchObj1, {ideaArray: []}, 0)
+  .then(function(ideas) {
+    return venueSearch(searchObj2, ideas, 1)
+  })
+  .then(function(ideas) {
+    return venueSearch(searchObj3, ideas, 2)
+  })
+  .then(function(ideas){
+    res.status(200).send(ideas);
+  })
+
+};

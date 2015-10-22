@@ -12,6 +12,7 @@
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "neo4j": "2.0.0-RC2",
+    "node-foursquare-venues": "^1.1.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
