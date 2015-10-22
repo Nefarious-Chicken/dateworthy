@@ -5,6 +5,10 @@ var Promise = require('bluebird');
 
 
 events.seedEventsAsync()
-.then(tags.seedTagsAsync())
-.then(util.seedEventTagRelationships('./events.csv'));
+.then(function() {
+  return tags.seedTagsAsync()
+})
+.then(function() {
+  util.seedEventTagRelationships('./events.csv')
+});
 
