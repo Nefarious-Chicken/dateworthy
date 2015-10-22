@@ -46,9 +46,14 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('IdeaCtrl', function($scope, $stateParams, DateData) {
+.controller('IdeaCtrl', function($scope, $stateParams, $ionicModal, $timeout, $location, DateData) {
+
   $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
+
+  $scope.$on('$stateChangeSuccess', function () {
+    $scope.ideas = DateData.getDateIdeas();
+  });
 
   $scope.nextIdea= function(){
     $scope.currentIdea++;
@@ -67,13 +72,19 @@ angular.module('dateIdea.controllers', [])
   };
 
   $scope.isFirst = function( idea ) {
+    if($scope.ideas === {}){
+      $scope.ideas = DateData.getDateIdeas();
+    }
     return $scope.currentIdea === 0;
   };
 
   $scope.clearData = function(){
-    console.log($scope.isActive)
+    console.log($scope.isActive);
+    $scope.ideas = [];
+    $scope.currentIdea = 0;
     DateData.clearData();
-  }
+    $location.path('/');
+  };
 
 })
 
@@ -118,10 +129,9 @@ angular.module('dateIdea.controllers', [])
     }
     //if type is logistics then append a key value pair w/ key as "field" and value as possability
     if($scope.currentQuestion === $scope.questions.length -1){
-      
       $scope.currentQuestion = 0;
-      //go to a loading screen
-      FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
+        //go to a loading screen
+        FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $location.path('/idea');
       });
