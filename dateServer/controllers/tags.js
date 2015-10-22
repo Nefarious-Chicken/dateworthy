@@ -3,6 +3,7 @@ var URL = require('url');
 var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');
+var Events = require('./events');
 
 function getTagURL(tag) {
   return '/tags/' + encodeURIComponent(tag.tagname);
@@ -15,14 +16,27 @@ function getTagURL(tag) {
  */
 exports.sendDateData = function(req, res, next) {
   console.log(req.body)
-  var ideas = {
-    ideaArray: [
-      {idea: "Frisbee in Dolores"},
-      {idea: "Get schwasted at Branch and Bourbon"},
-      {idea: "Kiss in the middle of the golden gate bridge"}
-    ]
-  };
-  res.status(200).send(ideas);
+
+  var tags = {};
+  
+  console.log('Tags from client:', req.body.tags);
+
+  for(var i=0; i < req.body.tags.length; i++){
+    tags[req.body.tags[i]] = 1
+  }
+
+  console.log('Tags: ', tags);
+
+  Events.getMatchingEventsNoRest(tags, req, res);
+
+  // var ideas = {
+  //   ideaArray: [
+  //     {idea: "Frisbee in Dolores"},
+  //     {idea: "Get schwasted at Branch and Bourbon"},
+  //     {idea: "Kiss in the middle of the golden gate bridge"}
+  //   ]
+  // };
+  // res.status(200).send(ideas);
 };
 
 /**

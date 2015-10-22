@@ -7,3 +7,4 @@ dateClient/platforms/
 dateClient/plugins/
 dateClient/www/lib/
 *.log
+dateServer/secret
