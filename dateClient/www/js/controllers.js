@@ -72,9 +72,6 @@ angular.module('dateIdea.controllers', [])
   };
 
   $scope.isFirst = function( idea ) {
-    if($scope.ideas === {}){
-      $scope.ideas = DateData.getDateIdeas();
-    }
     return $scope.currentIdea === 0;
   };
 
