@@ -56,6 +56,7 @@ angular.module('dateClient.services', [])
 
 
     clearData: function () {
+      debugger
       this.tags = [];
       this.logistics = {};
       this.dateIdeas = {};
