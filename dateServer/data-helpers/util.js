@@ -3,6 +3,18 @@ var _ = require('underscore');
 var Promise = require('bluebird');
 var events = require('./events');
 
+/** HELPER FUNCTON
+* Purpose: Creating JSON object for events.js seedEventTagRelationships function
+* JSON Object will be formatted as below:
+*   { allEvents: 
+*     [
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
+*       ...
+*     ]
+*   }
+*/
 var createRelationshipJSON = function(filename) {
   var jsonPromise = new Promise(function(resolve, reject) {
     // Create json object to be processed by our cypher query
@@ -43,6 +55,10 @@ var createRelationshipJSON = function(filename) {
   return jsonPromise;  
 }
 
+/** HELPER FUNCTON
+* Purpose: Seeding all relationship edges between Event nodes and Tag nodes in neo4j
+*          Async function for first creating the relationship json object then seeding Event-Tag relationships
+*/
 exports.seedEventTagRelationships = function(filename){
   createRelationshipJSON(filename)
   .then(function(json) {
@@ -50,7 +66,7 @@ exports.seedEventTagRelationships = function(filename){
       if (err) {
         console.log("There was an error creating relationships between tags and events", err);
       } else {
-        console.log("Success! Events and tags are connected", relationships);
+        console.log("Success! Events and tags are connected");
       }
     });
   });
