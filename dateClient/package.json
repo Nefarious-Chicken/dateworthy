@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "dateClient: An Ionic project",
   "scripts": {
-    "postinstall": "node node_modules/bower/bin/bower install"
+    "test": "mocha www/test/e2e/*.js"
   },
   "dependencies": {
     "gulp": "^3.5.6",
@@ -15,6 +15,12 @@
   "devDependencies": {
     "bower": "^1.3.3",
     "gulp-util": "^2.2.14",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.14",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "mocha": "^1.18",
+    "phantomjs": "^1.9.18",
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [

@@ -1,6 +1,6 @@
 angular.module('dateIdea.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -17,6 +17,7 @@ angular.module('dateIdea.controllers', [])
     // if(!$scope.loggedIn){
     //   $location.path('/login');
     // }
+
   });
 
   // Triggered in the login modal to close it
@@ -46,7 +47,7 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('IdeaCtrl', function($scope, $stateParams, $ionicModal, $timeout, $location, DateData) {
+.controller('IdeaCtrl', function($scope, $timeout, $location, DateData) {
 
   $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
@@ -76,7 +77,6 @@ angular.module('dateIdea.controllers', [])
   };
 
   $scope.clearData = function(){
-    console.log($scope.isActive);
     $scope.ideas = [];
     $scope.currentIdea = 0;
     DateData.clearData();
@@ -86,16 +86,16 @@ angular.module('dateIdea.controllers', [])
 })
 
 .controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
+  $scope.isActive = {};
+  $scope.answers = {};
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
   $scope.submit = function() {
     DateData.appendTags($scope.answers);
-    $scope.isActive = {};
+    //timeout so that the user doesnt think the selection was unselected
+    $timeout($scope.clearSelections, 1000);
     $location.path('/findadate');
   };
-  $scope.isActive = {};
-  $scope.answers = {};
-
-
+  
   $scope.select = function(index) {
 
     $scope.isActive[index] = !$scope.isActive[index];
@@ -106,6 +106,11 @@ angular.module('dateIdea.controllers', [])
     }
 
   };
+
+  $scope.clearSelections = function(){
+    $scope.isActive = {};
+    $scope.answers = {};
+  }
 })
 
 
@@ -124,13 +129,16 @@ angular.module('dateIdea.controllers', [])
       obj[key] = 1;
       DateData.appendTags(obj);
     }
-    //if type is logistics then append a key value pair w/ key as "field" and value as possability
+    //if last question submit
     if($scope.currentQuestion === $scope.questions.length -1){
-      $scope.currentQuestion = 0;
-        //go to a loading screen
+      
+        //TODO go to a loading screen or spinner
         FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $location.path('/idea');
+        //resets to initial question so on next run through we start fresh
+        $timeout(function(){$scope.currentQuestion = 0;}, 1000)
+        
       });
     } else {
       $scope.currentQuestion++;
