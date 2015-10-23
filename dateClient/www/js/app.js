@@ -49,7 +49,7 @@ angular.module('dateIdea', ['ionic', 'dateIdea.controllers', 'dateClient.service
   })
 
   .state('findadate', {
-    url: '/findadate',
+    url: '/findadate/:questionId',
     templateUrl: 'templates/findadate.html',
     controller: 'FindADateCtrl'
   })
