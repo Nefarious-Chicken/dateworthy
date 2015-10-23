@@ -122,9 +122,9 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
     if(events.length === 0){
       var ideas = {
         ideaArray: [
-          {idea: "Frisbee in Dolores"},
-          {idea: "Get schwasted at Branch and Bourbon"},
-          {idea: "Kiss in the middle of the Golden Gate Bridge"}
+          {idea: "Frisbee in Dolores", liked: 0, disliked: 0},
+          {idea: "Get schwasted at Branch and Bourbon", liked: 0, disliked: 0},
+          {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0}
         ]
       };
       return res.status(200).send(ideas);
@@ -174,7 +174,7 @@ exports.getFoursquareVenues = function(events, res) {
           // console.log("Here is the result!",  result.response.venues);
           var venues = result.response.venues;
           var venueIndex = Math.floor(Math.random() * venues.length);
-          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name}
+          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0};
           ideas.ideaArray.push(idea);
           resolve(ideas);
         }
