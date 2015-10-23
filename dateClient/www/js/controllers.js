@@ -102,7 +102,7 @@ angular.module('dateIdea.controllers', [])
 
 })
 
-.controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
+.controller('ProfileQuestionsCtrl', function($scope, $timeout, $location, DateData) {
   $scope.isActive = {};
   $scope.answers = {};
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
@@ -131,7 +131,9 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('FindADateCtrl', function($scope, $ionicHistory, $stateParams, $location, $timeout, FindADate, DateData) {
+
+.controller('FindADateCtrl', function($scope, $location, $timeout, FindADate, DateData) {
+
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
   // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
