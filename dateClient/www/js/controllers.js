@@ -88,12 +88,12 @@ angular.module('dateIdea.controllers', [])
 .controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
   $scope.isActive = {};
   $scope.answers = {};
-  $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Something"},{tagname: "Something"}]
+  $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
   $scope.submit = function() {
     DateData.appendTags($scope.answers);
     //timeout so that the user doesnt think the selection was unselected
     $timeout($scope.clearSelections, 1000);
-    $location.path('/findadate');
+    $location.path('/findadate/0');
   };
   
   $scope.select = function(index) {
@@ -114,49 +114,64 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('FindADateCtrl', function($scope, $stateParams, $location, $timeout, FindADate, DateData) {
+.controller('FindADateCtrl', function($scope, $ionicHistory, $stateParams, $location, $timeout, FindADate, DateData) {
 
-  $scope.nextQuestion = function(question, index){
-    if(question.type === "logistics"){
-      var key = question.field;
-      var val = question.possibilities[index];
-      var obj = {};
-      obj[key] = val;
-      DateData.appendLogistics(obj)
-    } else if (question.type === "tag"){
-      var key = question.possibilities[index];
-      var obj = {};
-      obj[key] = 1;
-      DateData.appendTags(obj);
-    }
-    //if last question submit
-    if($scope.currentQuestion === $scope.questions.length -1){
-      
-        //TODO go to a loading screen or spinner
-        FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
-        DateData.setDateIdeas(data);
-        $location.path('/idea');
-        //resets to initial question so on next run through we start fresh
-        $timeout(function(){$scope.currentQuestion = 0;}, 1000)
-        
-      });
-    } else {
-      $scope.currentQuestion++;
-    }
-  };
-
-  $scope.isCurrent = function(question){
-    return $scope.questions[$scope.currentQuestion].question === question;
-  };
-
+  // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
+  // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
   $scope.questions = [
-    {question: "When are you going?", type: "logistics", field: "time", possibilities: ["today", "tonight", "tommorrow"]},
-    {question: "How long is your date?", type: "logistics", field: "length", possibilities: ["30 mins", "1 hr", "2 hrs"]},
-    {question: "What's your mode of transportation", type: "logistics", field: "transportation", possibilities: ["walk","taxi","drive", "public transportation"]},
+    {question: "When are you going?", type: "logistics", field: "time", possibilities: ["Today", "Tonight", "Tomorrow"]},
+    {question: "How long is your date?", type: "logistics", field: "length", possibilities: ["30 minutes", "1 hour", "2 hours"]},
+    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:
+      ["I'm walking","I'm taking a cab","I'm driving", "Public trans, baby!"]},
     {question: "Would you prefer a loud or quiet setting?", type: "tag", field: null, possibilities: ["Loud", "Quiet"]}
   ];
 
-  $scope.currentQuestion = 0;
+  $scope.data = {};
+
+  // We need this code to help the app know which question should be served to the user, given the
+  // param in the URL. 
+  $scope.currentIndex = $stateParams.questionId;
+  $scope.currentQuestion = $scope.questions[$scope.currentIndex];
+
+  $scope.loadState = function(){
+    $scope.currentLogistics = DateData.getLogistics();
+    $scope.currentTags = DateData.getTags();
+  }; 
+
+  // This allows the user to navigate back and forth between the questions. 
+  $scope.prevQuestion = function() {
+    $ionicHistory.goBack();
+    $scope.loadState();
+  };
+
+  // This function determines what should be the next URL that the user navigates to. 
+  $scope.nextQuestion = function(){
+    var nextQuestionId = Number($scope.currentIndex) + 1;
+    if ($scope.currentQuestion.type === "logistics") {
+      var obj = {};
+      var key = $scope.currentQuestion.field;
+      obj[key] = $scope.currentQuestion.chosenOption;
+      DateData.appendLogistics(obj);
+    } else {
+      var obj = {};
+      var key = $scope.currentQuestion.chosenOption;
+      obj[key] = 1;
+      DateData.appendTags(obj);
+    }
+    if (nextQuestionId === $scope.questions.length) {
+      FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
+        DateData.setDateIdeas(data);
+        $scope.loadState();
+        $location.path('/idea');
+      });
+    } else {
+      var nextPath = '/findadate/' + nextQuestionId;
+      $location.path(nextPath);
+      $scope.loadState();
+    }
+  };
+
+  $scope.loadState();
 });
 
 

@@ -2,14 +2,13 @@
   <ion-content>
     <h2>Date formula picker</h2>
     <h4></h4>
-    <ion-list ng-repeat="question in questions">
-      <ion-item ng-show= "isCurrent(question.question)">
-        {{question.question}}
-        <ion-list ng-repeat="possibility in question.possibilities" ng-click="nextQuestion(question, $index)">
-          <ion-item>{{possibility}}</ion-item>
-        </ion-list>
-      </ion-item>
-    </ion-list>
-    
+    <ion-item>
+      {{currentQuestion.question}}
+      <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
+      <div class="item">
+        <a class="button" type="submit" ng-click="prevQuestion()">Back</a>
+        <a class="button button-positive" type="submit" ng-click="nextQuestion()">Next</a>
+      </div>
+    </ion-item>
   </ion-content>
 </ion-view>
