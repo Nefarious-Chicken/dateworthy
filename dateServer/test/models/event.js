@@ -86,21 +86,6 @@ function expectEventToTag(event, expTagging, callback) {
 }
 
 /**
- * Fetches a list of events given a profile of tags
- * and asserts it reflects the given list of expected events
- * Calls the given callback when complete.
- */
-function expectMatchingEvents(profile, callback) {
-    Event.getMatchingEvents(profile, function (err, matches) {
-        if (err) return callback(err);
-
-        expect(matches).to.be.an('array');
-
-        return callback(null, matches);
-    });
-}
-
-/**
  * Asserts that the given error is a ValidationError with the given message.
  * The given message can also be a regex, to perform a fuzzy match.
  */
