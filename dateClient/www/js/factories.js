@@ -2,14 +2,12 @@ angular.module('dateClient.services', [])
 .factory('FindADate', function ($http, $location, $window) {
   return {
     sendDateData: function(surveyData, callback){
-      console.log("The sendTags factory method works.");
       return $http({
         method: 'POST',
         url: '/tags/sendDateData/',
         data: surveyData
       })
       .then(function (resp) {
-        console.log(resp.data.ideaArray);
         callback(resp.data.ideaArray);
       });
     },
@@ -40,6 +38,7 @@ angular.module('dateClient.services', [])
       }
     },
     getLogistics: function (){
+      console.log(this.logisitics)
       return this.logistics;
     },
 
@@ -51,6 +50,7 @@ angular.module('dateClient.services', [])
       return this.dateIdeas;
     },
     getConcatenatedData: function () {
+      console.log({tags: this.tags, logistics: this.logistics})
       return {tags: this.tags, logistics: this.logistics}
     },
 
