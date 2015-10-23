@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "Answer a few questions, and we'll give you a few date ideas",
   "main": "dateServer/app.js",
-
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Nefarious-Chicken/dateworthy.git"
-  },
   "author": "Nefarious chicken",
   "license": "MIT",
   "bugs": {
