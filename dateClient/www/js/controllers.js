@@ -128,7 +128,7 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, FindADate, DateData) {
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData) {
 
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
