@@ -1,11 +1,15 @@
 <ion-view view-title="dateidea">
   <ion-content>
     <h2>Date idea</h2>
-    <ion-list ng-repeat="idea in ideas">
-      <ion-item ng-show="isCurrent(idea.idea)">
+    <div class="card date-idea" ng-repeat="idea in ideas" ng-show="isCurrent(idea.idea)">
+      <div class="idea item item-text-wrap">
         {{idea.idea}}
-      </ion-list>
-    </ion-item>
+      </div>
+      <div class="item like-dislike">
+        <a class="button button-assertive button-dislike" ng-click="dislike()" ng-class="{'button-outline' : idea.disliked == '0'}"><i class="icon ion-close-round"></i></a>
+        <a class="button button-balanced button-like" ng-click="like()" ng-class="{'button-outline' : idea.liked == '0'}"><i class="icon ion-checkmark-round"></i></a>
+      </div>
+    </div>
     <div class="item">
       <a class="button button-block button-positive" type="submit" ng-click ="clearData()">Home</a>
     </div>

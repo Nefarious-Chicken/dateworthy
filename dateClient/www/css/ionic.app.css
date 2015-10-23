@@ -9286,3 +9286,17 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+.like-dislike .button {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 47px;
+  height: 47px;
+  min-width: auto;
+  min-height: auto; }
+
+.button-dislike {
+  float: left; }
+
+.button-like {
+  float: right; }

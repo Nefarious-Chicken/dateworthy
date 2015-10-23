@@ -54,6 +54,7 @@ angular.module('dateIdea.controllers', [])
 
   $scope.$on('$stateChangeSuccess', function () {
     $scope.ideas = DateData.getDateIdeas();
+    console.log($scope.ideas);
   });
 
   $scope.nextIdea= function(){
@@ -67,6 +68,22 @@ angular.module('dateIdea.controllers', [])
   $scope.isCurrent = function(idea){
     return $scope.ideas[$scope.currentIdea].idea === idea;
   };
+
+  $scope.like = function() {
+    $scope.ideas[$scope.currentIdea].liked = 1;
+    $scope.ideas[$scope.currentIdea].disliked = 0;
+    console.log("Liked,", $scope.ideas[$scope.currentIdea]);
+    // TODO: Write a factory that talks to the server and updates the server.
+    // Maybe do this when the user hits the NEXT IDEA button?
+  }
+
+  $scope.dislike = function() {
+    $scope.ideas[$scope.currentIdea].disliked = 1;
+    $scope.ideas[$scope.currentIdea].liked = 0;  
+    console.log("DisLiked,", $scope.ideas[$scope.currentIdea]);
+    // TODO: Write a factory that talks to the server and updates the server.
+    // Maybe do this when the user hits the NEXT IDEA button?
+  }
 
   $scope.isLast = function( idea ) {
     return $scope.currentIdea === $scope.ideas.length - 1;
