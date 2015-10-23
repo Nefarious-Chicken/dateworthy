@@ -1,0 +1,24 @@
+{
+  "name": "dateworthy",
+  "version": "1.0.0",
+  "description": "Answer a few questions, and we'll give you a few date ideas",
+  "main": "dateServer/app.js",
+  "author": "Nefarious chicken",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nefarious-Chicken/dateworthy/issues"
+  },
+  "homepage": "https://github.com/Nefarious-Chicken/dateworthy#readme",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "scripts": {
+    "preinstall": "npm --prefix ./dateServer install & npm --prefix ./dateClient install & bower install",
+    "start": "node dateServer/app.js",
+    "test": "mocha dateServer/test/*/*.js",
+    "seed": "node dateServer/data-helpers/seedAll.js"
+  }
+}
