@@ -6,15 +6,20 @@ var db = require('../models/db');
 var path = require('path');
 var Promise = require('bluebird');
 
-// query: LOAD CSV WITH HEADERS FROM "http://neo4j.com/docs/2.2.6/csv/import/persons.csv" AS csvLine
-// CREATE (p:Person { id: toInt(csvLine.id), name: csvLine.name })
-
+/** HELPER FUNCTON
+* Purpose: Seeding all tags and its associated properties from a csv into neo4j
+*/
 exports.seedTags = function(callback) {
+  // Query for creating a constraint on a node's eventname so nodes with the same eventname can't be created
   var createConstraintQuery = 'CREATE CONSTRAINT ON (tag:Tag) ASSERT tag.tagname IS UNIQUE';
+  
+  // General query for reading each line from the csv and creating a Tag node based on line contents
   var query = [
     'LOAD CSV WITH HEADERS FROM "file://' + __dirname + '/tags.csv" AS csvLine',
     'CREATE (tag:Tag { tagname: csvLine.tags })'
 	].join('\n');
+
+  // Run the constraint creation query
   db.cypher({
     query: createConstraintQuery
   }, function(err, results) {
@@ -22,20 +27,23 @@ exports.seedTags = function(callback) {
       console.log("Couldn't create constraint on Tags graph", err);
       callback(err, null);
     } else {
+      // Run the query for creating Events
       db.cypher({
         query: query
       }, function(err, results) {
         if (err) {
+          console.log("Error creating Tag nodes in neo4j", err);
           callback(err, null);
         } else {
           if (results) {
-            console.log("The results after running seedTags are", results);
+            console.log("Successfully created Tag nodes in neo4j");
             callback(null, results);
           }
         }
-      }) 
+      }); 
     }
-  })
+  });
 };
 
+// Promisifying these functions to handle asynchronous database writing
 exports.seedTagsAsync = Promise.promisify(exports.seedTags);

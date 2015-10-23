@@ -3,8 +3,18 @@ var events = require('./events');
 var util = require('./util');
 var Promise = require('bluebird');
 
+/**************** Execute all data-helper functions *************** 
+* Purpose: Seeding all tags, events, and event-tag relationships 
+*          asynchronously into neo4j
+* > neo4j start 
+* > node seedAll.js 
+*******************************************************************/
 
 events.seedEventsAsync()
-.then(tags.seedTagsAsync())
-.then(util.seedEventTagRelationships('./events.csv'));
+.then(function() {
+  return tags.seedTagsAsync()
+})
+.then(function() {
+  util.seedEventTagRelationships('./events.csv')
+});
 

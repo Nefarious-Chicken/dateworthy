@@ -303,15 +303,11 @@ Event.prototype.getAllTags = function (callback) {
 };
 
 
-// Given a profile, find matching events with that profile {tag1:1, tag2:0, tag3:1...}
-
+// Given a profile, find matching events with that profile {'tag1': 1, 'tag2': 0, 'tag3': 1...}
 Event.getMatchingEvents = function(profile, callback) {
-  //sample input profileString {"sporty":1,"outdoors":1,"test":0}
   var query = ['MATCH'];
   var where = 'WHERE ';
   var count = 0;
-  console.log('Profile string type:', typeof profile);
-  // var profile = JSON.parse(profileString);
   for (var tag in profile) {
     if (profile[tag] === 1) {
       count++;
