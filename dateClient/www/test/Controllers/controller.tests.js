@@ -69,6 +69,7 @@ describe('IdeaControllers', function(){
    
 });
 
+
 describe('ProfileQuestionsCtrl', function(){
     var scope;
 
@@ -104,9 +105,9 @@ describe('ProfileQuestionsCtrl', function(){
         expect(scope.isActive).toEqual({});
         expect(scope.answers).toEqual({});
     });
-
     
 });
+
 
 describe('FindADateCtrl', function(){
     var scope;

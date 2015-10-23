@@ -38,7 +38,6 @@ angular.module('dateClient.services', [])
       }
     },
     getLogistics: function (){
-      console.log(this.logisitics)
       return this.logistics;
     },
 
@@ -50,7 +49,6 @@ angular.module('dateClient.services', [])
       return this.dateIdeas;
     },
     getConcatenatedData: function () {
-      console.log({tags: this.tags, logistics: this.logistics})
       return {tags: this.tags, logistics: this.logistics}
     },
 

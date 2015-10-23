@@ -54,7 +54,6 @@ angular.module('dateIdea.controllers', [])
 
   $scope.$on('$stateChangeSuccess', function () {
     $scope.ideas = DateData.getDateIdeas();
-    console.log($scope.ideas);
   });
 
   $scope.nextIdea= function(){
@@ -72,7 +71,6 @@ angular.module('dateIdea.controllers', [])
   $scope.like = function() {
     $scope.ideas[$scope.currentIdea].liked = 1;
     $scope.ideas[$scope.currentIdea].disliked = 0;
-    console.log("Liked,", $scope.ideas[$scope.currentIdea]);
     // TODO: Write a factory that talks to the server and updates the server.
     // Maybe do this when the user hits the NEXT IDEA button?
   }
@@ -80,7 +78,6 @@ angular.module('dateIdea.controllers', [])
   $scope.dislike = function() {
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
-    console.log("DisLiked,", $scope.ideas[$scope.currentIdea]);
     // TODO: Write a factory that talks to the server and updates the server.
     // Maybe do this when the user hits the NEXT IDEA button?
   }
@@ -129,7 +126,6 @@ angular.module('dateIdea.controllers', [])
     $scope.answers = {};
   }
 })
-
 
 
 .controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, FindADate, DateData) {
