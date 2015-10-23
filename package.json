@@ -17,6 +17,9 @@
   "engines": {
     "node": "0.10.x"
   },
+  "engines": {
+    "node": "0.10.x"
+  },
   "scripts": {
     "preinstall": "npm --prefix ./dateServer install & npm --prefix ./dateClient install & bower install",
     "start": "node dateServer/app.js",
