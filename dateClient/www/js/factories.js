@@ -2,14 +2,12 @@ angular.module('dateClient.services', [])
 .factory('FindADate', function ($http, $location, $window) {
   return {
     sendDateData: function(surveyData, callback){
-      console.log("The sendTags factory method works.");
       return $http({
         method: 'POST',
         url: '/tags/sendDateData/',
         data: surveyData
       })
       .then(function (resp) {
-        console.log(resp.data.ideaArray);
         callback(resp.data.ideaArray);
       });
     },

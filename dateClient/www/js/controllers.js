@@ -54,7 +54,6 @@ angular.module('dateIdea.controllers', [])
 
   $scope.$on('$stateChangeSuccess', function () {
     $scope.ideas = DateData.getDateIdeas();
-    console.log($scope.ideas);
   });
 
   $scope.nextIdea= function(){
@@ -72,7 +71,6 @@ angular.module('dateIdea.controllers', [])
   $scope.like = function() {
     $scope.ideas[$scope.currentIdea].liked = 1;
     $scope.ideas[$scope.currentIdea].disliked = 0;
-    console.log("Liked,", $scope.ideas[$scope.currentIdea]);
     // TODO: Write a factory that talks to the server and updates the server.
     // Maybe do this when the user hits the NEXT IDEA button?
   }
@@ -80,7 +78,6 @@ angular.module('dateIdea.controllers', [])
   $scope.dislike = function() {
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
-    console.log("DisLiked,", $scope.ideas[$scope.currentIdea]);
     // TODO: Write a factory that talks to the server and updates the server.
     // Maybe do this when the user hits the NEXT IDEA button?
   }
@@ -102,7 +99,7 @@ angular.module('dateIdea.controllers', [])
 
 })
 
-.controller('ProfileQuestionsCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
+.controller('ProfileQuestionsCtrl', function($scope, $timeout, $location, DateData) {
   $scope.isActive = {};
   $scope.answers = {};
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
@@ -131,7 +128,8 @@ angular.module('dateIdea.controllers', [])
 })
 
 
-.controller('FindADateCtrl', function($scope, $ionicHistory, $stateParams, $location, $timeout, FindADate, DateData) {
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData) {
+
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
   // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
@@ -161,20 +159,32 @@ angular.module('dateIdea.controllers', [])
     $scope.loadState();
   };
 
-  // This function determines what should be the next URL that the user navigates to. 
+  //creates and formats an object so that the factory can append the data
+  $scope.createQuestionObject = function (question){
+    var obj = {};
+    if (question.type === "logistics") {
+      var key = question.field;
+      obj[key] = question.chosenOption;
+    } else {
+      var key = question.chosenOption;
+      obj[key] = 1;
+    }
+    return obj
+  }
+
+  // This function determines what should be the next URL that 
+  // the user navigates to and saves data from current survey. 
   $scope.nextQuestion = function(){
     var nextQuestionId = Number($scope.currentIndex) + 1;
-    if ($scope.currentQuestion.type === "logistics") {
-      var obj = {};
-      var key = $scope.currentQuestion.field;
-      obj[key] = $scope.currentQuestion.chosenOption;
-      DateData.appendLogistics(obj);
+    var currentQuestion = $scope.currentQuestion;
+    var questionObject = $scope.createQuestionObject(currentQuestion);
+
+    if (currentQuestion.type === "logistics") {
+      DateData.appendLogistics(questionObject);
     } else {
-      var obj = {};
-      var key = $scope.currentQuestion.chosenOption;
-      obj[key] = 1;
-      DateData.appendTags(obj);
+      DateData.appendTags(questionObject);
     }
+
     if (nextQuestionId === $scope.questions.length) {
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
@@ -187,6 +197,8 @@ angular.module('dateIdea.controllers', [])
       $scope.loadState();
     }
   };
+
+  
 
   $scope.loadState();
 });
