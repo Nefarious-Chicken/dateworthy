@@ -15,7 +15,7 @@ exports.seedTags = function(callback) {
   
   // General query for reading each line from the csv and creating a Tag node based on line contents
   var query = [
-    'LOAD CSV WITH HEADERS FROM "file://' + __dirname + '/tags.csv" AS csvLine',
+    'LOAD CSV WITH HEADERS FROM "http://dateworthy.heroku.com/events.csv" AS csvLine',
     'CREATE (tag:Tag { tagname: csvLine.tags })'
 	].join('\n');
 

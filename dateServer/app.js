@@ -32,7 +32,7 @@ if ('development' == app.get('env')) {
   app.use(errorHandler());
 }
 
-app.locals.title = 'Node-Neo4j Template'
+app.locals.title = 'Node-Neo4j Template';
 
 app.listen(app.get('port'));
 console.log('Listening to port ' + app.get('port'));

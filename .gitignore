@@ -3,9 +3,10 @@
 
 dateClient/node_modules/
 dateServer/node_modules/
+dateServer/secret
 dateClient/platforms/
 dateClient/plugins/
 dateClient/www/lib/
 node_modules/
 *.log
-dateServer/secret
+

@@ -28,7 +28,7 @@ exports.seedEvents = function(callback) {
 
   // General query for reading each line from the csv and creating an Event node based on line contents
   var query = [
-    'LOAD CSV WITH HEADERS FROM "file://' + __dirname + '/events.csv" AS csvLine',
+    'LOAD CSV WITH HEADERS FROM "http://dateworthy.heroku.com/events.csv" AS csvLine',
     'CREATE (event:Event { ' + props + ' } )'
   ].join('\n');
 
