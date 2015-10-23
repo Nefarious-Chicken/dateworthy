@@ -7,7 +7,8 @@ var Tag = require('../../models/tag');
 // Shared state:
 
 var INITIAL_EVENTS;
-var EVENT_A, EVENT_B, TAG_A, EVENT_D;
+var EVENT_A, EVENT_B, EVENT_C, EVENT_D;
+var TAG_A, TAG_B, TAG_C;
 
 
 // Helpers:
@@ -81,6 +82,21 @@ function expectEventToTag(event, expTagging, callback) {
 
 
         return callback(null, actTagging);
+    });
+}
+
+/**
+ * Fetches a list of events given a profile of tags
+ * and asserts it reflects the given list of expected events
+ * Calls the given callback when complete.
+ */
+function expectMatchingEvents(profile, callback) {
+    Event.getMatchingEvents(profile, function (err, matches) {
+        if (err) return callback(err);
+
+        expect(matches).to.be.an('array');
+
+        return callback(null, matches);
     });
 }
 
@@ -343,5 +359,5 @@ describe('Event models:', function () {
         });
     });
 
-
 });
+
