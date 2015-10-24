@@ -1,6 +1,6 @@
 angular.module('dateIdea.controllers', ['ngOpenFB'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData, ngFB) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData, UserData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -40,6 +40,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     })
     .then(function(response) {
       console.log("The response from the promise is", response);
+      UserData.updateUserData(response);
       // TODO: Write a factory function to make the user object persist across all controllers
       // and... write it to the database of course! 
     })
@@ -69,6 +70,17 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   // the /home view. TODO: Generalize this so that if the user isn't logged in, they shouldn't be able 
   // to see any of the other views!!!! 
   $scope.getLoginStatus();
+
+
+  $scope.getUserData = function() {
+    console.log("Getting user data");
+    UserData.getUserData(function(response) {
+      $scope.userData = response;
+    });
+  }; 
+
+  $scope.getUserData(); 
+
 })
 
 
@@ -125,6 +137,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 })
 
 .controller('ProfileQuestionsCtrl', function($scope, $timeout, $location, DateData) {
+
   $scope.isActive = {};
   $scope.answers = {};
   $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
