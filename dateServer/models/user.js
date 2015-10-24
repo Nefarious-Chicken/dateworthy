@@ -34,7 +34,7 @@ var User = module.exports = function User(_node) {
   // All we'll really store is the node; the rest of our properties will be
   // derivable or just pass-through properties (see below).
   this._node = _node;
-}
+};
 
 // PUBLIC CONSTANTS
 
@@ -220,7 +220,7 @@ User.prototype.untag = function(tag, callback) {
     'MATCH (tag:Tag {tagname: {targetTagname}})',
     'MATCH (user) -[rel:prefers]-> (tag)',
     'DELETE rel',
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -235,14 +235,14 @@ User.prototype.untag = function(tag, callback) {
   });
 };
 
-//decrease the weight property on the user preference tag
+//get the weight property on the user preference tag
 User.prototype.getTagWeight = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
     'MATCH (user) -[rel:prefers]-> (tag)',
     'RETURN rel.weight'
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -263,7 +263,7 @@ User.prototype.increaseWeight = function(tag, callback) {
     'MATCH (tag:Tag {tagname: {targetTagname}})',
     'MATCH (user) -[rel:prefers]-> (tag)',
     'SET rel.weight = rel.weight + 1'
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -285,7 +285,7 @@ User.prototype.decreaseWeight = function(tag, callback) {
     'MATCH (tag:Tag {tagname: {targetTagname}})',
     'MATCH (user) -[rel:prefers]-> (tag)',
     'SET rel.weight= rel.weight - 1'
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -308,7 +308,7 @@ User.prototype.follow = function(other, callback) {
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (other:User {username: {otherUsername}})',
     'MERGE (user) -[rel:follows]-> (other)',
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -330,7 +330,7 @@ User.prototype.unfollow = function(other, callback) {
     'MATCH (other:User {username: {otherUsername}})',
     'MATCH (user) -[rel:follows]-> (other)',
     'DELETE rel',
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -354,7 +354,7 @@ User.prototype.getFollowingAndOthers = function(callback) {
     'MATCH (other:User)',
     'OPTIONAL MATCH (user) -[rel:follows]-> (other)',
     'RETURN other, COUNT(rel)', // COUNT(rel) is a hack for 1 or 0
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
@@ -392,11 +392,11 @@ User.prototype.getAllTags = function(callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisUsername: this.username
-  }
+  };
 
   db.cypher({
     query: query,
@@ -407,12 +407,11 @@ User.prototype.getAllTags = function(callback) {
     // console.log("Results from tag query based on user");
     // console.log(results);
     var tags = results.map(function(result) {
-
       return new Tag(result['tag']);
     });
     callback(null, tags);
   });
-}
+};
 
 // STATIC METHODS
 
@@ -421,7 +420,7 @@ User.get = function(username, callback) {
   var query = [
     'MATCH (user:User {username: {username}})',
     'RETURN user',
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     username: username,
@@ -506,12 +505,13 @@ User.getMatchingEvents = function(profileString, callback) {
   }
   var lastEventRelation = query[query.length - 1];
   //remove unecessary comma from last match statement
-  query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1)
+  query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1);
     //remove unecessary AND statement and space
   where = where.substring(0, where.length - 4);
   query.push(where);
   query.push('RETURN event.eventname as event;');
   query = query.join('\n');
+  console.log("Query is: ", query);
   db.cypher({
     query: query,
   }, function(err, results) {
@@ -521,7 +521,7 @@ User.getMatchingEvents = function(profileString, callback) {
     });
     callback(null, events);
   });
-}
+};
 
 
 // STATIC INITIALIZATION
@@ -539,4 +539,4 @@ db.createConstraint({
   } else {
     // Constraint already present; no need to log anything.
   }
-})
+});

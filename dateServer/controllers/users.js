@@ -44,12 +44,12 @@ exports.create = function(req, res, next) {
     sporty: 0,
     geeky: 0,
     foodie: 0
-  }
+  };
 
   for (var tag in tags) {
     user[tag] = tags[tag];
   }
-
+  console.log("About to create user.");
   User.create(user, function(err, user) {
     if (err) {
       if (err instanceof errors.ValidationError) {
@@ -69,6 +69,7 @@ exports.create = function(req, res, next) {
         return next(err);
       }
     }
+    console.log("User Created");
     res.redirect(getUserURL(user));
   });
 };
