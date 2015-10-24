@@ -5,6 +5,9 @@
       <div class="idea item item-text-wrap">
         {{idea.idea}}
       </div>
+      <div class="item item-image" ng-show="idea.imgUrl">
+        <img src="{{idea.imgUrl}}" />
+      </div>
       <div class="item like-dislike">
         <a class="button button-assertive button-dislike" ng-click="dislike()" ng-class="{'button-outline' : idea.disliked == '0'}"><i class="icon ion-close-round"></i></a>
         <a class="button button-balanced button-like" ng-click="like()" ng-class="{'button-outline' : idea.liked == '0'}"><i class="icon ion-checkmark-round"></i></a>
