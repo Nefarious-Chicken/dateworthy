@@ -13,6 +13,23 @@ angular.module('dateClient.services', [])
     },
   };
 })
+.factory('UserData', function ($http, $location, $window) {
+  return {
+    userData: {},
+    updateUserData: function(obj) {
+      for (var prop in obj) {
+        if (prop === "name") {
+          this.userData.firstName = obj[prop].split(' ')[0];
+        }
+        this.userData[prop] = obj[prop];
+      }
+    },
+    getUserData: function(callback) {
+      console.log("Getting user data", this.userData);
+      callback(this.userData);
+    }
+  }
+})
 .factory('DateData', function ($http, $location, $window){
   return {
 
