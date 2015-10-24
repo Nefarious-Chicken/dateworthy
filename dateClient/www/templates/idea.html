@@ -1,9 +1,12 @@
 <ion-view view-title="dateidea">
-  <ion-content>
+  <ion-content ng-cloak>
     <h2>Date idea</h2>
     <div class="card date-idea" ng-repeat="idea in ideas" ng-show="isCurrent(idea.idea)">
       <div class="idea item item-text-wrap">
         {{idea.idea}}
+      </div>
+      <div ng-if="idea.imgUrl" class="item item-image">
+        <img src="{{idea.imgUrl}}" />
       </div>
       <div class="item like-dislike">
         <a class="button button-assertive button-dislike" ng-click="dislike()" ng-class="{'button-outline' : idea.disliked == '0'}"><i class="icon ion-close-round"></i></a>

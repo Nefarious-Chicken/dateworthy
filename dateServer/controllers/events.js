@@ -122,9 +122,9 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
     if(events.length === 0){
       var ideas = {
         ideaArray: [
-          {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0},
-          {idea: "Get schwasted at Branch and Bourbon", liked: 0, disliked: 0},
-          {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0}
+          {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0, imgUrl: 'https://irs3.4sqi.net/img/general/960x720/17160664_1pVXH9Lf1AGEF9GiADPhnKDn05nHwEazTCk8XdZr_OQ.jpg'},
+          {idea: "Get schwasted at Bourbon & Branch", liked: 0, disliked: 0, imgUrl:'https://irs2.4sqi.net/img/general/960x720/44636481_XKzA8WwCQan1LueBpfLoHrVDC1rUGfIb6rtq4zMx5fU.jpg' },
+          {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0, imgUrl: 'https://irs2.4sqi.net/img/general/612x612/21220925_aayAh4Nd5fVrcfYx_i1mQ6vKFXhAVqNvDEHqT0JVvl4.jpg' }
         ]
       };
       return res.status(200).send(ideas);
@@ -151,6 +151,8 @@ exports.getFoursquareVenues = function(events, res, limit) {
     }
   }
 
+  console.log("searchIndices", searchIndices);
+
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < searchIndices.length; i++){
@@ -160,7 +162,7 @@ exports.getFoursquareVenues = function(events, res, limit) {
       categoryId: events[searchIndices[i]]._node.properties.fsCategory,
       intent: 'browse',
       radius: '5000'
-    }
+    };
     promises.push(exports.venueSearch(searchObj, searchIndices[i], events, ideas));
   }
 
@@ -185,16 +187,54 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
   var venuePromise = new Promise(function(resolve, reject) {
     foursquare.venues.search(searchObj, function(err, result) {
       if (err) {
-        console.log("There was an error!", err);
+        console.log("There was an error sanitizing the venues!", err);
         reject(err);
       } else {
-        var venues = result.response.venues;
+        var tempVenues = result.response.venues;
+        var venues = exports.removeBunkVenues(tempVenues);
         var venueIndex = Math.floor(Math.random() * venues.length);
-        var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0};
-        ideas.ideaArray.push(idea);
-        resolve(ideas);
+        var venueId = venues[venueIndex].id;
+        exports.getFoursquareImageForVenue(venueId, {})
+        .then(function(venueImage) {
+          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0, imgUrl: venueImage};
+          ideas.ideaArray.push(idea);
+          resolve(ideas);
+        })
       }
     });
   });
   return venuePromise; 
+}
+
+// This function returns venues that have a tipCount of over 10. 
+// This increases the chance that the venue will have a bestPhoto to show to the user.
+exports.removeBunkVenues = function (venues) {
+  var newVenues = [];
+  for (var i = 0; i < venues.length; i++) {
+    if (venues[i].stats.tipCount > 10) {
+      newVenues.push(venues[i]);
+    }
+  }
+  return newVenues;
+}
+
+// This function grabs the bestPhoto from the foursquare venue search. If there's no photo, set it to null.
+exports.getFoursquareImageForVenue = function (venueId, searchObj) {
+  var imagePromise = new Promise(function(resolve, reject) {
+    foursquare.venues.venue(venueId, searchObj, function(err, result) {
+      if (err) {
+        console.log("There was an error getting the foursquare image", err);
+        reject(err); 
+      } else {
+        var venueImage;
+        if (result.response.venue.hasOwnProperty('bestPhoto')) {
+          venueImage = result.response.venue.bestPhoto.prefix + result.response.venue.bestPhoto.width + 'x' + result.response.venue.bestPhoto.height + result.response.venue.bestPhoto.suffix;
+        } else {
+          venueImage = null;
+        } 
+        resolve(venueImage);
+      }
+    });
+  });
+  return imagePromise;
 }
