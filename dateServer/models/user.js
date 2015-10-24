@@ -191,7 +191,7 @@ User.prototype.tag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
-    'MERGE (user) -[rel:prefers]-> (tag)',
+    'MERGE (user) -[rel:prefers{weight:1}]-> (tag)',
   ].join('\n')
 
   var params = {
@@ -234,6 +234,73 @@ User.prototype.untag = function(tag, callback) {
     callback(err);
   });
 };
+
+//decrease the weight property on the user preference tag
+User.prototype.getTagWeight = function(tag, callback) {
+  var query = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'RETURN rel.weight'
+  ].join('\n')
+
+  var params = {
+    thisUsername: this.username,
+    targetTagname: tag.tagname,
+  };
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err, results) {
+    callback(err, results[0]["rel.weight"]);
+  });
+};
+
+//increase the weight property on the user preference tag
+User.prototype.increaseWeight = function(tag, callback) {
+  var query = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'SET rel.weight = rel.weight + 1'
+  ].join('\n')
+
+  var params = {
+    thisUsername: this.username,
+    targetTagname: tag.tagname,
+  };
+
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
+};
+
+//decrease the weight property on the user preference tag
+User.prototype.decreaseWeight = function(tag, callback) {
+  var query = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'SET rel.weight= rel.weight - 1'
+  ].join('\n')
+
+  var params = {
+    thisUsername: this.username,
+    targetTagname: tag.tagname,
+  };
+
+  db.cypher({
+    query: query,
+    params: params,
+  }, function(err) {
+    callback(err);
+  });
+};
+
+
 
 // Associates this user with another user
 User.prototype.follow = function(other, callback) {

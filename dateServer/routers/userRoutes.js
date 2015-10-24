@@ -20,4 +20,8 @@ module.exports = function (app) {
 
   //returns all tags associated with a user.
   app.post('/:username/preferences', userController.getAllTags);
+
+  //retrieves and modifies weights on relationships
+  app.post('/:username/increaseWeight', userController.increaseWeight);
+  app.post('/:username/decreaseWeight', userController.decreaseWeight);
 };

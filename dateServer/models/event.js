@@ -323,7 +323,6 @@ Event.getMatchingEvents = function(profile, callback) {
   query.push(where);
   query.push('RETURN event as event;');
   query = query.join('\n');
-  console.log("The query is", query);
   db.cypher({
     query: query,
   }, function(err, results) {

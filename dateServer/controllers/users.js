@@ -252,3 +252,71 @@ exports.getAllTags = function(req, res, next) {
     });
   });
 }
+
+/**
+ * POST /users/:username/getWeight
+ * returns the weight of the tag
+ */
+exports.getTagWeight = function(req, res, next) {
+  User.get(req.params.username, function(err, user) {
+    // TODO: Gracefully handle "no such user" error somehow.
+    // This is the source user, so e.g. 404 page?
+
+    if (err) return next(err);
+    Tag.get(req.body.tagname, function(err, tag) {
+
+      // TODO: Gracefully handle "no such user" error somehow.
+      // This is the target user, so redirect back to the source user w/
+      // an info message?
+
+      if (err) return next(err);
+      user.getWeight(tag, function(err, results) {
+        if (err) return next(err);
+        var weight = results[0]["rel.weight"]
+        res.send(weight)
+      });
+    });
+  });
+}
+
+exports.increaseWeight = function(req, res, next) {
+  User.get(req.params.username, function(err, user) {
+    // TODO: Gracefully handle "no such user" error somehow.
+    // This is the source user, so e.g. 404 page?
+
+    if (err) return next(err);
+    Tag.get(req.body.tagname, function(err, tag) {      
+
+      // TODO: Gracefully handle "no such user" error somehow.
+      // This is the target user, so redirect back to the source user w/
+      // an info message?
+
+      if (err) return next(err);
+      user.increaseWeight(tag, function(err, results) {
+        if (err) return next(err);
+        res.send(results)
+      });
+    });
+  });
+}
+
+exports.decreaseWeight = function(req, res, next) {
+  User.get(req.params.username, function(err, user) {
+    // TODO: Gracefully handle "no such user" error somehow.
+    // This is the source user, so e.g. 404 page?
+
+    if (err) return next(err);
+    Tag.get(req.body.tagname, function(err, tag) {
+
+      // TODO: Gracefully handle "no such user" error somehow.
+      // This is the target user, so redirect back to the source user w/
+      // an info message?
+
+      if (err) return next(err);
+      user.decreaseWeight(tag, function(err, results) {
+        if (err) return next(err);
+        res.send(results)
+      });
+    });
+  });
+}
