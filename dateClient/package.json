@@ -19,6 +19,7 @@
     "karma": "^0.13.14",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",
+    "karma-spec-reporter": "0.0.21",
     "mocha": "^1.18",
     "phantomjs": "^1.9.18",
     "shelljs": "^0.3.0"
