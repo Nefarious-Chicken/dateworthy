@@ -122,78 +122,79 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
     if(events.length === 0){
       var ideas = {
         ideaArray: [
-          {idea: "Frisbee in Dolores", liked: 0, disliked: 0},
+          {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0},
           {idea: "Get schwasted at Branch and Bourbon", liked: 0, disliked: 0},
           {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0}
         ]
       };
       return res.status(200).send(ideas);
     } else {
-      exports.getFoursquareVenues(events, res);
+      var limit = 3;
+      exports.getFoursquareVenues(events, res, limit);
     }
     // res.send(events);
   })
 }
 
-exports.getFoursquareVenues = function(events, res) {
+exports.getFoursquareVenues = function(events, res, limit) {
+  var ideas = { ideaArray: [] };
+  var searchIndices = [];
+  var promises = [];
 
-  var ideas = {
-    ideaArray: []
-  };
-
-  console.log('Events: ', events);
-
-  var searchObj1 = {
-    ll: '37.78,-122.41',
-    categoryId: events[0].fsCategory,
-    intent: 'browse',
-    radius: '5000'
-  };
-
-  var searchObj2 = {
-    ll: '37.78,-122.41',
-    categoryId: events[1].fsCategory,
-    intent: 'browse',
-    radius: '5000'
-  };
-
-  var searchObj3 = {
-    ll: '37.78,-122.41',
-    categoryId: events[2].fsCategory,
-    intent: 'browse',
-    radius: '5000'
-  };
-
-  var venueSearch = function (searchObj, ideas, eventIndex) {
-    var venuePromise = new Promise(function(resolve, reject) {
-      foursquare.venues.search(searchObj, function(err, result) {
-        if (err) {
-          console.log("There was an error!", err);
-          reject(err);
-        } else {
-          // console.log("Here is the result!",  result.response.venues);
-          var venues = result.response.venues;
-          var venueIndex = Math.floor(Math.random() * venues.length);
-          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0};
-          ideas.ideaArray.push(idea);
-          resolve(ideas);
-        }
-      });
-    });
-    return venuePromise; 
+  // Randomly select x (limit parameter of this function) number of indices in events input
+  // This will choose the categoryId we will query foursquare with
+  // These indices should be UNIQUE
+  while(Object.keys(searchIndices).length !== limit){
+    var generateIndex = Math.floor(Math.random() * events.length);
+    if(searchIndices.indexOf(generateIndex) === -1){
+      searchIndices.push(generateIndex);
+    }
   }
 
-  var venueSearchAsync = Promise.promisify(venueSearch);
+  // Create a unique foursquare search object using each of the randomly chosen categoryIds
+  // Also push promise functions to array which will run all the foursquare queries
+  for(var i = 0; i < searchIndices.length; i++){
+    console.log('Search Index: ' + searchIndices[i] + ', Event Category: ' + events[searchIndices[i]]._node.properties.venueCategory);
+    var searchObj = {
+      ll: '37.78,-122.41',
+      categoryId: events[searchIndices[i]]._node.properties.fsCategory,
+      intent: 'browse',
+      radius: '5000'
+    }
+    promises.push(exports.venueSearch(searchObj, searchIndices[i], events, ideas));
+  }
 
-  venueSearch(searchObj1, {ideaArray: []}, 0)
+  // Promise.all is a function which will take in an array and runs all promise functions in the array
+  // This allows us to have x number of promises run as though they were chained with .then
+  // Now we can run a non-hardcoded number of promises!
+  Promise.all(promises)
   .then(function(ideas) {
-    return venueSearch(searchObj2, ideas, 1)
-  })
-  .then(function(ideas) {
-    return venueSearch(searchObj3, ideas, 2)
-  })
-  .then(function(ideas){
-    res.status(200).send(ideas);
-  })
+    // Since we resolve all the promises at once
+    // We need to take the result of the promise that is last run since it contains all the ideas
+    res.status(200).send(ideas[ideas.length-1]);
+  });
 
 };
+
+/** Promise helper function for querying foursquare based on an input searchObj
+* Also takes in:
+*  the eventIndex and events object to create the random idea string
+*  the ideas object which is the master list of all ideas we want to return
+*/
+exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
+  var venuePromise = new Promise(function(resolve, reject) {
+    foursquare.venues.search(searchObj, function(err, result) {
+      if (err) {
+        console.log("There was an error!", err);
+        reject(err);
+      } else {
+        var venues = result.response.venues;
+        var venueIndex = Math.floor(Math.random() * venues.length);
+        var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0};
+        ideas.ideaArray.push(idea);
+        resolve(ideas);
+      }
+    });
+  });
+  return venuePromise; 
+}
