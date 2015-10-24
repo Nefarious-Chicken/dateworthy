@@ -1,6 +1,6 @@
-angular.module('dateIdea.controllers', [])
+angular.module('dateIdea.controllers', ['ngOpenFB'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -9,41 +9,66 @@ angular.module('dateIdea.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
+  //------------------------------------------------------------//
+  // FACEBOOK LOGIN!
+  //------------------------------------------------------------//
+  // Creds: https://ccoenraets.github.io/ionic-tutorial/ionic-facebook-integration.html
+  // PLEASE NOTE, in the original code, the scope key value pair had the string 
+  // 'email,read_stream,publish_actions' as the value, but it was returning errors. 
+  $scope.fbLogin = function () {
+    ngFB.login({scope: 'email,publish_actions'})
+    .then(function (response) {
+        if (response.status === 'connected') {
+        console.log('Facebook login succeeded', response);
+        $location.path('/home');
+        return response;
+      } else {
+        alert('Facebook login failed');
+      }
+    })
+    .then(function(response) {
+      // Makes call to Facebook Graph API /me to get data about the user who logged in.
+      // We'll take the response from that and add it to our database. 
+      var obj = {
+        path: '/me',
+        params: {
+          access_token: response.authResponse.accessToken,
+          fields: 'id,name,email'
+        }
+      };
+      return ngFB.api(obj);
+    })
+    .then(function(response) {
+      console.log("The response from the promise is", response);
+      // TODO: Write a factory function to make the user object persist across all controllers
+      // and... write it to the database of course! 
+    })
+  }
 
-  //Legacy data from the template
-  $scope.loginData = {};
-
+  //------------------------------------------------------------//
+  // CHECK IF THE USER IS LOGGED IN WITH FACEBOOK
+  //------------------------------------------------------------//
+  // Initializes loginStatus as 0. By default, the user isn't logged in. 
+  $scope.loginStatus = 0; 
+  $scope.getLoginStatus = function() {
+    ngFB.getLoginStatus()
+    .then(function(response) {
+      $scope.loginStatus = response.status;
+    })
+  }
   $scope.$on('$ionicView.enter', function(e) {
-    // if(!$scope.loggedIn){
-    //   $location.path('/login');
-    // }
-
+    if($scope.loginStatus === "connected"){
+      console.log("You're logged in! You may see the questions");
+      $location.path('/home');
+    } else {
+      console.log("You are not logged in. You need to log in to see anything.");
+      $location.path('/');
+    }
   });
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $location.path('/');
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $location.path('/login');
-  };
-
-
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-    $scope.loggedIn = true;
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
-
-
+  // Get the user's login status on page render. If the user is logged in, let them go to
+  // the /home view. TODO: Generalize this so that if the user isn't logged in, they shouldn't be able 
+  // to see any of the other views!!!! 
+  $scope.getLoginStatus();
 })
 
 

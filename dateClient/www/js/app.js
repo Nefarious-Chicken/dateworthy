@@ -4,9 +4,10 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'dateIdea.controllers' is found in controllers.js
-angular.module('dateIdea', ['ionic', 'dateIdea.controllers', 'dateClient.services'])
+angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateClient.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, ngFB) {
+  ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -36,12 +37,16 @@ angular.module('dateIdea', ['ionic', 'dateIdea.controllers', 'dateClient.service
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
-  .state('home', {
+  .state('login', {
     url: '/',
+    templateUrl: 'templates/login.html',
+    controller: 'AppCtrl'
+  })
+  .state('home', {
+    url: '/home',
     templateUrl: 'templates/home.html',
     controller: 'AppCtrl'
   })
-
   .state('profilequestions', {
     url: '/profilequestions',
     templateUrl: 'templates/profilequestions.html',
@@ -53,18 +58,10 @@ angular.module('dateIdea', ['ionic', 'dateIdea.controllers', 'dateClient.service
     templateUrl: 'templates/findadate.html',
     controller: 'FindADateCtrl'
   })
-
   .state('idea', {
     url: '/idea',
     templateUrl: 'templates/idea.html',
     controller: 'IdeaCtrl'
-  })
-
-
-  .state('login', {
-    url: '/login',
-    templateUrl: 'templates/login.html',
-    controller: 'AppCtrl'
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
