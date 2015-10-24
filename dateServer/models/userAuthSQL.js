@@ -15,7 +15,7 @@ module.exports = {
   },
   post: function (username, password, res) {
     seqUserAuth.sync().then(function(){
-      return seqUserAuth.create({
+      return seqUserAuth.findOrCreate({
         username: username,
         password: password
       })
