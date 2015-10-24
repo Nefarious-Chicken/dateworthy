@@ -144,16 +144,32 @@ function expectUserToFollow(user, expFollowing, expOthers, callback) {
  * Calls the given callback when complete.
  */
 function expectUserToTag(user, expTagging, callback) {
-    user.getAllTags(function (err, actTagging) {
+    user.getAllTags(function (err, actTagWeight) {
         if (err) return callback(err);
 
-        expect(actTagging).to.be.an('array');
-        expect(actTagging).to.have.length(expTagging.length);
+        expect(actTagWeight).to.be.an('array');
+        expect(actTagWeight).to.have.length(expTagging.length);
 
 
-        return callback(null, actTagging);
+        return callback(null, actTagWeight);
     });
 }
+
+/**
+ * Fetches the given user's "tags", and asserts that it
+ * reflects the given list of expected tags.
+ * Calls the given callback when complete.
+ */
+function expectTagWeightToEqual(user, tag, expTagWeight, callback) {
+    user.getTagWeight(tag, function (err, actTagWeight) {
+        if (err) return callback(err);
+
+        expect(actTagWeight).to.equal(expTagWeight)
+
+        return callback(null, actTagWeight);
+    });
+}
+
 
 /**
  * Asserts that the given error is a ValidationError with the given message.
@@ -493,6 +509,23 @@ describe('User models:', function () {
         expectUserToTag(USER_B, [1], next);
     });
 
+    it('Fetch user B’s tag weight for tag A', function (next) {
+        expectTagWeightToEqual(USER_B, TAG_A, 1, next);
+    });
+
+    it('increase user B’s tag weight for tag A', function (next) {
+        USER_B.increaseWeight(TAG_A, function(err){
+            expectTagWeightToEqual(USER_B, TAG_A, 2, next);
+            //return next(err);
+        })
+    });
+
+    it('decrease user B’s tag weight for tag A', function (next) {
+        USER_B.decreaseWeight(TAG_A, function(err){
+            expectTagWeightToEqual(USER_B, TAG_A, 1, next);
+        })
+    });
+
 
     it('Have user B untagg tag A', function (next) {
         USER_B.untag(TAG_A, function (err) {
@@ -514,10 +547,6 @@ describe('User models:', function () {
     it('Fetch user B’s “tags”', function (next) {
         expectUserToTag(USER_B, [], next);
     });
-
-
-
-    //
 
     it('Delete user B', function (next) {
         USER_B.del(function (err) {
@@ -551,7 +580,7 @@ describe('User models:', function () {
         });
     });
 
-    it('Fetch user C’s “following and others”', function (next) {
+    it('Fetch user C’s “following”', function (next) {
         expectUserToFollow(USER_C, [], [], next);
     });
 
