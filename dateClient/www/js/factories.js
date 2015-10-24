@@ -30,7 +30,7 @@ angular.module('dateClient.services', [])
     }
   }
 })
-.factory('DateData', function ($http, $location, $window){
+.factory('DateData', function ($http, $location, $window, UserData){
   return {
 
     tags: [],
@@ -66,7 +66,10 @@ angular.module('dateClient.services', [])
       return this.dateIdeas;
     },
     getConcatenatedData: function () {
-      return {tags: this.tags, logistics: this.logistics}
+      var email = UserData.getUserData(function(userData) {
+        return userData.email;
+      });
+      return {userName: email, tags: this.tags, logistics: this.logistics}
     },
 
 
@@ -77,5 +80,19 @@ angular.module('dateClient.services', [])
     }
 
   };
+})
+.factory('Auth', function ($http, $location){
+  return {
+    login: function(obj, callback) {
+      return $http({
+        method: 'POST',
+        url: '/users/signup',
+        data: obj
+      })
+      .then(function (resp){
+        callback(resp);
+      });
+    }
+  }
 })
 ;

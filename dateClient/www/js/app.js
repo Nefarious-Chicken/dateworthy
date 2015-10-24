@@ -6,7 +6,7 @@
 // 'dateIdea.controllers' is found in controllers.js
 angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateClient.services'])
 
-.run(function($ionicPlatform, ngFB) {
+.run(function($ionicPlatform, $rootScope, $location, ngFB) {
   ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,6 +20,21 @@ angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateCl
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    //------------------------------------------------------------//
+    // CHECK IF THE USER IS LOGGED IN WITH FACEBOOK
+    //------------------------------------------------------------//
+    // Get the user's login status on page render. If the user is logged in, let them go to
+    // the home view.
+    $rootScope.$on('$ionicView.enter', function(e) {
+      ngFB.getLoginStatus()
+      .then(function(response){
+        if(response.status !== "connected"){
+          console.log("User is not logged in.");
+          $location.path('/login');
+        }
+      })
+    });
   });
 })
 
@@ -38,12 +53,12 @@ angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateCl
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
   .state('login', {
-    url: '/',
+    url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'AppCtrl'
   })
   .state('home', {
-    url: '/home',
+    url: '/',
     templateUrl: 'templates/home.html',
     controller: 'AppCtrl'
   })

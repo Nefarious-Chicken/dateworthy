@@ -1,6 +1,6 @@
 angular.module('dateIdea.controllers', ['ngOpenFB'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, DateData, UserData, ngFB) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, $rootScope, DateData, UserData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -41,45 +41,43 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     .then(function(response) {
       console.log("The response from the promise is", response);
       UserData.updateUserData(response);
+      $scope.getUserData();
       // TODO: Write a factory function to make the user object persist across all controllers
       // and... write it to the database of course! 
     })
   }
 
-  //------------------------------------------------------------//
-  // CHECK IF THE USER IS LOGGED IN WITH FACEBOOK
-  //------------------------------------------------------------//
-  // Initializes loginStatus as 0. By default, the user isn't logged in. 
-  $scope.loginStatus = 0; 
-  $scope.getLoginStatus = function() {
-    ngFB.getLoginStatus()
-    .then(function(response) {
-      $scope.loginStatus = response.status;
-    })
-  }
-  $scope.$on('$ionicView.enter', function(e) {
-    if($scope.loginStatus === "connected"){
-      console.log("You're logged in! You may see the questions");
-      $location.path('/home');
-    } else {
-      console.log("You are not logged in. You need to log in to see anything.");
-      $location.path('/');
-    }
-  });
-  // Get the user's login status on page render. If the user is logged in, let them go to
-  // the /home view. TODO: Generalize this so that if the user isn't logged in, they shouldn't be able 
-  // to see any of the other views!!!! 
-  $scope.getLoginStatus();
-
-
-  $scope.getUserData = function() {
-    console.log("Getting user data");
+  // Removed $scope from these, they aren't externally exposed functions
+  // adding functions to $scope object is resource intensive
+  var getUserData = function() {
     UserData.getUserData(function(response) {
       $scope.userData = response;
     });
   }; 
 
-  $scope.getUserData(); 
+  var updateUserData = function() {
+    var obj = {
+      path: '/me',
+      params: {
+        access_token: window.sessionStorage.fbAccessToken,
+        fields: 'id,name,email'
+      }
+    };
+    return ngFB.api(obj)
+    .then(function(userData){
+      UserData.updateUserData(userData);
+      getUserData();
+    });
+  }
+
+  // Make sure $scope.userData is always loaded, even when page is refreshed
+  $scope.$on('$stateChangeSuccess', function () {
+    if(!$scope.userData || Object.keys($scope.userData).length === 0){
+      updateUserData();
+    }
+  });
+
+  updateUserData();
 
 })
 
