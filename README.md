@@ -20,22 +20,22 @@
 
 ## Usage
 
-Use gulp to npm and bower install all the components across the server and the client, as well as run tests!  It will ensure you have everything you need.
+npm install at the root to deploy all dependencies.  Ionic may be required.  npm start from the root will deploy the server
 
 ## Requirements
 
-- Gulp
+- npm
 
 ## Development
+
+You will need a populated neo4j database.  You can use node seedAll.js and point the server to your neo4j DB at dateServer/models/db.js to populate it with some seed data.
 
 ### Installing Dependencies
 
 From within the root directory:
 
 ```sh
-sudo npm install -g bower
-npm install
-bower install
+sudo npm install
 ```
 
 ### Roadmap
