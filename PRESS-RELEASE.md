@@ -17,28 +17,25 @@ Once the project moves into development, the press release can be used as a touc
  -->
  
 ## Heading ##
-  > Name the product in a way the reader (i.e. your target customers) will understand.
+  dateworthy
 
 ## Sub-Heading ##
-  > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
+  Answer a few questions, and we will find you a few date ideas.
 
 ## Summary ##
-  > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
+  It's one thing to hunt for a place to get dinner on a date.  It's another thing entirely to get fun, curated date ideas that match venues so you have the chance to make really special memories with your date, or break the ice in a brand new way.  Use dateworthy to get date you want!
 
 ## Problem ##
-  > Describe the problem your product solves.
+  I need to know what to do on a date.
 
 ## Solution ##
-  > Describe how your product elegantly solves the problem.
-
-## Quote from You ##
-  > A quote from a spokesperson in your company.
+  Answer a few questions, and we will find you a few date ideas.
 
 ## How to Get Started ##
-  > Describe how easy it is to get started.
+  Just download the app or go to dateworthy.heroku.com.  We'll take it from there.
 
 ## Customer Quote ##
-  > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
+  "I took my date to the library, and we found random books and read each other the 100th page.  It was hilarious, and we will never forget it.  Thanks dateworthy!"
 
 ## Closing and Call to Action ##
-  > Wrap it up and give pointers where the reader should go next.
+  dateworthy.heroku.com
