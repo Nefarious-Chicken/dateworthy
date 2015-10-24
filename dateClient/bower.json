@@ -1,0 +1,8 @@
+{
+  "name": "HelloIonic",
+  "private": "true",
+  "devDependencies": {
+    "angular-mocks": "~1.4.7",
+    "ionic": "driftyco/ionic-bower#1.1.0"
+  }
+}

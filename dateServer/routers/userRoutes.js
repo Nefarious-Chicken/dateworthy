@@ -1,6 +1,10 @@
 var userController = require('../controllers/users');
 
 module.exports = function (app) {
+  /*----------------SQL-------------*/
+  app.post('/signup', userController.signupUser);
+
+  /*----------------NEO4J-------------*/
 
   //gets all users, and creates a user
   app.get('/', userController.list);

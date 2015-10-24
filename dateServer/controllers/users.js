@@ -6,6 +6,7 @@ var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
+var userAuthSQL = require('../models/userAuthSQL')
 
 
 function getUserURL(user) {
@@ -320,3 +321,14 @@ exports.decreaseWeight = function(req, res, next) {
     });
   });
 }
+
+
+/*--------------------SQL---------------*/
+
+exports.signupUser = function(req, res, next){
+  userAuthSQL.post(req.body.username, req.body.password, function(err, user){
+    if(err) return next(err);
+    res.send(user);
+  })
+}
+
