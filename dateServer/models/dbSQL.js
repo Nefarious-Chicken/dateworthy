@@ -33,7 +33,7 @@ var dateIdeas = sequelize.define('dateIdeas', {
 
 var venues = sequelize.define('venues', {
   venueID: { type: Sequelize.STRING, primaryKey: true, unique: true},
-  venuename: Sequelize.STRING,
+  venueName: Sequelize.STRING,
   venueHours: Sequelize.FLOAT,
   venueLatitude: Sequelize.FLOAT,
   venueLongitude: Sequelize.FLOAT,
