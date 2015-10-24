@@ -151,6 +151,8 @@ exports.getFoursquareVenues = function(events, res, limit) {
     }
   }
 
+  console.log("searchIndices", searchIndices);
+
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < searchIndices.length; i++){
@@ -160,7 +162,7 @@ exports.getFoursquareVenues = function(events, res, limit) {
       categoryId: events[searchIndices[i]]._node.properties.fsCategory,
       intent: 'browse',
       radius: '5000'
-    }
+    };
     promises.push(exports.venueSearch(searchObj, searchIndices[i], events, ideas));
   }
 
@@ -185,10 +187,11 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
   var venuePromise = new Promise(function(resolve, reject) {
     foursquare.venues.search(searchObj, function(err, result) {
       if (err) {
-        console.log("There was an error!", err);
+        console.log("There was an error sanitizing the venues!", err);
         reject(err);
       } else {
-        var venues = result.response.venues;
+        var tempVenues = result.response.venues;
+        var venues = exports.removeBunkVenues(tempVenues);
         var venueIndex = Math.floor(Math.random() * venues.length);
         var venueId = venues[venueIndex].id;
         exports.getFoursquareImageForVenue(venueId, {})
@@ -203,7 +206,19 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
   return venuePromise; 
 }
 
+// This function returns venues that have a tipCount of over 10. 
+// This increases the chance that the venue will have a bestPhoto to show to the user.
+exports.removeBunkVenues = function (venues) {
+  var newVenues = [];
+  for (var i = 0; i < venues.length; i++) {
+    if (venues[i].stats.tipCount > 10) {
+      newVenues.push(venues[i]);
+    }
+  }
+  return newVenues;
+}
 
+// This function grabs the bestPhoto from the foursquare venue search. If there's no photo, set it to null.
 exports.getFoursquareImageForVenue = function (venueId, searchObj) {
   var imagePromise = new Promise(function(resolve, reject) {
     foursquare.venues.venue(venueId, searchObj, function(err, result) {
@@ -211,7 +226,6 @@ exports.getFoursquareImageForVenue = function (venueId, searchObj) {
         console.log("There was an error getting the foursquare image", err);
         reject(err); 
       } else {
-        console.log("The result from getFourSquareVenues is", result.response);
         var venueImage;
         if (result.response.venue.hasOwnProperty('bestPhoto')) {
           venueImage = result.response.venue.bestPhoto.prefix + result.response.venue.bestPhoto.width + 'x' + result.response.venue.bestPhoto.height + result.response.venue.bestPhoto.suffix;
