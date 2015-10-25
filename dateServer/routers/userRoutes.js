@@ -2,7 +2,8 @@ var userController = require('../controllers/users');
 
 module.exports = function (app) {
   /*----------------SQL-------------*/
-  app.post('/signup', userController.signupUser);
+  app.post('/signup', userController.signupUserSQL);
+  app.post('/userpreferences', userController.createUserPrefsSQL);
 
   /*----------------NEO4J-------------*/
 

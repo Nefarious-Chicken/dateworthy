@@ -7,7 +7,7 @@ var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
 var userAuthSQL = require('../models/userAuthSQL')
-
+var userPrefsSQL = require('../models/userPrefSQL')
 
 function getUserURL(user) {
   return '/users/' + encodeURIComponent(user.username);
@@ -325,10 +325,17 @@ exports.decreaseWeight = function(req, res, next) {
 
 /*--------------------SQL---------------*/
 
-exports.signupUser = function(req, res, next){
-  userAuthSQL.post(req.body.username, req.body.password, function(err, user){
+exports.signupUserSQL = function(req, res, next){
+  userAuthSQL.post(req.body.userID, req.body.username, req.body.password, function(err, user){
     if(err) return next(err);
     res.send(user);
+  })
+}
+
+exports.createUserPrefsSQL = function(req, res, next){
+  userPrefsSQL.post(req.body.userID, req.body.likeDislike, function(err, userPref){
+    if(err) return next(err);
+    res.send(userPref);
   })
 }
 

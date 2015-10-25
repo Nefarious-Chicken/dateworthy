@@ -7,13 +7,12 @@ module.exports.sequelize = sequelize;
 
 var userAuth = sequelize.define('userAuth', {
   userID: { type: Sequelize.STRING, primaryKey: true, unique: true},
-  username: Sequelize.STRING,
+  userName: Sequelize.STRING,
   password: Sequelize.STRING
 },
 {
     timestamps: false
 });
-
 
 var userPrefs = sequelize.define('userPrefs', {
   userID: { type: Sequelize.STRING, primaryKey: true, unique: true},
@@ -22,7 +21,6 @@ var userPrefs = sequelize.define('userPrefs', {
 {
     timestamps: false
 });
-
 
 var dateIdeas = sequelize.define('dateIdeas', {
   dateIdeaID: { type: Sequelize.STRING, primaryKey: true, unique: true},
@@ -34,11 +32,10 @@ var dateIdeas = sequelize.define('dateIdeas', {
 var venues = sequelize.define('venues', {
   venueID: { type: Sequelize.STRING, primaryKey: true, unique: true},
   venueName: Sequelize.STRING,
-  venueHours: Sequelize.FLOAT,
+  venueHours: Sequelize.STRING,
   venueLatitude: Sequelize.FLOAT,
   venueLongitude: Sequelize.FLOAT,
-  venueAddress: Sequelize.STRING,
-  venueFourSquareID: Sequelize.STRING
+  venueAddress: Sequelize.STRING
   
 },
 {
@@ -46,16 +43,16 @@ var venues = sequelize.define('venues', {
 });
 
 var events = sequelize.define('events', {
-  EventID: { type: Sequelize.STRING, primaryKey: true, unique: true},
-  eventname: Sequelize.STRING,
+  eventID: { type: Sequelize.STRING, primaryKey: true, unique: true},
+  eventName: Sequelize.STRING,
 },
 {
     timestamps: false
 });
 
 userPrefs.belongsTo(userAuth);
-events.belongsTo(dateIdeas);
-venues.belongsTo(dateIdeas);
+dateIdeas.belongsTo(events);
+dateIdeas.belongsTo(venues);
 userPrefs.belongsToMany(dateIdeas, {through: 'UserPrefDateIdeas'});
 dateIdeas.belongsToMany(userPrefs, {through: 'UserPrefDateIdeas'});
 

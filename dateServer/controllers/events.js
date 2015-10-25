@@ -4,6 +4,7 @@ var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
+var EventSQL = require('../models/eventSQL')
 var Promise = require('bluebird');
 var config = require('../secret/config');
 
@@ -26,17 +27,12 @@ exports.create = function(req, res, next) {
     description: req.body.description
   }, function(err, tag) {
     if (err) {
-      console.log('Error:');
-      console.log(err);
-      console.log('Error creating tag with tagname: ' + req.body.eventname);
       res.sendStatus(404);
     }
-
-    console.log('Successfully created tag object');
-    console.log(tag);
     res.redirect('/users');
 
   });
+
 }
 
 /**
@@ -58,9 +54,6 @@ exports.del = function(req, res, next) {
  * POST /events/:eventname/tag {tagname}
  */
 exports.tag = function(req, res, next) {
-
-  console.log('Event to find in db: ' + req.params.eventname);
-  console.log('Tagname to match to in db: ' + req.body.tagname);
 
   Event.get(req.params.eventname, function(err, event) {
     // TODO: Gracefully handle "no such user" error somehow.
@@ -206,6 +199,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
   return venuePromise; 
 }
 
+
 // This function returns venues that have a tipCount of over 10. 
 // This increases the chance that the venue will have a bestPhoto to show to the user.
 exports.removeBunkVenues = function (venues) {
@@ -238,3 +232,15 @@ exports.getFoursquareImageForVenue = function (venueId, searchObj) {
   });
   return imagePromise;
 }
+
+/*--------------------SQL---------------*/
+
+exports.createEventSQL = function(req, res, next){
+    console.log(req.body.eventID)
+
+  EventSQL.post(req.body.eventID, req.body.eventName, function(err, event){
+    if(err) return next(err);
+    res.send(event);
+  })
+}
+
