@@ -9,15 +9,19 @@ var seqUserAuth = db.tables.userAuth;
 
 module.exports = {
 
-  get: function (username) {
-    seqUserAuth.findOne({ where: {username: username} }).then(function(user) {
+  get: function (userName) {
+    seqUserAuth.findOne({ where: {userName: userName} }).then(function(user) {
+
     })
   },
-  post: function (username, password, res) {
+  post: function (userID, userName, password, res) {
     seqUserAuth.sync().then(function(){
-      return seqUserAuth.findOrCreate({
-        username: username,
-        password: password
+
+      return seqUserAuth.create({
+        userID: userID || "null",
+        userName: userName || "null",
+        password: password || "null"
+
       })
     })
   }
