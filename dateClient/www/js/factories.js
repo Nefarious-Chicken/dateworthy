@@ -17,21 +17,23 @@ angular.module('dateClient.services', [])
   return {
     userData: {},
     updateUserData: function(obj) {
-      console.log("The user Data: ",obj);
+      //console.log("The user Data: ",obj);
       for (var prop in obj) {
         if (prop === "name") {
           this.userData.firstName = obj[prop].split(' ')[0];
         }
         this.userData[prop] = obj[prop];
       }
+      console.log("Current user Data: ", this.userData);
+      console.log("Attempting to push data to SQL");
       return $http({
         method: 'POST',
         url: '/users/',
         data: obj
       });
     },
-    getUserData: function(callback) {
-      //console.log("Getting user data", this.userData);
+    getUserData: function() {
+      console.log("Getting user data", this.userData);
       return this.userData;
     }
   };

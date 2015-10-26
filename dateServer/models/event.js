@@ -285,24 +285,20 @@ Event.prototype.getAllTags = function (callback) {
     'MATCH (event:Event {eventname: {thisEventname}})-[:is]->(tag:Tag)',
     'RETURN DISTINCT tag'
   ].join('\n');
-
+  var setTags = function(tags){this.myTags = tags;}.bind(this);
   var params = {
     thisEventname: this.eventname
   };
-
+  var tags = [];
   db.cypher({
     query: query,
     params: params
   }, function (err, results) {
     if (err) return callback(err);
-    // console.log("Results from tag query based on event");
-    // console.log(results);
-    var tags = results.map(function (result) {
+    tags = results.map(function (result) {
       return new Tag(result['tag']);
     });
-    console.log("Event's tags length: ", tags.length);
-    this.myTags = tags;
-    //console.log(tags);
+    setTags(tags);
     callback(null, tags);
   });
 };
