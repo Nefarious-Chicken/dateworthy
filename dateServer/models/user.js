@@ -389,6 +389,7 @@ User.prototype.getFollowingAndOthers = function(callback) {
 
 // Returns all tags a user has associated with themselves
 User.prototype.getAllTags = function(callback) {
+  console.log("Username: ", this.username);
   var query = [
     'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
@@ -466,6 +467,7 @@ User.create = function(props, callback) {
     'RETURN user',
   ].join('\n');
 
+  //console.log("Props: ", props);
   var params = {
     props: props //validate(props)
   };

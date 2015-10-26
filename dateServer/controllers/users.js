@@ -32,8 +32,9 @@ exports.list = function(req, res, next) {
  * POST /users {username, ...}
  */
 exports.create = function(req, res, next) {
+  //TODO: Remove usernames from Neo4j.
   var user = {
-    username: req.body.username
+    username: req.body.email
   };
   var tags = req.body.tags || {
     participant: 0,
@@ -66,11 +67,16 @@ exports.create = function(req, res, next) {
           },
         }));
       } else {
-        return next(err);
+        return next(err, user);
       }
     }
-    console.log("User Created");
-    res.redirect(getUserURL(user));
+    //console.log("User Created", user._node, user._node._id);
+    userAuthSQL.post(user._node._id, req.body.email, function(err, user){
+      if(err) {
+        console.log(err);
+      }
+    });
+    res.sendStatus(200);
   });
 };
 

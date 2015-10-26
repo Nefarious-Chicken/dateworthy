@@ -300,6 +300,7 @@ Event.prototype.getAllTags = function (callback) {
     var tags = results.map(function (result) {
       return new Tag(result['tag']);
     });
+    console.log("Event's tags length: ", tags.length);
     this.myTags = tags;
     //console.log(tags);
     callback(null, tags);

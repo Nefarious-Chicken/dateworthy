@@ -109,9 +109,11 @@ exports.getMatchingEvents = function(req, res, next) {
 
 //Returns the tags that correspond to the user in the getMatchingEventsNoRest request.
 var getMyUserTags = function(myUser){
+  console.log("Getting the user: ", myUser.username);
   var userPromise = new Promise(function(resolve, reject){
-    user.create(myUser, function(err, user){
+    user.get(myUser.username, function(err, user){
       if(err){
+        console.log("there was an error getting the user in neo4j");
         reject(err);
       } else {
         resolve(user);
@@ -119,9 +121,11 @@ var getMyUserTags = function(myUser){
     });
   });
   userPromise.then(function(user){
+    user.username = myUser.username;
     return new Promise(function(resolve, reject){
       var myTags = user.getAllTags(function(err, tags){
         if(err){
+          console.log("there was an error getting the user tags in neo4j");
           reject(err);
         } else {
           resolve(tags);
@@ -131,13 +135,17 @@ var getMyUserTags = function(myUser){
   });
 };
 
+var defineEventTagWeight = function(event, userTags){
+
+};
 var compareTagWeights = function(){};
 
 /**
  * returns the matching events based on a list of tags.
  */
 exports.getMatchingEventsNoRest = function(tags, req, res) {
-  console.log('Routing correctly');
+  console.log('Routing correctly. The body: ', req.body);
+
   var myUser = {
     username: req.body.userName
   };
@@ -176,7 +184,8 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
         }
         Promise.all(promises).then(
           function(tags){
-            //events.sort();
+            console.log("Here's the number of events: ", events.length);
+            console.log("Events and their tags: ", events);
             exports.getFoursquareVenues(events, res, limit);
           });
       }
@@ -240,6 +249,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
         reject(err);
       } else {
         var tempVenues = result.response.venues;
+        console.log("The number of venues attached to this event is: ", tempVenues.length);
         var venues = exports.removeBunkVenues(tempVenues);
         var venueIndex = Math.floor(Math.random() * venues.length);
         var venueId = venues[venueIndex].id;
@@ -256,7 +266,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
 };
 
 
-// This function returns venues that have a tipCount of over 10. 
+// This function returns venues that have a tipCount of over 10.
 // This increases the chance that the venue will have a bestPhoto to show to the user.
 exports.removeBunkVenues = function (venues) {
   var newVenues = [];
@@ -265,7 +275,13 @@ exports.removeBunkVenues = function (venues) {
       newVenues.push(venues[i]);
     }
   }
-  return newVenues;
+  console.log("Venues left after debunking: ", newVenues.length);
+  if (newVenues.length !== 0 && newVenues){
+    return newVenues;
+  } else {
+    console.log("Here's the 0th venue: ", venues[0].name);
+    return [venues[0]];
+  }
 };
 
 // This function grabs the bestPhoto from the foursquare venue search. If there's no photo, set it to null.
@@ -274,14 +290,14 @@ exports.getFoursquareImageForVenue = function (venueId, searchObj) {
     foursquare.venues.venue(venueId, searchObj, function(err, result) {
       if (err) {
         console.log("There was an error getting the foursquare image", err);
-        reject(err); 
+        reject(err);
       } else {
         var venueImage;
         if (result.response.venue.hasOwnProperty('bestPhoto')) {
           venueImage = result.response.venue.bestPhoto.prefix + result.response.venue.bestPhoto.width + 'x' + result.response.venue.bestPhoto.height + result.response.venue.bestPhoto.suffix;
         } else {
           venueImage = null;
-        } 
+        }
         resolve(venueImage);
       }
     });
