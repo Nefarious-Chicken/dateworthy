@@ -41,7 +41,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     .then(function(response) {
       console.log("The response from the promise is", response);
       UserData.updateUserData(response);
-      $scope.getUserData();
+      getUserData();
       // TODO: Write a factory function to make the user object persist across all controllers
       // and... write it to the database of course! 
     })
@@ -50,10 +50,8 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   // Removed $scope from these, they aren't externally exposed functions
   // adding functions to $scope object is resource intensive
   var getUserData = function() {
-    UserData.getUserData(function(response) {
-      $scope.userData = response;
-    });
-  }; 
+    $scope.userData = UserData.getUserData();
+  };
 
   var updateUserData = function() {
     var obj = {

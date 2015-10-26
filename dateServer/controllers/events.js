@@ -135,10 +135,58 @@ var getMyUserTags = function(myUser){
   });
 };
 
-var defineEventTagWeight = function(event, userTags){
-
+//The rules for defining an event's score are:
+//  If the event includes a tag from a questionairre, it gets a point.
+//  If the user has liked a tag from the questionairre, it gets points
+//   equivalent to the number of times the user has liked that tag.
+//  TODO: Weight the user likes.
+var defineEventTagScore = function(event, tags, userTags){
+  //console.log("Event: ", event);
+  var similarTags = {};
+  var eventScore = 0;
+  for(var i = 0; i < event.myTags.length; i ++){
+    //console.log(event.myTags[i]);
+    if(tags[event.myTags[i]._node.properties.tagname]){
+      similarTags[event.myTags[i]._node.properties.tagname] = 1;
+    }
+  }
+  if(userTags){
+    for(i = 0; i < userTags.length; i ++){
+      if(similarTags[userTags[i]._node.properties.tagname]){
+        similarTags[key]++;
+      } else {
+        similarTags[key] = 1;
+      }
+      for(j = 0; i < event.myTags.length; j++){
+        //console.log(event.myTags[i]);
+        if(event.myTags[j]._node.properties.tagname === userTags[i]._node.properties.tagname){
+          if(similarTags[event.myTags[i]._node.properties.tagname]){
+            similarTags[event.myTags[i]._node.properties.tagname]++;
+          } else {
+            similarTags[event.myTags[i]._node.properties.tagname] = 1;
+          }
+        }
+      }
+    }
+  }
+  for(var tag in similarTags){
+    eventScore += similarTags[tag];
+  }
+  event.score = eventScore;
 };
-var compareTagWeights = function(){};
+
+//utility function to sort events based on score.
+var compareEventScores = function(eventA, eventB){
+  if (eventA.score < eventB.score){
+    return -1;
+  } else {
+    if(eventA.score === eventB.score){
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+};
 
 /**
  * returns the matching events based on a list of tags.
@@ -152,7 +200,11 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
   var userPromise = new Promise(function(resolve, reject){
     resolve(getMyUserTags(myUser));
   });
+
+  //Get all of the user's tags.
   userPromise.then(function(userTags){
+    console.log("User's Tags: ", userTags);
+    //Get the events that match the questionairre tags
     Event.getMatchingEvents(tags, function(err, events) {
       var promises = [];
       if (err) {
@@ -169,6 +221,7 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
         return res.status(200).send(ideas);
       } else {
         var limit = 3;
+        //Attach the event tags to the event object.
         for(var i = 0; i < events.length; i ++){
           var tagPromise = new Promise(
           function(resolve, reject){
@@ -183,45 +236,58 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
           promises.push(tagPromise);
         }
         Promise.all(promises).then(
-          function(tags){
-            console.log("Here's the number of events: ", events.length);
-            console.log("Events and their tags: ", events);
+          function(theTags){
+            console.log("Events length", events.length);
+            //Score the tags based on the scoring algorithm.
+            for(var i = 0; i < events.length; i ++){
+              defineEventTagScore(events[i], tags, userTags);
+            }
+            events.sort(compareEventScores);
             exports.getFoursquareVenues(events, res, limit);
           });
       }
-      // res.send(events);
     });
   });
 };
 
 exports.getFoursquareVenues = function(events, res, limit) {
   var ideas = { ideaArray: [] };
-  var searchIndices = [];
   var promises = [];
-
+  var indices = [];
+  var j = 0;
   // Randomly select x (limit parameter of this function) number of indices in events input
   // This will choose the categoryId we will query foursquare with
   // These indices should be UNIQUE
-  while(Object.keys(searchIndices).length !== limit){
-    var generateIndex = Math.floor(Math.random() * events.length);
-    if(searchIndices.indexOf(generateIndex) === -1){
-      searchIndices.push(generateIndex);
+  for(var i = 0; i < events.length; i ++){
+    if(events[i].score !== events[j].score || i === events.length - 1){
+      if(i-j+indices.length < limit){
+        for(var k =j; k < i; k++){
+          indices.push(k);
+          pushedEvents++;
+        }
+      }
+      else{
+        while(indices.length !== limit){
+          var generateIndex = Math.floor(Math.random() * (i-j))+j;
+          if(indices.indexOf(generateIndex) === -1){
+            indices.push(generateIndex);
+          }
+        }
+      }
+      j = i;
     }
   }
-
-  console.log("searchIndices", searchIndices);
-
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
-  for(var i = 0; i < searchIndices.length; i++){
-    console.log('Search Index: ' + searchIndices[i] + ', Event Category: ' + events[searchIndices[i]]._node.properties.venueCategory);
+  for(var i = 0; i < indices.length; i++){
+    console.log('Search Index: ' + indices[i] + ', Event Category: ' + events[indices[i]]._node.properties.venueCategory);
     var searchObj = {
       ll: '37.78,-122.41',
-      categoryId: events[searchIndices[i]]._node.properties.fsCategory,
+      categoryId: events[indices[i]]._node.properties.fsCategory,
       intent: 'browse',
       radius: '5000'
     };
-    promises.push(exports.venueSearch(searchObj, searchIndices[i], events, ideas));
+    promises.push(exports.venueSearch(searchObj, i, events, ideas));
   }
 
   // Promise.all is a function which will take in an array and runs all promise functions in the array

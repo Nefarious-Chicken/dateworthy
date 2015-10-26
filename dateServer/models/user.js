@@ -405,8 +405,6 @@ User.prototype.getAllTags = function(callback) {
   }, function(err, results) {
     if (err) return callback(err);
 
-    // console.log("Results from tag query based on user");
-    // console.log(results);
     var tags = results.map(function(result) {
       return new Tag(result['tag']);
     });
