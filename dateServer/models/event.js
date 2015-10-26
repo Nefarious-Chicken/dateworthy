@@ -1,6 +1,7 @@
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
+var Tag = require('../models/tag');
 
 //Event model
 /** TABLE OF CONTENTS:
@@ -20,8 +21,9 @@ var db = require('./db');
 // PRIVATE CONSTRUCTOR
 var Event = module.exports = function Event(_node) {
     this._node = _node;
-}
-var Tag = require('../models/tag');
+    this.myTags = [];
+};
+
 
 
 // Public constants:
@@ -259,7 +261,7 @@ Event.prototype.patch = function (props, callback) {
       // but it'd be nicer if Neo4j returned this data semantically.
       // Alternately, we could tweak our query to explicitly check first
       // whether the eventname is taken or not.
-      err = new errors.ValidationError(   
+      err = new errors.ValidationError(
         'The eventname ‘' + props.eventname + '’ is taken.');
     }
     if (err) return callback(err);
@@ -277,16 +279,16 @@ Event.prototype.patch = function (props, callback) {
 };
 
 
-// Returns all tags a event has associated with themselves
+// Returns all tags as event has associated with it
 Event.prototype.getAllTags = function (callback) {
   var query = [
     'MATCH (event:Event {eventname: {thisEventname}})-[:is]->(tag:Tag)',
     'RETURN DISTINCT tag'
-  ].join('\n')
+  ].join('\n');
 
   var params = {
     thisEventname: this.eventname
-  }
+  };
 
   db.cypher({
     query: query,
@@ -298,6 +300,9 @@ Event.prototype.getAllTags = function (callback) {
     var tags = results.map(function (result) {
       return new Tag(result['tag']);
     });
+    console.log("Event's tags length: ", tags.length);
+    this.myTags = tags;
+    //console.log(tags);
     callback(null, tags);
   });
 };

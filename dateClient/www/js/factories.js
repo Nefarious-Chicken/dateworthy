@@ -17,18 +17,24 @@ angular.module('dateClient.services', [])
   return {
     userData: {},
     updateUserData: function(obj) {
+      console.log("The user Data: ",obj);
       for (var prop in obj) {
         if (prop === "name") {
           this.userData.firstName = obj[prop].split(' ')[0];
         }
         this.userData[prop] = obj[prop];
       }
+      return $http({
+        method: 'POST',
+        url: '/users/',
+        data: obj
+      });
     },
     getUserData: function(callback) {
-      console.log("Getting user data", this.userData);
-      callback(this.userData);
+      //console.log("Getting user data", this.userData);
+      return this.userData;
     }
-  }
+  };
 })
 .factory('DateData', function ($http, $location, $window, UserData){
   return {
@@ -38,7 +44,7 @@ angular.module('dateClient.services', [])
     dateIdeas: {},
 
     appendTags: function (tags){
-      for (tag in tags){
+      for (var tag in tags){
         if (tags[tag] === 1){
           this.tags.push(tag);
         }
@@ -50,7 +56,7 @@ angular.module('dateClient.services', [])
 
 
     appendLogistics: function (logistics){
-      for (logistic in logistics){
+      for (var logistic in logistics){
         this.logistics[logistic] = logistics[logistic];
       }
     },
@@ -66,10 +72,9 @@ angular.module('dateClient.services', [])
       return this.dateIdeas;
     },
     getConcatenatedData: function () {
-      var email = UserData.getUserData(function(userData) {
-        return userData.email;
-      });
-      return {userName: email, tags: this.tags, logistics: this.logistics}
+      var data = UserData.getUserData();
+      console.log("Email is: ", data.email);
+      return {userName: data.email, tags: this.tags, logistics: this.logistics};
     },
 
 

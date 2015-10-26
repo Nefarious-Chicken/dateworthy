@@ -1,14 +1,13 @@
 
 var Sequelize = require('sequelize');
 
-var sequelize = new Sequelize('dateWorthy', 'root', 'password');
+var sequelize = new Sequelize('dateWorthy', 'root', '');
 
 module.exports.sequelize = sequelize;
 
 var userAuth = sequelize.define('userAuth', {
   userID: { type: Sequelize.STRING, primaryKey: true, unique: true},
-  userName: Sequelize.STRING,
-  password: Sequelize.STRING
+  userName: Sequelize.STRING
 },
 {
     timestamps: false
@@ -62,4 +61,4 @@ module.exports.tables = {
   events: events,
   venues: venues,
   dateIdeas: dateIdeas
-}
+};

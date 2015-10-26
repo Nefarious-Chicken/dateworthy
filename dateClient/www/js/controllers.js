@@ -160,7 +160,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   $scope.clearSelections = function(){
     $scope.isActive = {};
     $scope.answers = {};
-  }
+  };
 })
 
 
@@ -205,8 +205,8 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
       var key = question.chosenOption;
       obj[key] = 1;
     }
-    return obj
-  }
+    return obj;
+  };
 
   // This function determines what should be the next URL that 
   // the user navigates to and saves data from current survey. 
