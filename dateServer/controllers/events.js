@@ -128,7 +128,6 @@ var getMyUserTags = function(myUser){
           console.log("there was an error getting the user tags in neo4j");
           reject(err);
         } else {
-          console.log("The users tags", tags);
           resolve(tags);
         }
       });
@@ -174,7 +173,6 @@ var defineEventTagScore = function(event, tags, userTags){
     eventScore += similarTags[tag];
   }
   event.score = eventScore;
-  console.log("Event Score: ", event.score);
 };
 
 //utility function to sort events based on score.
@@ -279,7 +277,6 @@ exports.getFoursquareVenues = function(events, res, limit) {
       j = i;
     }
   }
-  console.log(indices);
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
