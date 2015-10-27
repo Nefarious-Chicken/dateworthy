@@ -18,15 +18,17 @@ exports.sendDateData = function(req, res, next) {
 
   var tags = {};
 
-  console.log('Tags from client:', req.body.tags);
+  var rawGeo = req.body.geoLocation;
+
+  //reformate geo to follow correct format '37.78,-122.41'
+  var geoLocation = '' + rawGeo.lat.toFixed(2) + ',' + rawGeo.long.toFixed(2);
 
   for(var i=0; i < req.body.tags.length; i++){
     tags[req.body.tags[i]] = 1;
   }
 
   console.log('Tags: ', tags);
-
-  Events.getMatchingEventsNoRest(tags, req, res);
+  Events.getMatchingEventsNoRest(tags, geoLocation, req, res);
 };
 
 /**

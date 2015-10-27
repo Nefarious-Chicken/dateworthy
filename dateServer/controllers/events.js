@@ -181,7 +181,7 @@ var compareEventScores = function(eventA, eventB){
 /**
  * returns the matching events based on a list of tags.
  */
-exports.getMatchingEventsNoRest = function(tags, req, res) {
+exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
   console.log('Routing correctly. The body: ', req.body);
 
   var myUser = {
@@ -233,14 +233,14 @@ exports.getMatchingEventsNoRest = function(tags, req, res) {
               defineEventTagScore(events[i], tags, userTags);
             }
             events.sort(compareEventScores);
-            exports.getFoursquareVenues(events, res, limit);
+            exports.getFoursquareVenues(events, res, limit, geo);
           });
       }
     });
   });
 };
 
-exports.getFoursquareVenues = function(events, res, limit) {
+exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = [];
@@ -274,14 +274,17 @@ exports.getFoursquareVenues = function(events, res, limit) {
     console.log('Specific event');
     console.log(events[indices[i]]._node.properties);
     var searchObj = {
-      ll: '37.78,-122.41',
+      ll: '37.8044,-122.2708',
       categoryId: events[indices[i]]._node.properties.fsCategory,
       intent: 'browse',
       radius: '5000'
     };
-    promises.push(exports.venueSearch(searchObj, indices[i], events, ideas));
-  }
 
+    if(_geoLoaction){
+      searchObj.ll = _geoLoaction;
+    }
+    promises.push(exports.venueSearch(searchObj, i, events, ideas));
+  }
   // Promise.all is a function which will take in an array and runs all promise functions in the array
   // This allows us to have x number of promises run as though they were chained with .then
   // Now we can run a non-hardcoded number of promises!
@@ -342,7 +345,7 @@ exports.removeBunkVenues = function (venues) {
       newVenues.push(venues[i]);
     }
   }
-  console.log("Venues left after debunking: ", newVenues.length);
+  console.log("Venues left after debunking: ", newVenues.length, venues.length);
   if (newVenues.length !== 0 && newVenues){
     return newVenues;
   } else {

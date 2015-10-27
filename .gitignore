@@ -7,6 +7,7 @@ dateServer/secret
 dateClient/platforms/
 dateClient/plugins/
 dateClient/www/lib/
+dateClient/resources/
 node_modules/
 *.log
 

@@ -1,6 +1,6 @@
-angular.module('dateIdea.controllers', ['ngOpenFB'])
+angular.module('dateIdea.controllers', ['ngOpenFB', 'ngCordova'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $location, $rootScope, DateData, UserData, ngFB) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -16,10 +16,14 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   // PLEASE NOTE, in the original code, the scope key value pair had the string 
   // 'email,read_stream,publish_actions' as the value, but it was returning errors. 
   $scope.fbLogin = function () {
+    console.log("trying to get geo location")
+    $ionicPlatform.ready(function() {
+      DateData.setGeoLocation();
+    });
+    
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
         if (response.status === 'connected') {
-        console.log('Facebook login succeeded', response);
         $location.path('/home');
         return response;
       } else {
@@ -39,7 +43,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
       return ngFB.api(obj);
     })
     .then(function(response) {
-      console.log("The response from the promise is", response);
+      
       UserData.updateUserData(response);
       getUserData();
       // TODO: Write a factory function to make the user object persist across all controllers
@@ -141,7 +145,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 
 })
 
-.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData, LikeADate) {
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, $ionicPlatform, FindADate, DateData, LikeADate) {
 
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
@@ -210,12 +214,10 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
-      console.log("The current tags are", $scope.currentTags);
+
       for (prop in $scope.currentTags) {
         tag = $scope.currentTags[prop]
-        console.log("here")
         if(tag !== undefined){
-          console.log("there", tag)
           LikeADate.tag(null, tag, function(err, results){
             if(err){
               console.log(err)
@@ -223,11 +225,13 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
           })
         }
       };
+
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $scope.loadState();
         $location.path('/idea');
       });
+
     } else {
       var nextPath = '/findadate/' + nextQuestionId;
       $location.path(nextPath);
