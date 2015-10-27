@@ -106,9 +106,9 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     $scope.ideas[currentIdea].liked = 1;
     $scope.ideas[currentIdea].disliked = 0;
     var tagnames = DateData.getTags();
-    for (var i = 0; i < tagnames.length; i++) {
-      if(tagnames[i] !== "undefined"){
-        LikeADate.increaseTagWeight(tagnames[i], function(results){console.log(results)});
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
       
@@ -119,9 +119,9 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
     var tagnames = DateData.getTags();
-    for (var i = 0; i < tagnames.length; i++) {
-      if(tagnames[i] !== "undefined"){
-        LikeADate.decreaseTagWeight(tagnames[i], function(results){console.log(results)});
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.decreaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
   }
@@ -143,49 +143,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 
 })
 
-.controller('ProfileQuestionsCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
-
-  $scope.isActive = {};
-  $scope.answers = {};
-  $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
-  $scope.submit = function() {
-    DateData.appendTags($scope.answers);
-
-    for (tag in $scope.answers) {
-      console.log()
-      if($scope.answers[tag] === 1){
-        LikeADate.tag(null, tag, function(err, results){
-          if(err){
-            console.log(err)
-          }
-        })
-      }
-    };
-    
-    //timeout so that the user doesnt think the selection was unselected
-    $timeout($scope.clearSelections, 1000);
-    $location.path('/findadate/0');
-  };
-  
-  $scope.select = function(index) {
-
-    $scope.isActive[index] = !$scope.isActive[index];
-    if($scope.isActive[index]){
-      $scope.answers[$scope.tags[index].tagname] = 1;
-    } else {
-      $scope.answers[$scope.tags[index].tagname] = 0;
-    }
-
-  };
-
-  $scope.clearSelections = function(){
-    $scope.isActive = {};
-    $scope.answers = {};
-  };
-})
-
-
-.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData) {
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData, LikeADate) {
 
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
@@ -251,15 +209,33 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   // the user navigates to and saves data from current survey. 
   $scope.nextQuestion = function(){
     submitSoFar();
-
+    var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
-      console.log("The current tags are", $scope.currentTags);
+      console.log("The current tags arex", $scope.currentTags);
+      for (prop in $scope.currentTags) {
+        tag = $scope.currentTags[prop]
+        console.log("here")
+        if(tag !== undefined){
+          console.log("there", tag)
+          LikeADate.tag(null, tag, function(err, results){
+            if(err){
+              console.log(err)
+            }
+          })
+        }
+      };
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $scope.loadState();
         $location.path('/idea');
       });
+
+      //DateData.appendTags($scope.currentTags);
+
+
+
+
     } else {
       var nextPath = '/findadate/' + nextQuestionId;
       $location.path(nextPath);

@@ -81,7 +81,6 @@ angular.module('dateClient.services', [])
 
     getUserData: function() {
 
-      console.log("Getting user data", this.userData);
       return this.userData;
     }
   };
