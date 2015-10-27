@@ -288,6 +288,9 @@ exports.getTagWeight = function(req, res, next) {
   });
 }
 
+
+//given a user to tag relationship, increase the weight of that relationships.
+//this is used to gauge the weight of date recommendations.
 exports.increaseWeight = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
     // TODO: Gracefully handle "no such user" error somehow.
@@ -309,6 +312,8 @@ exports.increaseWeight = function(req, res, next) {
   });
 }
 
+//given a user to tag relationship, decrease the weight of that relationships.
+//this is used to gauge the weight of date recommendations.
 exports.decreaseWeight = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
     // TODO: Gracefully handle "no such user" error somehow.
