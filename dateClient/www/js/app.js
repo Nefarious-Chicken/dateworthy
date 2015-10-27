@@ -62,12 +62,6 @@ angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateCl
     templateUrl: 'templates/home.html',
     controller: 'AppCtrl'
   })
-  .state('profilequestions', {
-    url: '/profilequestions',
-    templateUrl: 'templates/profilequestions.html',
-    controller: 'ProfileQuestionsCtrl'
-  })
-
   .state('findadate', {
     url: '/findadate/:questionId',
     templateUrl: 'templates/findadate.html',
