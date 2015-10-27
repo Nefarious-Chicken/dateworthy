@@ -203,7 +203,6 @@ User.prototype.getTag = function(tag, callback) {
     query: query,
     params: params,
   }, function(err, results) {
-    console.log(err, results, "PPPPPPPPPPPPPPPPPP")
     callback(err);
     if (!results.length) {
       callback(null, [])
@@ -419,7 +418,6 @@ User.prototype.getFollowingAndOthers = function(callback) {
 
 // Returns all tags a user has associated with themselves
 User.prototype.getAllTags = function(callback) {
-  console.log("Username: ", this.username);
   var query = [
     'MATCH (user:User {username: {thisUsername}})-[:prefers]->(tag:Tag)',
     'RETURN DISTINCT tag'
@@ -541,7 +539,6 @@ User.getMatchingEvents = function(profileString, callback) {
   query.push(where);
   query.push('RETURN event.eventname as event;');
   query = query.join('\n');
-  console.log("Query is: ", query);
   db.cypher({
     query: query,
   }, function(err, results) {

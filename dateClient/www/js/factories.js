@@ -34,7 +34,6 @@ angular.module('dateClient.services', [])
     decreaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
       var disLikeData = {tagname: tagname};
-      console.log("OOOOOOOOOOO)O)O)O)O))O)O)O)OO)OO))O", disLikeData)
       return $http({
         method: 'POST',
         url: '/users/' + userName +'/decreaseWeight/',
@@ -85,12 +84,13 @@ angular.module('dateClient.services', [])
     }
   };
 })
-.factory('DateData', function ($http, $location, $window, UserData){
+.factory('DateData', function ($http, $location, $window, $cordovaGeolocation, UserData){
   return {
 
     tags: {},
     logistics: {},
     dateIdeas: {},
+    geoLocation: null,
 
     appendTags: function (tags){
       for (var tag in tags){
@@ -110,6 +110,23 @@ angular.module('dateClient.services', [])
     getLogistics: function (){
       return this.logistics;
     },
+    setGeoLocation: function (){
+      var posOptions = {timeout: 10000, enableHighAccuracy: false};
+      var context = this;
+      $cordovaGeolocation
+        .getCurrentPosition(posOptions)
+        .then(function (position) {
+          var lat  = position.coords.latitude;
+          var long = position.coords.longitude;
+          context.geoLocation = {lat:lat,long:long};
+        }, function(err) {
+          // error
+        });
+    },
+
+    getGeoLocation: function(){
+      return this.geoLocation;
+    },
 
     setDateIdeas: function (ideas){
       this.dateIdeas = ideas;
@@ -119,7 +136,6 @@ angular.module('dateClient.services', [])
     },
     getConcatenatedData: function () {
       var data = UserData.getUserData();
-      console.log("Email is: ", data.email);
 
       // Convert the tags object into an array, which the server expects. 
       var tagsArray = [];
@@ -128,8 +144,7 @@ angular.module('dateClient.services', [])
           tagsArray.push(this.tags[key])
         }
       };
-      console.log("We're sending these tags to the server:", tagsArray);
-      return {userName: data.email, tags: tagsArray, logistics: this.logistics};
+      return {userName: data.email, tags: tagsArray, logistics: this.logistics, geoLocation: this.geoLocation};
     },
 
 
@@ -141,7 +156,7 @@ angular.module('dateClient.services', [])
 
   };
 })
-.factory('Auth', function ($http, $location){
+.factory('Auth', function ($http, $location, $ionicPlatform){
   return {
     login: function(obj, callback) {
       return $http({

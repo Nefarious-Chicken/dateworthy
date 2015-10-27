@@ -50,7 +50,6 @@ exports.create = function(req, res, next) {
   for (var tag in tags) {
     user[tag] = tags[tag];
   }
-  console.log("About to create user.");
   User.create(user, function(err, user) {
     if (err) {
       if (err instanceof errors.ValidationError) {
@@ -176,8 +175,6 @@ exports.follow = function(req, res, next) {
  */
 exports.tag = function(req, res, next) {
 
-  console.log('Username to find in db: ' + req.params.username);
-  console.log('Tagname to match to in db: ' + req.body.tagname);
 
   User.get(req.params.username, function(err, user) {
     // TODO: Gracefully handle "no such user" error somehow.
@@ -188,7 +185,6 @@ exports.tag = function(req, res, next) {
       // This is the target user, so redirect back to the source user w/
       // an info message?
       if (err) return next(err);
-      console.log("TAG START HHHHHHHHHHHHHHHHHHHHHHHH", tag)
       user.tag(tag, function(err) {
         if (err) return next(err);
         res.redirect(getUserURL(user));
@@ -253,8 +249,6 @@ exports.getAllTags = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
     // TODO Handle error if user doesn't exist
     if (err) return next(err)
-    console.log('Get all tags now using user:');
-    console.log(user);
     user.getAllTags(function(err, tags) {
       if (err) return next(err);
       res.send(tags);
