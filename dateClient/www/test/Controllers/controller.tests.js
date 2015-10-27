@@ -96,46 +96,6 @@ describe('IdeaControllers', function(){
 
 });
 
-
-describe('ProfileQuestionsCtrl', function(){
-  var scope;
-
-  // load the controller's module
-  beforeEach(module('dateIdea.controllers'));
-
-  beforeEach(module('dateClient.services'));
-
-  beforeEach(inject(function($rootScope, $controller) {
-    scope = $rootScope.$new();
-    $controller('ProfileQuestionsCtrl', {$scope: scope});
-  }));
-
-  it('should have obj isActive equal to an empty object and answers equal to {}', function(){
-    expect(scope.isActive).toEqual({});
-    expect(scope.answers).toEqual({});
-  });
-
-
-  it('should have a function select that toggles isActive for a given tag index and toggles the value connected to the tag key between 0 and 1', function(){
-    scope.isActive = {0:true,1:false,2:true};
-    scope.answers = {"Intellectual": 0,"Romantic": 0,"Goofy": 1};
-    scope.select(0);
-    scope.select(1);
-    expect(scope.isActive).toEqual({0:false,1:true,2:true});
-    expect(scope.answers).toEqual({"Intellectual": 0,"Romantic": 1,"Goofy": 1});
-  });
-
-  it('should have a function clearSelections that resets isActive and answers to {}', function(){
-    scope.isActive = {0:true,1:false,2:true};
-    scope.answers = {"Intellectual": 0,"Romantic": 0,"Goofy": 1};
-    scope.clearSelections();
-    expect(scope.isActive).toEqual({});
-    expect(scope.answers).toEqual({});
-  });
-    
-});
-
-
 describe('FindADateCtrl', function(){
   var scope;
   var stateParams;
@@ -158,13 +118,14 @@ describe('FindADateCtrl', function(){
 
   it('should have a function createQuestionObject that formats an object for the factory based off of survey data', function(){
     var question1 = {question: "testSecond", type: "logistics", field: "length", possibilities: ["30 mins", "1 hr", "2 hrs"]};
-    var question2 = {question: "testLast", type: "tag", field: null, possibilities: ["Loud", "Quiet"]};
-    question1.chosenOption = question1.possibilities[0]
-    question2.chosenOption = question2.possibilities[0]
-    var obj = scope.createQuestionObject(question1)
-    var obj2 = scope.createQuestionObject(question2)
-    expect(obj["length"]).toEqual("30 mins");
-    expect(obj2["Loud"]).toEqual(1); 
+    var question2 = {question: "testLast", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]};
+    question1.chosenOption = question1.possibilities[0];
+    question2.chosenOption = question2.possibilities[0];
+    var obj1 = scope.createQuestionObject(question1);
+    var obj2 = scope.createQuestionObject(question2);
+    console.log("obj1 is", obj1);
+    expect(obj1["length"]).toEqual("30 mins");
+    expect(obj2["noiseLevel"]).toEqual("Loud"); 
   });
 
 });
