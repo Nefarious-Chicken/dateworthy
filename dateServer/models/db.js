@@ -9,7 +9,7 @@ var db = new neo4j.GraphDatabase({
 
   //for local change this to 'http://neo4j:password@localhost:7474'
   url: process.env['NEO4J_URL'] || process.env['GRAPHENEDB_URL'] || 
-    'http://neo4j:password@localhost:7474',
+    'http://app42960229:ILOdJGW9N5SoJPBc5qqu@app42960229.sb02.stations.graphenedb.com:24789',
   auth: process.env['NEO4J_AUTH']
 });
 
