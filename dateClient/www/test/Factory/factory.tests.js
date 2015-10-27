@@ -1,29 +1,35 @@
 describe('Friends Unit Tests', function(){
-    var Friends;
-    beforeEach(module('dateClient.services'));
+  var Friends;
+  beforeEach(module('dateClient.services'));
 
-    it('can append active tags and get all tags', inject(function(DateData) {
-        DateData.appendTags({"TestTag": 1, "TestTag2": 0, "TestTag3": 1})
-        expect(DateData.getTags()).toEqual(["TestTag", "TestTag3"]);
-    }));
+  it('can append active tags and get all tags', inject(function(DateData) {
+    DateData.appendTags({"dateGenre": "Romantic", "noiseLevel": "Quiet"})
+    expect(DateData.getTags()).toEqual({"dateGenre": "Romantic", "noiseLevel": "Quiet"});
+  }));
 
-    it('can append logistics and get all logistics', inject(function(DateData) {
+  it('can append logistics and get all logistics', inject(function(DateData) {
+    DateData.appendLogistics({"TestLogistic1": "TestVal1", "TestLogistic2": "TestVal2", "TestLogistic3": "TestVal3"})
+    expect(DateData.getLogistics()).toEqual({"TestLogistic1": "TestVal1", "TestLogistic2": "TestVal2", "TestLogistic3": "TestVal3"});
+  }));
 
-        DateData.appendLogistics({"TestTag": "TestVal", "TestTag2": "TestVal2", "TestTag3": "TestVal3"})
-        expect(DateData.getLogistics()).toEqual({"TestTag": "TestVal", "TestTag2": "TestVal2", "TestTag3": "TestVal3"});
-    }));
+  it('can get and set date ideas', inject(function(DateData) {
+    DateData.setDateIdeas({Idea:"Fish"})
+    expect(DateData.getDateIdeas()).toEqual({Idea:"Fish"});
+  }));
 
-    it('can get and set date ideas', inject(function(DateData) {
-        DateData.setDateIdeas({Idea:"Fish"})
-        expect(DateData.getDateIdeas()).toEqual({Idea:"Fish"});
-    }));
+  it('can get getConcatenatedData', inject(function(DateData) {
+    DateData.appendTags({"dateGenre": "Romantic", "noiseLevel": "Quiet"})
+    DateData.appendLogistics({"TestLogistic1": "TestVal", "TestLogistic2": "TestVal2", "TestLogistic3": "TestVal3"})
+    expect(DateData.getConcatenatedData().tags).toEqual(["Romantic", "Quiet"]);
+    expect(DateData.getConcatenatedData().logistics).toEqual({"TestLogistic1": "TestVal", "TestLogistic2": "TestVal2", "TestLogistic3": "TestVal3"});
+  }));
 
-    it('can get getConcatenatedData and clear data', inject(function(DateData) {
-        DateData.appendTags({"TestTag": 1, "TestTag2": 0, "TestTag3": 1})
-        DateData.appendLogistics({"TestTag": "TestVal", "TestTag2": "TestVal2", "TestTag3": "TestVal3"})
-        expect(DateData.getConcatenatedData()).toEqual({tags: ["TestTag", "TestTag3"], logistics: {"TestTag": "TestVal", "TestTag2": "TestVal2", "TestTag3": "TestVal3"}});
-        DateData.clearData()
-        expect(DateData.getConcatenatedData()).toEqual({tags: [], logistics: {}})
-    }));
-    
+  it('can clear data', inject(function(DateData) {
+    DateData.appendTags({"dateGenre": "Romantic", "noiseLevel": "Quiet"})
+    DateData.appendLogistics({"TestLogistic1": "TestVal", "TestLogistic2": "TestVal2", "TestLogistic3": "TestVal3"})
+    DateData.clearData()
+    expect(DateData.getConcatenatedData().tags).toEqual([]);
+    expect(DateData.getConcatenatedData().logistics).toEqual({});
+  }))
+  
 });

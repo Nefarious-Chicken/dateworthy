@@ -89,7 +89,7 @@ angular.module('dateClient.services', [])
 
 
     clearData: function () {
-      this.tags = [];
+      this.tags = {};
       this.logistics = {};
       this.dateIdeas = {};
     }
