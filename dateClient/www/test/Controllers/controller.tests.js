@@ -99,21 +99,29 @@ describe('IdeaControllers', function(){
 describe('FindADateCtrl', function(){
   var scope;
   var stateParams;
+  var location;
 
   // load the controller's module
   beforeEach(module('dateIdea.controllers'));
 
   beforeEach(module('dateClient.services'));
 
-  beforeEach(inject(function($injector, $rootScope, $controller) {
+  beforeEach(inject(function($injector, $rootScope, $controller, _$location_) {
     scope = $rootScope.$new();
     stateParams = { questionId: 0 };
     ionicHistory = "foo";
-    $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $ionicHistory: ionicHistory});
+    location = _$location_;
+    $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $ionicHistory: ionicHistory, $location: location});
   }));
 
   it('should have obj currentQuestion equal to the current question', function(){
     expect(scope.currentQuestion.question).toBeDefined();
+  });
+
+  it('should update the URL when someone clicks "Next" in the findadate survey', function() {
+    location.path('/findadate/0');
+    scope.nextQuestion();
+    expect(location.path()).toEqual('/findadate/1');
   });
 
   it('should have a function createQuestionObject that formats an object for the factory based off of survey data', function(){
