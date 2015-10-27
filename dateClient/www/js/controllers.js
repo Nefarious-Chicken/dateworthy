@@ -80,7 +80,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 })
 
 
-.controller('IdeaCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
+.controller('IdeasCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
 
   $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
@@ -111,8 +111,6 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
         LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
-      
-    
   }
 
   $scope.dislike = function() {
@@ -138,7 +136,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     $scope.ideas = [];
     $scope.currentIdea = 0;
     DateData.clearData();
-    $location.path('/');
+    $location.path('/home');
   };
 
 })
@@ -212,7 +210,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
-      console.log("The current tags arex", $scope.currentTags);
+      console.log("The current tags are", $scope.currentTags);
       for (prop in $scope.currentTags) {
         tag = $scope.currentTags[prop]
         console.log("here")
@@ -230,12 +228,6 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
         $scope.loadState();
         $location.path('/idea');
       });
-
-      //DateData.appendTags($scope.currentTags);
-
-
-
-
     } else {
       var nextPath = '/findadate/' + nextQuestionId;
       $location.path(nextPath);
@@ -243,9 +235,46 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
     }
   };
 
-  
-
   $scope.loadState();
+})
+
+.controller('IdeaCtrl', function($location, $ionicHistory, $scope, $stateParams, DateData, LikeADate) {
+  $scope.ideas = DateData.getDateIdeas();
+  $scope.currentIdea = $stateParams.ideaId;
+  $scope.idea = $scope.ideas[$scope.currentIdea];
+
+  // Make sure $scope.userData is always loaded, even when page is refreshed
+  $scope.$on('$stateChangeSuccess', function () {
+    $scope.ideas = DateData.getDateIdeas();
+    console.log($scope.ideas);
+  });
+
+  $scope.like = function() {
+    $scope.ideas[currentIdea].liked = 1;
+    $scope.ideas[currentIdea].disliked = 0;
+    var tagnames = DateData.getTags();
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
+      }
+    };
+  }
+
+  $scope.dislike = function() {
+    $scope.ideas[$scope.currentIdea].disliked = 1;
+    $scope.ideas[$scope.currentIdea].liked = 0;  
+    var tagnames = DateData.getTags();
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.decreaseTagWeight(tagnames[prop], function(results){console.log(results)});
+      }
+    };
+  };
+
+  $scope.goBack = function() {
+    $ionicHistory.goBack();
+  };
+
 });
 
 

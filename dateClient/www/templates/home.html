@@ -1,7 +1,11 @@
 <ion-view view-title="Home">
+  <ion-header-bar class="bar bar-header">
+    <div class="h1 title">Dateworthy</div>
+  </ion-header-bar>
   <ion-content>
-    <h2>Home</h2>
-    <h4>Hi, {{ userData.firstName }}. What kind of date do you want to go on?</h4>
+    <div class="item item-text-wrap">
+      <p>Hi, {{ userData.firstName }}. What kind of date do you want to go on today?</p>
+    </div>
     <div class="item">
       <a class="button button-block button-positive" type="submit" href="#/findadate/0">Talk me through it.</a>
     </div>

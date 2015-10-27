@@ -9300,3 +9300,9 @@ a.button {
 
 .button-like {
   float: right; }
+
+.button-prev {
+  float: left; }
+
+.button-next {
+  float: right; }

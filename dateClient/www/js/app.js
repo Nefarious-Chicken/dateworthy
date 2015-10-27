@@ -67,9 +67,14 @@ angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateCl
     templateUrl: 'templates/findadate.html',
     controller: 'FindADateCtrl'
   })
-  .state('idea', {
+  .state('ideas', {
     url: '/idea',
     templateUrl: 'templates/idea.html',
+    controller: 'IdeasCtrl'
+  })
+  .state('idea', {
+    url: '/idea/:ideaId',
+    templateUrl: 'templates/idea-single.html',
     controller: 'IdeaCtrl'
   });
   // if none of the above states are matched, use this as the fallback

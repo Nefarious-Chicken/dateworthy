@@ -8,7 +8,7 @@ describe('IdeaControllers', function(){
 
   beforeEach(inject(function($injector, $rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller('IdeaCtrl', {$scope: scope});
+    $controller('IdeasCtrl', {$scope: scope});
   }));
 
 
