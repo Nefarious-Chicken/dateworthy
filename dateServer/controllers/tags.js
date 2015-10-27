@@ -19,10 +19,10 @@ exports.sendDateData = function(req, res, next) {
   var tags = {};
 
   var rawGeo = req.body.geoLocation;
-
-  //reformate geo to follow correct format '37.78,-122.41'
-  var geoLocation = '' + rawGeo.lat.toFixed(2) + ',' + rawGeo.long.toFixed(2);
-
+  if(rawGeo !== null){
+    //reformate geo to follow correct format '37.78,-122.41'
+    var geoLocation = '' + rawGeo.lat.toFixed(2) + ',' + rawGeo.long.toFixed(2);
+  }
   for(var i=0; i < req.body.tags.length; i++){
     tags[req.body.tags[i]] = 1;
   }
