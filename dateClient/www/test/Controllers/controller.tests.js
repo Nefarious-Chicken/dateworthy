@@ -127,6 +127,7 @@ describe('FindADateCtrl', function(){
     ionicPlatform = "bar";
     location = _$location_;
     $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $cordovaGeolocation: cordovaGeolocation, $ionicHistory: ionicHistory, $ionicPlatform: ionicPlatform, $location: location});
+
   }));
 
   it('should have obj currentQuestion equal to the current question', function(){
