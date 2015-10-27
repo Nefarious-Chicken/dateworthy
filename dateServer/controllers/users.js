@@ -188,6 +188,7 @@ exports.tag = function(req, res, next) {
       // This is the target user, so redirect back to the source user w/
       // an info message?
       if (err) return next(err);
+      console.log("TAG START HHHHHHHHHHHHHHHHHHHHHHHH", tag)
       user.tag(tag, function(err) {
         if (err) return next(err);
         res.redirect(getUserURL(user));
@@ -271,7 +272,7 @@ exports.getTagWeight = function(req, res, next) {
     // This is the source user, so e.g. 404 page?
 
     if (err) return next(err);
-    Tag.get(req.body.tagname, function(err, tag) {
+    Tag.get(req.body.tagName, function(err, tag) {
 
       // TODO: Gracefully handle "no such user" error somehow.
       // This is the target user, so redirect back to the source user w/

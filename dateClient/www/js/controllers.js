@@ -80,7 +80,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 })
 
 
-.controller('IdeaCtrl', function($scope, $timeout, $location, DateData) {
+.controller('IdeaCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
 
   $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
@@ -102,17 +102,28 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   };
 
   $scope.like = function() {
-    $scope.ideas[$scope.currentIdea].liked = 1;
-    $scope.ideas[$scope.currentIdea].disliked = 0;
-    // TODO: Write a factory that talks to the server and updates the server.
-    // Maybe do this when the user hits the NEXT IDEA button?
+    var currentIdea = $scope.currentIdea;
+    $scope.ideas[currentIdea].liked = 1;
+    $scope.ideas[currentIdea].disliked = 0;
+    var tagnames = DateData.getTags();
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
+      }
+    };
+      
+    
   }
 
   $scope.dislike = function() {
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
-    // TODO: Write a factory that talks to the server and updates the server.
-    // Maybe do this when the user hits the NEXT IDEA button?
+    var tagnames = DateData.getTags();
+    for (var prop in tagnames) {
+      if(tagnames[prop] !== undefined){
+        LikeADate.decreaseTagWeight(tagnames[prop], function(results){console.log(results)});
+      }
+    };
   }
 
   $scope.isLast = function( idea ) {
@@ -131,7 +142,8 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   };
 
 })
-.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData) {
+
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData, LikeADate) {
 
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
@@ -197,15 +209,33 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   // the user navigates to and saves data from current survey. 
   $scope.nextQuestion = function(){
     submitSoFar();
-
+    var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
-      console.log("The current tags are", $scope.currentTags);
+      console.log("The current tags arex", $scope.currentTags);
+      for (prop in $scope.currentTags) {
+        tag = $scope.currentTags[prop]
+        console.log("here")
+        if(tag !== undefined){
+          console.log("there", tag)
+          LikeADate.tag(null, tag, function(err, results){
+            if(err){
+              console.log(err)
+            }
+          })
+        }
+      };
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         DateData.setDateIdeas(data);
         $scope.loadState();
         $location.path('/idea');
       });
+
+      //DateData.appendTags($scope.currentTags);
+
+
+
+
     } else {
       var nextPath = '/findadate/' + nextQuestionId;
       $location.path(nextPath);

@@ -186,31 +186,61 @@ User.prototype.del = function(callback) {
   });
 };
 
-// Associates this user with a certain tag
-User.prototype.tag = function(tag, callback) {
+User.prototype.getTag = function(tag, callback) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
-    'MERGE (user) -[rel:prefers{weight:1}]-> (tag)',
-  ].join('\n')
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'RETURN user',
+  ].join('\n');
 
   var params = {
     thisUsername: this.username,
     targetTagname: tag.tagname,
   };
 
-  // console.log('Query for tagging:');
-  // console.log(query);
-
-  // console.log('Params for query:');
-  // console.log(query);
-
   db.cypher({
     query: query,
     params: params,
-  }, function(err) {
+  }, function(err, results) {
+    console.log(err, results, "PPPPPPPPPPPPPPPPPP")
     callback(err);
+    if (!results.length) {
+      callback(null, [])
+    } else {
+      callback(null, results);
+    }
   });
+};
+
+// Associates this user with a certain tag
+User.prototype.tag = function(tag, callback) {
+  
+  var query = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'CREATE (user) -[rel:prefers{weight: 1}]-> (tag)',
+  ].join('\n')
+
+  var params = {
+    thisUsername: this.username,
+    targetTagname: tag.tagname,
+  };
+  this.getTag(tag, function(err, results){
+    if(results === undefined){
+
+    } else {
+      if (results.length === 0){
+
+        db.cypher({
+          query: query,
+          params: params,
+        }, function(err) {
+          callback(err);
+        });
+      }
+    }
+  })
 };
 
 // Dissociates this user from a certain tag
