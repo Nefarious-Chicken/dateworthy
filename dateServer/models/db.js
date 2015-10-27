@@ -3,14 +3,14 @@
 
 var neo4j = require('neo4j');
 //http://app42960229:ILOdJGW9N5SoJPBc5qqu@app42960229.sb02.stations.graphenedb.com:24789
+//http://neo4j:password@localhost:7474
 
 var db = new neo4j.GraphDatabase({
   // Support specifying database info via environment variables,
   // but assume Neo4j installation defaults.
 
-  //for local change this to 'http://neo4j:password@localhost:7474'
-  url: process.env['NEO4J_URL'] || process.env['GRAPHENEDB_URL'] || 
-    'http://app42960229:ILOdJGW9N5SoJPBc5qqu@app42960229.sb02.stations.graphenedb.com:24789',
+  url: process.env['NEO4J_URL'] || process.env['GRAPHENEDB_URL'] ||
+    'http://neo4j:password@localhost:7474',
   auth: process.env['NEO4J_AUTH']
 });
 

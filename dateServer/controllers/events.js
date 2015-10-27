@@ -5,6 +5,7 @@ var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
 var EventSQL = require('../models/eventSQL');
+var VenueSQL = require('../models/venueSQL');
 var Promise = require('bluebird');
 var config = require('../secret/config');
 var user = require('../models/user');
@@ -375,10 +376,12 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
-    console.log(req.body.eventID);
+  console.log(req.body.eventID);
 
-  EventSQL.post(req.body.eventID, req.body.eventName, function(err, event){
-    if(err) return next(err);
-    res.send(event);
-  })
+  EventSQL.post(req.body.eventID, req.body.eventName)
+  .then(function(event){
+    res.status(201).send(event);
+  });
+
 };
+

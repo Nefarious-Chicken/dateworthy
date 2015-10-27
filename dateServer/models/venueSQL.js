@@ -9,22 +9,34 @@ var seqVenues = db.tables.venues;
 
 module.exports = {
 
+  // Have it return the promise in case we want to chain more to the get
+  // Added seqVenues.sync() to create the table if it doesn't exist before trying to search
   get: function (venueName) {
-    seqVenues.findOne({ where: {venueName: venueName} }).then(function(venue) {
-      return venue
+    return seqVenues.sync()
+    .then(function(){
+      return seqVenues.findOne({ where: {venueName: venueName} });
+    })
+    .then(function(venue) {
+      return venue;
     })
   },
-  post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress, res) {
+  
+  post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress) {
     console.log(venueID)
-    seqVenues.sync().then(function(){
-      return seqVenues.create({
-        venueID: venueID || "null",
-        venueName: venueName || "null",
-        venueHours: venueHours || "null",
-        venueLatitude: venueLatitude || 0,
-        venueLongitude: venueLongitude || 0,
-        venueAddress: venueAddress || "null"
-      })
-    })
+
+    return seqVenues.sync()
+    .then(function(){
+      return seqVenues.findOrCreate({
+        where: { venueName: venueName },
+        defaults: {
+          venueID: venueID || "null",
+          venueName: venueName || "null",
+          venueHours: venueHours || "null",
+          venueLatitude: venueLatitude || 0,
+          venueLongitude: venueLongitude || 0,
+          venueAddress: venueAddress || "null"
+        }
+      });
+    });
   }
 }

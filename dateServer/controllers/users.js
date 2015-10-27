@@ -333,16 +333,16 @@ exports.decreaseWeight = function(req, res, next) {
 /*--------------------SQL---------------*/
 
 exports.signupUserSQL = function(req, res, next){
-  userAuthSQL.post(req.body.userID, req.body.username, req.body.password, function(err, user){
-    if(err) return next(err);
-    res.send(user);
-  })
+  userAuthSQL.post(req.body.userID, req.body.userName)
+  .then(function(user){
+    res.status(201).send(user);
+  });
 }
 
 exports.createUserPrefsSQL = function(req, res, next){
-  userPrefsSQL.post(req.body.userID, req.body.likeDislike, function(err, userPref){
-    if(err) return next(err);
-    res.send(userPref);
-  })
+  userPrefsSQL.post(req.body.userID, req.body.dateIdeaID, req.body.likeDislike)
+  .then(function(user){
+    res.status(201).send(user);
+  });
 }
 
