@@ -10,17 +10,31 @@ var seqEvents = db.tables.events;
 module.exports = {
 
   get: function (eventName) {
-    seqEvents.findOne({ where: {eventName: eventName} }).then(function(theEvent) {
-      return theEvent
+    // Return the promise in case we want to chain more on to this
+    return seqEvents.findOne({ where: {eventName: eventName} }).then(function(event) {
+      return event;
     })
   },
   post: function (eventID, eventName, res) {
     console.log(eventName)
-    seqEvents.sync().then(function(){
-      return seqEvents.create({
-        eventID: eventID,
-        eventName: eventName
-      })
+
+    this.get(eventName)
+    .then(function(event){
+      if(!event){
+        console.log('Creating the event in the db');
+        seqEvents.sync().then(function(){
+          return seqEvents.create({
+            eventID: eventID,
+            eventName: eventName
+          })
+        })
+        .then(function(newEvent) {
+          res.status(201).send(newEvent);
+        });
+      } else {
+        console.log('The event already exists, no need to create it');
+        res.status(200).send();
+      }
     })
   }
 }
