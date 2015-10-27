@@ -97,16 +97,6 @@ exports.untag = function(req, res, next) {
   });
 };
 
-
-exports.getMatchingEvents = function(req, res, next) {
-  console.log('Routing correctly');
-  Event.getMatchingEvents(req.body.profile, function(err, events) {
-    if (err) return next(err);
-    exports.getFoursquareVenues(events, res);
-    // res.send(events);
-  });
-};
-
 //Returns the tags that correspond to the user in the getMatchingEventsNoRest request.
 var getMyUserTags = function(myUser){
   console.log("Getting the user: ", myUser.username);
