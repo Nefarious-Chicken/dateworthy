@@ -11,7 +11,12 @@ module.exports = {
 
   get: function (eventName) {
     // Return the promise in case we want to chain more on to this
-    return seqEvents.findOne({ where: {eventName: eventName} }).then(function(event) {
+    // Added seqEvents.sync() to create the table if it doesn't exist before trying to search
+    return seqEvents.sync()
+    .then(function(){ 
+      return seqEvents.findOne({ where: {eventName: eventName} });
+    })
+    .then(function(event) {
       return event;
     })
   },
@@ -22,7 +27,8 @@ module.exports = {
     .then(function(event){
       if(!event){
         console.log('Creating the event in the db');
-        seqEvents.sync().then(function(){
+        seqEvents.sync()
+        .then(function(){
           return seqEvents.create({
             eventID: eventID,
             eventName: eventName
@@ -35,6 +41,6 @@ module.exports = {
         console.log('The event already exists, no need to create it');
         res.status(200).send();
       }
-    })
+    });
   }
 }

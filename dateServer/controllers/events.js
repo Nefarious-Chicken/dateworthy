@@ -376,7 +376,7 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
-    console.log(req.body.eventID);
+  console.log(req.body.eventID);
 
   EventSQL.post(req.body.eventID, req.body.eventName, res);
 };
@@ -384,8 +384,6 @@ exports.createEventSQL = function(req, res, next){
 exports.createVenueSQL = function(req, res, next){
   console.log(req.body.venueID);
 
-  VenueSQL.post(req.body.venueID, req.body.venueName, req.body.venueHours, req.body.venueLongitude, req.body.venueLatitude, req.body.venueAddress, function(err, venue){
-    if(err) return next(err);
-    res.send(venue);
-  })
+  VenueSQL.post(req.body.venueID, req.body.venueName, req.body.venueHours, req.body.venueLongitude, req.body.venueLatitude, req.body.venueAddress, res)
 }
+
