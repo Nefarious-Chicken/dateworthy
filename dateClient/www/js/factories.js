@@ -1,6 +1,9 @@
 angular.module('dateClient.services', [])
 .factory('FindADate', function ($http, $location, $window) {
   return {
+    // you need to convert the tags object into an array.
+    // { loudness: quiet , genre: intellectual }
+    // turn this into ['quiet', 'intellectual'];
     sendDateData: function(surveyData, callback){
       return $http({
         method: 'POST',
@@ -17,7 +20,6 @@ angular.module('dateClient.services', [])
   return {
     userData: {},
     updateUserData: function(obj) {
-      //console.log("The user Data: ",obj);
       for (var prop in obj) {
         if (prop === "name") {
           this.userData.firstName = obj[prop].split(' ')[0];
@@ -41,22 +43,20 @@ angular.module('dateClient.services', [])
 .factory('DateData', function ($http, $location, $window, UserData){
   return {
 
-    tags: [],
+    tags: {},
     logistics: {},
     dateIdeas: {},
 
     appendTags: function (tags){
       for (var tag in tags){
-        if (tags[tag] === 1){
-          this.tags.push(tag);
+        if (tag !== "undefined" && !this.tags.hasOwnProperty(tag)){
+          this.tags[tag] = tags[tag];
         }
       }
     },
     getTags: function (){
       return this.tags;
     },
-
-
     appendLogistics: function (logistics){
       for (var logistic in logistics){
         this.logistics[logistic] = logistics[logistic];
@@ -65,7 +65,6 @@ angular.module('dateClient.services', [])
     getLogistics: function (){
       return this.logistics;
     },
-
 
     setDateIdeas: function (ideas){
       this.dateIdeas = ideas;
@@ -76,7 +75,16 @@ angular.module('dateClient.services', [])
     getConcatenatedData: function () {
       var data = UserData.getUserData();
       console.log("Email is: ", data.email);
-      return {userName: data.email, tags: this.tags, logistics: this.logistics};
+
+      // Convert the tags object into an array, which the server expects. 
+      var tagsArray = [];
+      for (var key in this.tags) {
+        if (this.tags[key] !== undefined) {
+          tagsArray.push(this.tags[key])
+        }
+      };
+      console.log("We're sending these tags to the server:", tagsArray);
+      return {userName: data.email, tags: tagsArray, logistics: this.logistics};
     },
 
 
