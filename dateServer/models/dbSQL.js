@@ -14,8 +14,8 @@ var userAuth = sequelize.define('userAuth', {
 });
 
 var userPrefs = sequelize.define('userPrefs', {
-  userID: { type: Sequelize.STRING, primaryKey: true, unique: true},
-  likeDislike: Sequelize.BOOLEAN,
+  // userID: { type: Sequelize.STRING, primaryKey: true, unique: true},
+  likeDislike: Sequelize.INTEGER,
 },
 {
     timestamps: false
@@ -50,6 +50,7 @@ var events = sequelize.define('events', {
 });
 
 userPrefs.belongsTo(userAuth);
+userPrefs.belongsTo(dateIdeas);
 dateIdeas.belongsTo(events);
 dateIdeas.belongsTo(venues);
 userPrefs.belongsToMany(dateIdeas, {through: 'UserPrefDateIdeas'});

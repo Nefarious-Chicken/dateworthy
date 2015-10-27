@@ -20,27 +20,20 @@ module.exports = {
       return event;
     })
   },
-  post: function (eventID, eventName, res) {
+  post: function (eventID, eventName) {
     console.log(eventName)
 
-    this.get(eventName)
-    .then(function(event){
-      if(!event){
-        console.log('Creating the event in the db');
-        seqEvents.sync()
-        .then(function(){
-          return seqEvents.create({
-            eventID: eventID,
-            eventName: eventName
-          })
-        })
-        .then(function(newEvent) {
-          res.status(201).send(newEvent);
-        });
-      } else {
-        console.log('The event already exists, no need to create it');
-        res.status(200).send();
-      }
+    // Return the promise in case we want to chain more on to this
+    // This way we don't have to pass in res or callback to this function
+    return seqEvents.sync()
+    .then(function(){
+      return seqEvents.findOrCreate({
+        where: { eventName: eventName },
+        defaults: {
+          eventID: eventID,
+          eventName: eventName
+        }
+      });
     });
   }
 }
