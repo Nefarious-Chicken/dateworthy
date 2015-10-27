@@ -281,13 +281,15 @@ exports.getFoursquareVenues = function(events, res, limit) {
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
     console.log('Search Index: ' + indices[i] + ', Event Category: ' + events[indices[i]]._node.properties.venueCategory);
+    console.log('Specific event');
+    console.log(events[indices[i]]._node.properties);
     var searchObj = {
       ll: '37.78,-122.41',
       categoryId: events[indices[i]]._node.properties.fsCategory,
       intent: 'browse',
       radius: '5000'
     };
-    promises.push(exports.venueSearch(searchObj, i, events, ideas));
+    promises.push(exports.venueSearch(searchObj, indices[i], events, ideas));
   }
 
   // Promise.all is a function which will take in an array and runs all promise functions in the array
@@ -321,7 +323,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
         var venueId = venues[venueIndex].id;
         exports.getFoursquareImageForVenue(venueId, {})
         .then(function(venueImage) {
-          var idea = {idea: events[eventIndex]._node.properties.event + ' at ' + venues[venueIndex].name, liked: 0, disliked: 0, imgUrl: venueImage};
+          var idea = {idea: events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name, liked: 0, disliked: 0, imgUrl: venueImage};
           ideas.ideaArray.push(idea);
           resolve(ideas);
         });
@@ -332,12 +334,12 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
 };
 
 
-// This function returns venues that have a tipCount of over 10.
+// This function returns venues that have a checkinsCount of over 30.
 // This increases the chance that the venue will have a bestPhoto to show to the user.
 exports.removeBunkVenues = function (venues) {
   var newVenues = [];
   for (var i = 0; i < venues.length; i++) {
-    if (venues[i].stats.tipCount > 10) {
+    if (venues[i].stats.checkinsCount > 30) {
       newVenues.push(venues[i]);
     }
   }

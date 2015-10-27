@@ -20,13 +20,15 @@ exports.seedEvents = function(callback) {
   *     venueCategory - the semantic Foursquare category tied to a categoryID (e.g. Park);
   */
   var props = [
-    'eventname: csvLine.event + " at " + csvLine.venueCategory,',
+    'eventname: csvLine.event + " " + csvLine.preposition + " " + csvLine.venueCategory,',
     'fsCategory: csvLine.fsCategory,',
     'event: csvLine.event,',
-    'venueCategory: csvLine.venueCategory'
+    'venueCategory: csvLine.venueCategory,',
+    'preposition: csvLine.preposition'
   ].join(' ');
 
   // General query for reading each line from the csv and creating an Event node based on line contents
+  // http://dateworthy.heroku.com/events.csv
   var query = [
     'LOAD CSV WITH HEADERS FROM "http://dateworthy.heroku.com/events.csv" AS csvLine',
     'CREATE (event:Event { ' + props + ' } )'

@@ -8,9 +8,9 @@ var events = require('./events');
 * JSON Object will be formatted as below:
 *   { allEvents: 
 *     [
-*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
-*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
-*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event },
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event, preposition: preposition },
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event, preposition: preposition },
+*       { eventname: event + ' at ' + venueCategory, tags: ['tag1', 'tag2', ...], fsCategory: fsCategory, venueCategory: venueCategory, event: event, preposition: preposition },
 *       ...
 *     ]
 *   }
@@ -36,11 +36,13 @@ var createRelationshipJSON = function(filename) {
         var fsCategory = lineData.shift();
         var venueCategory = lineData.shift();
         var event = lineData.shift();
+        var preposition = lineData.shift();
         var eventJSON = {
           fsCategory: fsCategory,
           eventname: event + ' at ' + venueCategory,
           venueCategory: venueCategory,
           event: event,
+          preposition: preposition,
           tags: _.filter(lineData, function(tag){
             return tag !== ''
           })

@@ -2,6 +2,7 @@
 // Instance of neo4j db used by all models
 
 var neo4j = require('neo4j');
+//http://app42960229:ILOdJGW9N5SoJPBc5qqu@app42960229.sb02.stations.graphenedb.com:24789
 
 var db = new neo4j.GraphDatabase({
   // Support specifying database info via environment variables,
