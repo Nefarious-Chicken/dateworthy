@@ -321,9 +321,18 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
         var venues = exports.removeBunkVenues(tempVenues);
         var venueIndex = Math.floor(Math.random() * venues.length);
         var venueId = venues[venueIndex].id;
-        exports.getFoursquareImageForVenue(venueId, {})
-        .then(function(venueImage) {
-          var idea = {idea: events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name, liked: 0, disliked: 0, imgUrl: venueImage};
+        exports.getFourSquareVenueData(venueId, {})
+        .then(function(venueData) {
+          var idea = {};
+          for (var key in venueData) {
+            idea[key] = venueData[key]
+          }
+          idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+          idea.liked = 0;
+          idea.disliked = 0;
+          if (venueData.hasOwnProperty('bestPhoto')) {
+            idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
+          };
           ideas.ideaArray.push(idea);
           resolve(ideas);
         });
@@ -353,24 +362,21 @@ exports.removeBunkVenues = function (venues) {
 };
 
 // This function grabs the bestPhoto from the foursquare venue search. If there's no photo, set it to null.
-exports.getFoursquareImageForVenue = function (venueId, searchObj) {
-  var imagePromise = new Promise(function(resolve, reject) {
+exports.getFourSquareVenueData = function (venueId, searchObj) {
+  var venuePromise = new Promise(function(resolve, reject) {
     foursquare.venues.venue(venueId, searchObj, function(err, result) {
       if (err) {
-        console.log("There was an error getting the foursquare image", err);
+        console.log("There was an error getting the foursquare data", err);
         reject(err);
       } else {
-        var venueImage;
-        if (result.response.venue.hasOwnProperty('bestPhoto')) {
-          venueImage = result.response.venue.bestPhoto.prefix + result.response.venue.bestPhoto.width + 'x' + result.response.venue.bestPhoto.height + result.response.venue.bestPhoto.suffix;
-        } else {
-          venueImage = null;
-        }
-        resolve(venueImage);
+        var venueObj;
+        venueObj = result.response.venue;
+        console.log(venueObj);
+        resolve(venueObj);
       }
     });
   });
-  return imagePromise;
+  return venuePromise;
 };
 
 /*--------------------SQL---------------*/

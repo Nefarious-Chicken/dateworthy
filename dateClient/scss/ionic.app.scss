@@ -21,13 +21,12 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
-
 .like-dislike .button {
   border-radius: 50%;
   -webkit-border-radius: 50%;
   width: 47px;
   height: 47px;
-  min-width: auto;
+  min-width: auto; 
   min-height: auto;
 }
 
@@ -36,5 +35,12 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 }
 
 .button-like {
+  float: right;
+}
+
+.button-prev {
+  float: left;
+}
+.button-next {
   float: right;
 }

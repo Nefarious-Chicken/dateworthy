@@ -1,0 +1,39 @@
+<ion-view view-title="dateidea">
+  <ion-header-bar class="bar bar-header">
+    <button class="button button-clear" ng-click="goBack()"><i class="ion-ios-arrow-back"></i></button>
+    <div class="h1 title">More Details</div>
+  </ion-header-bar>
+  <ion-content ng-cloak>
+    <div class="card date-idea" ng-model="idea">
+      <div class="idea item item-text-wrap">
+        <h2>{{idea.idea}}</h2>
+      </div>
+      <div ng-if="idea.imgUrl" class="item item-image">
+        <img src="{{idea.imgUrl}}" />
+      </div>
+      <div class="item item-text-wrap">
+        <!-- <p>{{idea.location}}</p> -->
+        <h3>{{idea.name}}</h3>
+        <p class="address" ng-if="idea.location.address">
+          {{idea.location.address}}<br />
+          {{idea.location.city}}, {{idea.location.state}} {{idea.location.postalCode}}
+        </p>
+        <p class="phone" ng-if="idea.contact.formattedPhone">
+          <strong>Phone:</strong> {{idea.contact.formattedPhone}}
+        </p>
+        <p ng-if="idea.description">
+          {{idea.description}}
+        </p>
+        <p class="fs-link" ng-if="idea.canonicalUrl">
+          <a ng-href="{{idea.canonicalUrl}}">Open in Foursquare</a>
+        </p>
+        <!-- <p>{{idea.hours}} -->
+      </div>
+      <div class="item like-dislike">
+        <a class="button button-assertive button-dislike" ng-click="dislike()" ng-class="{'button-outline' : idea.disliked == '0'}"><i class="icon ion-close-round"></i></a>
+        <a class="button button-balanced button-like" ng-click="like()" ng-class="{'button-outline' : idea.liked == '0'}"><i class="icon ion-checkmark-round"></i></a>
+      </div>
+    </div>
+    
+  </ion-content>
+</ion-view>

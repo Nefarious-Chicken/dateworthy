@@ -1,14 +1,17 @@
 <ion-view view-title="findadate">
+  <ion-header-bar class="bar bar-header">
+    <div class="h1 title"><i class="ion-erlenmeyer-flask royal"></i> Date Formula Picker</div>
+  </ion-header-bar>
   <ion-content>
-    <h2>Date formula picker</h2>
-    <h4></h4>
     <ion-item>
-      {{currentQuestion.question}}
-      <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
-      <div class="item">
-        <a class="button" type="submit" ng-click="prevQuestion()">Back</a>
-        <a class="button button-positive" type="submit" ng-click="nextQuestion()">Next</a>
+      <h2>{{currentQuestion.question}}</h2>
+      <div class="card">
+        <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
       </div>
     </ion-item>
   </ion-content>
+  <div class="bar bar-footer">
+      <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i> Back</button>
+      <button class="button button-small button-clear button-positive" type="submit" ng-click="nextQuestion()">Next <i class="ion-ios-arrow-forward"></i></button>
+  </div>
 </ion-view>
