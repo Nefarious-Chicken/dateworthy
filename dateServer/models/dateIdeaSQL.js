@@ -14,7 +14,6 @@ module.exports = {
   get: function (dateIdeaID) {
     return seqDateIdeas.sync()
     .then(function(){
-      console.log("Here before find");
       return seqDateIdeas.findOne({ where: {dateIdeaID: dateIdeaID} })
     })
     .then(function(dateIdea) {
