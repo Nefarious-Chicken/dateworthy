@@ -10,8 +10,8 @@ var seqEvents = db.tables.events;
 module.exports = {
 
   get: function (eventName) {
-    seqEvents.findOne({ where: {eventName: eventName} }).then(function(user) {
-      
+    seqEvents.findOne({ where: {eventName: eventName} }).then(function(theEvent) {
+      return theEvent
     })
   },
   post: function (eventID, eventName, res) {

@@ -13,6 +13,7 @@ module.exports = {
     seqUserAuth.findOne({ where: {userName: userName} }).then(function(user) {
 
     });
+
   },
   post: function (userID, userName, res) {
     seqUserAuth.sync().then(function(){

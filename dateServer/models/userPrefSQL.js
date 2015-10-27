@@ -11,7 +11,7 @@ module.exports = {
 
   get: function (userName) {
     seqUserPrefs.findOne({ where: {userName: userName} }).then(function(user) {
-      
+      return user
     })
   },
   post: function (userID, likeDislike, res) {

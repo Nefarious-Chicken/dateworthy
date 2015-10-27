@@ -16,6 +16,50 @@ angular.module('dateClient.services', [])
     },
   };
 })
+.factory('LikeADate', function ($http, $location, $window, UserData, DateData) {
+  
+  return {
+    increaseTagWeight: function(tagname, callback){
+      var userName = UserData.getUserData().email;
+      var likeData = {tagname: tagname};
+      return $http({
+        method: 'POST',
+        url: '/users/' + userName +'/increaseWeight/',
+        data: likeData
+      })
+      .then(function (resp) {
+        callback(resp.data);
+      });
+    },
+    decreaseTagWeight: function(tagname, callback){
+      var userName = UserData.getUserData().email;
+      var disLikeData = {tagname: tagname};
+      console.log("OOOOOOOOOOO)O)O)O)O))O)O)O)OO)OO))O", disLikeData)
+      return $http({
+        method: 'POST',
+        url: '/users/' + userName +'/decreaseWeight/',
+        data: disLikeData
+      })
+      .then(function (resp) {
+        callback(resp.data);
+      });
+    },
+    tag: function(currentIdeaIndex, _tagname, callback){
+      var userName = UserData.getUserData().email;
+      var index = currentIdeaIndex;
+      var tagname = _tagname || DateData.getTags()[index];
+      var tagData = {tagname: tagname};
+      return $http({
+        method: 'POST',
+        url: '/users/' + userName +'/tag/',
+        data: tagData
+      })
+      .then(function (resp) {
+        callback(resp.data);
+      });
+    },
+  };
+})
 .factory('UserData', function ($http, $location, $window) {
   return {
     userData: {},
@@ -34,7 +78,9 @@ angular.module('dateClient.services', [])
         data: obj
       });
     },
+
     getUserData: function() {
+
       console.log("Getting user data", this.userData);
       return this.userData;
     }

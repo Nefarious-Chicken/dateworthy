@@ -10,8 +10,8 @@ var seqVenues = db.tables.venues;
 module.exports = {
 
   get: function (venueName) {
-    seqVenues.findOne({ where: {venueName: venueName} }).then(function(user) {
-      
+    seqVenues.findOne({ where: {venueName: venueName} }).then(function(venue) {
+      return venue
     })
   },
   post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress, res) {

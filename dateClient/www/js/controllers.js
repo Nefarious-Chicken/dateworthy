@@ -80,7 +80,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
 })
 
 
-.controller('IdeaCtrl', function($scope, $timeout, $location, DateData) {
+.controller('IdeaCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
 
   $scope.ideas = DateData.getDateIdeas();
   $scope.currentIdea = 0;
@@ -102,17 +102,28 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   };
 
   $scope.like = function() {
-    $scope.ideas[$scope.currentIdea].liked = 1;
-    $scope.ideas[$scope.currentIdea].disliked = 0;
-    // TODO: Write a factory that talks to the server and updates the server.
-    // Maybe do this when the user hits the NEXT IDEA button?
+    var currentIdea = $scope.currentIdea;
+    $scope.ideas[currentIdea].liked = 1;
+    $scope.ideas[currentIdea].disliked = 0;
+    var tagnames = DateData.getTags();
+    for (var i = 0; i < tagnames.length; i++) {
+      if(tagnames[i] !== "undefined"){
+        LikeADate.increaseTagWeight(tagnames[i], function(results){console.log(results)});
+      }
+    };
+      
+    
   }
 
   $scope.dislike = function() {
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
-    // TODO: Write a factory that talks to the server and updates the server.
-    // Maybe do this when the user hits the NEXT IDEA button?
+    var tagnames = DateData.getTags();
+    for (var i = 0; i < tagnames.length; i++) {
+      if(tagnames[i] !== "undefined"){
+        LikeADate.decreaseTagWeight(tagnames[i], function(results){console.log(results)});
+      }
+    };
   }
 
   $scope.isLast = function( idea ) {
@@ -131,6 +142,49 @@ angular.module('dateIdea.controllers', ['ngOpenFB'])
   };
 
 })
+
+.controller('ProfileQuestionsCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
+
+  $scope.isActive = {};
+  $scope.answers = {};
+  $scope.tags = [{tagname: "Intellectual"},{tagname: "Romantic"},{tagname: "Goofy"},{tagname: "Geeky"},{tagname: "Indoor"},{tagname: "Outdoor"}]
+  $scope.submit = function() {
+    DateData.appendTags($scope.answers);
+
+    for (tag in $scope.answers) {
+      console.log()
+      if($scope.answers[tag] === 1){
+        LikeADate.tag(null, tag, function(err, results){
+          if(err){
+            console.log(err)
+          }
+        })
+      }
+    };
+    
+    //timeout so that the user doesnt think the selection was unselected
+    $timeout($scope.clearSelections, 1000);
+    $location.path('/findadate/0');
+  };
+  
+  $scope.select = function(index) {
+
+    $scope.isActive[index] = !$scope.isActive[index];
+    if($scope.isActive[index]){
+      $scope.answers[$scope.tags[index].tagname] = 1;
+    } else {
+      $scope.answers[$scope.tags[index].tagname] = 0;
+    }
+
+  };
+
+  $scope.clearSelections = function(){
+    $scope.isActive = {};
+    $scope.answers = {};
+  };
+})
+
+
 .controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, FindADate, DateData) {
 
 
