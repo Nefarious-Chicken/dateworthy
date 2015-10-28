@@ -14,9 +14,10 @@
       <div class="item item-text-wrap">
         <!-- <p>{{idea.location}}</p> -->
         <h3>{{idea.name}}</h3>
-        <p class="address" ng-if="idea.location.address">
-          {{idea.location.address}}<br />
-          {{idea.location.city}}, {{idea.location.state}} {{idea.location.postalCode}}
+        <p class="address" ng-if="idea.location.formattedAddress">
+          <span ng-repeat="line in idea.location.formattedAddress">
+            {{ line }}
+          </span>
         </p>
         <p class="phone" ng-if="idea.contact.formattedPhone">
           <strong>Phone:</strong> {{idea.contact.formattedPhone}}
