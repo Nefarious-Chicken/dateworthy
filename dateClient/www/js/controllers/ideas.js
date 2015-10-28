@@ -1,8 +1,13 @@
 angular.module('dateworthy.ideas', [])
 .controller('IdeasCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
 
-  DateData.getDateIdeas(function(ideas) {
-    $scope.ideas = ideas;
+  // Wrapping the `DateData.getDateIdeas` function call inside a $scope.on('$stateChangeSuccess') listener.
+  // $stateChangeSuccess - fired once the state transition is complete (https://github.com/angular-ui/ui-router/wiki)
+  $scope.$on('$stateChangeSuccess', function() {
+    DateData.getDateIdeas(function(ideas) {
+      console.log("Getting the scope ideas right now...");
+      $scope.ideas = ideas;
+    });
   });
   $scope.currentIdea = 0;
 

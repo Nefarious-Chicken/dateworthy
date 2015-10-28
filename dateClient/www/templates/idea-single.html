@@ -11,25 +11,40 @@
       <div ng-if="idea.imgUrl" class="item item-image">
         <img src="{{idea.imgUrl}}" />
       </div>
-      <div class="item item-text-wrap">
+      <div class="item item-text-wrap date-details">
         <!-- <p>{{idea.location}}</p> -->
         <h3>{{idea.name}}</h3>
-        <p class="address" ng-if="idea.location.address">
-          {{idea.location.address}}<br />
-          {{idea.location.city}}, {{idea.location.state}} {{idea.location.postalCode}}
+        <p class="category" ng-if="idea.categories">
+          <span ng-repeat="category in idea.categories">
+            {{ category.name }}{{$last ? '' : ' &bull;'}}
+          </span>
         </p>
+        <p class="address" ng-if="idea.location.formattedAddress">
+          <span ng-repeat="line in idea.location.formattedAddress">
+            {{ line }}
+          </span>
+        </p>
+        <div class="hours" ng-if="idea.hours">
+          <p ng-repeat="timeframe in idea.hours.timeframes">
+            <span class="open-day">{{timeframe.days}}</span>
+            <span ng-repeat="openSeg in timeframe.open">
+              {{openSeg.renderedTime}}
+            </span>
+          </p>
+        </div>
         <p class="phone" ng-if="idea.contact.formattedPhone">
-          <strong>Phone:</strong> {{idea.contact.formattedPhone}}
+          <i class="ion-ios-telephone"></i> {{idea.contact.formattedPhone}}
         </p>
         <p ng-if="idea.description">
           {{idea.description}}
         </p>
+        <p class="fs-link" ng-if="idea.canonicalUrl">
+          <a ng-href="{{idea.canonicalUrl}}" target="_blank"> <i class="ion-social-foursquare"></i> Open in Foursquare</a>
+        </p>
          <div id="map"></div>
            <!-- <div id="map" data-tap-disabled="true"></div> -->
 
-        <p class="fs-link" ng-if="idea.canonicalUrl">
-          <a ng-href="{{idea.canonicalUrl}}">Open in Foursquare</a>
-        </p>
+
         <!-- <p>{{idea.hours}} -->
       </div>
       <div class="item like-dislike">
