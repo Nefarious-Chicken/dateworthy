@@ -29,7 +29,7 @@ var dateIdeas = sequelize.define('dateIdeas', {
 });
 
 var dateBlacklist = sequelize.define('dateBlacklist', {
-
+  blacklistID: { type: Sequelize.INTEGER, primaryKey: true, unique: true, autoIncrement: true }
 },
 {
   timestamps: false
@@ -69,5 +69,6 @@ module.exports.tables = {
   userPrefs: userPrefs,
   events: events,
   venues: venues,
-  dateIdeas: dateIdeas
+  dateIdeas: dateIdeas,
+  dateBlacklist: dateBlacklist
 };
