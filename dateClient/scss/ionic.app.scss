@@ -44,3 +44,53 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .button-next {
   float: right;
 }
+
+a {
+  color: $positive;
+  text-decoration: none;
+}
+
+.item {
+  h2 {
+    text-align: center;
+  }
+}
+.item.date-details {
+  p {
+    margin: 1em 0;
+    font-size: 12px;
+  }
+  #map {
+    margin-top: 1em;
+    width: 100%;
+    height: 300px;
+  }
+  .category, .address {
+    margin: 0;
+  }
+  .category {
+    color: #464648;
+  }
+  .address {
+    color: #878795;
+    span {
+      display: block;
+    }
+  }
+  .fs-link {
+    text-align: right;
+    a {
+      text-decoration: none;
+      color: $positive;
+    }
+  }
+  .hours {
+    margin: 1em 0;
+    .open-day {
+      font-weight: bold;
+    }
+  }
+  .hours p {
+    margin: 0;
+  }
+}

@@ -3,7 +3,7 @@
     <div class="h1 title"><i class="ion-erlenmeyer-flask royal"></i> Date Formula Picker</div>
   </ion-header-bar>
   <ion-content>
-    <ion-item>
+    <ion-item class="item-text-wrap">
       <h2>{{currentQuestion.question}}</h2>
       <div class="card">
         <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>

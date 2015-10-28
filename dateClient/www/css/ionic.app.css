@@ -9306,3 +9306,44 @@ a.button {
 
 .button-next {
   float: right; }
+
+a {
+  color: #387ef5;
+  text-decoration: none; }
+
+.item h2 {
+  text-align: center; }
+
+.item.date-details p {
+  margin: 1em 0;
+  font-size: 12px; }
+
+.item.date-details #map {
+  margin-top: 1em;
+  width: 100%;
+  height: 300px; }
+
+.item.date-details .category, .item.date-details .address {
+  margin: 0; }
+
+.item.date-details .category {
+  color: #464648; }
+
+.item.date-details .address {
+  color: #878795; }
+  .item.date-details .address span {
+    display: block; }
+
+.item.date-details .fs-link {
+  text-align: right; }
+  .item.date-details .fs-link a {
+    text-decoration: none;
+    color: #387ef5; }
+
+.item.date-details .hours {
+  margin: 1em 0; }
+  .item.date-details .hours .open-day {
+    font-weight: bold; }
+
+.item.date-details .hours p {
+  margin: 0; }
