@@ -1,6 +1,6 @@
 describe('Factory Unit Tests', function(){
   var Friends;
-  beforeEach(module('dateClient.services'));
+  beforeEach(module('dateworthy.services'));
 
   beforeEach(module(function ($provide) {
     $provide.value('$cordovaGeolocation', {

@@ -1,4 +1,4 @@
-angular.module('dateClient.services', [])
+angular.module('dateworthy.services', [])
 .factory('FindADate', function ($http, $location, $window) {
   return {
     // you need to convert the tags object into an array.

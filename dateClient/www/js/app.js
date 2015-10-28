@@ -1,10 +1,18 @@
-// Ionic DateIdea App
+// Ionic dateworthy App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'dateIdea.controllers' is found in controllers.js
-angular.module('dateIdea', ['ionic', 'ngOpenFB', 'dateIdea.controllers', 'dateClient.services'])
+// 'dateworthy.controllers' is found in controllers.js
+angular.module('dateworthy', [
+  'ionic',
+  'ngOpenFB',
+  'dateworthy.app',
+  'dateworthy.findadate',
+  'dateworthy.idea',
+  'dateworthy.ideas',
+  'dateworthy.services'
+])
 
 .run(function($ionicPlatform, $rootScope, $location, ngFB) {
   ngFB.init({appId: '996902650371971'});
