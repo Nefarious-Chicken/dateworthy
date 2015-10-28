@@ -183,7 +183,7 @@ var compareEventScores = function(eventA, eventB){
  * returns the matching events based on a list of tags.
  */
 exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
-  console.log('Routing correctly. The body: ', req.body);
+  //console.log('Routing correctly. The body: ', req.body);
 
   var myUser = {
     username: req.body.userName
@@ -271,9 +271,9 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
-    console.log('Search Index: ' + indices[i] + ', Event Category: ' + events[indices[i]]._node.properties.venueCategory);
-    console.log('Specific event');
-    console.log(events[indices[i]]._node.properties);
+    // console.log('Search Index: ' + indices[i] + ', Event Category: ' + events[indices[i]]._node.properties.venueCategory);
+    // console.log('Specific event');
+    // console.log(events[indices[i]]._node.properties);
     var searchObj = {
       ll: '37.8044,-122.2708',
       categoryId: events[indices[i]]._node.properties.fsCategory,
@@ -350,7 +350,7 @@ exports.removeBunkVenues = function (venues) {
   if (newVenues.length !== 0 && newVenues){
     return newVenues;
   } else {
-    console.log("Here's the 0th venue: ", venues[0].name);
+    //console.log("Here's the 0th venue: ", venues[0].name);
     return [venues[0]];
   }
 };
@@ -365,7 +365,7 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
       } else {
         var venueObj;
         venueObj = result.response.venue;
-        console.log(venueObj);
+        //console.log(venueObj);
         resolve(venueObj);
       }
     });
@@ -376,7 +376,7 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
-  console.log(req.body.eventID);
+  //console.log(req.body.eventID);
 
   EventSQL.post(req.body.eventID, req.body.eventName)
   .then(function(event){

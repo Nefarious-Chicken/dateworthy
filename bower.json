@@ -9,6 +9,7 @@
     "angular": "1.4.7"
   },
   "dependencies": {
-    "ngCordova": "~0.1.20-alpha"
+    "ngCordova": "~0.1.20-alpha",
+    "cordova": "~3.4.0"
   }
 }
