@@ -42,6 +42,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB', 'ngCordova'])
       return ngFB.api(obj);
     })
     .then(function(response) {
+      console.log("Calling userdata at line 45");
       UserData.updateUserData(response);
       getUserData();
       // TODO: Write a factory function to make the user object persist across all controllers
@@ -66,6 +67,7 @@ angular.module('dateIdea.controllers', ['ngOpenFB', 'ngCordova'])
     if(obj.params.access_token){
       return ngFB.api(obj)
       .then(function(userData){
+        console.log("Calling userdata at line 70");
         UserData.updateUserData(userData);
         getUserData();
       });

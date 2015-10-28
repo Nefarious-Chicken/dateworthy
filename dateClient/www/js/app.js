@@ -15,7 +15,6 @@ angular.module('dateworthy', [
 ])
 
 .run(function($ionicPlatform, $rootScope, $location, ngFB) {
-  console.log("Am I requesting fb at app line 10?");
   ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -36,7 +35,6 @@ angular.module('dateworthy', [
     // Get the user's login status on page render. If the user is logged in, let them go to
     // the home view.
     $rootScope.$on('$ionicView.enter', function(e) {
-      console.log("Am I requesting fb at app line 31?");
       ngFB.getLoginStatus()
       .then(function(response){
         if(response.status !== "connected"){
