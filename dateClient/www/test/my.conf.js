@@ -18,7 +18,9 @@ module.exports = function(config) {
       '../lib/angular/angular.js',
       '../js/*.js',
       '../lib/angular-mocks/angular-mocks.js',
-      '**/*tests.js'
+      '**/*tests.js',
+      '../lib/ngCordova/dist/ng-cordova.js',
+      '../lib/ngCordova/dist/ng-cordova-mocks.js',
     ],
 
 

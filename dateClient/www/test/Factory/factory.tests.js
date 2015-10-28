@@ -1,6 +1,12 @@
-describe('Friends Unit Tests', function(){
+describe('Factory Unit Tests', function(){
   var Friends;
   beforeEach(module('dateClient.services'));
+
+  beforeEach(module(function ($provide) {
+    $provide.value('$cordovaGeolocation', {
+        someVariable: 1
+    });
+  }));
 
   it('can append active tags and get all tags', inject(function(DateData) {
     DateData.appendTags({"dateGenre": "Romantic", "noiseLevel": "Quiet"})

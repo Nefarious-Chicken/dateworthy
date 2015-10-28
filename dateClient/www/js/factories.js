@@ -156,7 +156,7 @@ angular.module('dateClient.services', [])
 
   };
 })
-.factory('Auth', function ($http, $location, $ionicPlatform){
+.factory('Auth', function ($http, $location){
   return {
     login: function(obj, callback) {
       return $http({

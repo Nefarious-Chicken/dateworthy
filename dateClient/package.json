@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "dateClient: An Ionic project",
   "scripts": {
-    "test": "mocha www/test/e2e/*.js"
+    "test": "mocha www/test/**/*.js"
   },
   "dependencies": {
     "gulp": "^3.5.6",
