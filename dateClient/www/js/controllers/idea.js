@@ -1,15 +1,35 @@
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($location, $ionicHistory, $scope, $stateParams, DateData, LikeADate) {
-  $scope.ideas = DateData.getDateIdeas();
-  $scope.currentIdea = $stateParams.ideaId;
-  $scope.idea = $scope.ideas[$scope.currentIdea];
+.controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate) {
 
-  // Make sure $scope.userData is always loaded, even when page is refreshed
-  $scope.$on('$stateChangeSuccess', function () {
-    $scope.ideas = DateData.getDateIdeas();
+  $scope.initMap = function(latitude, longitude, name){
+    console.log("Initiating Map...", latitude, longitude);
+    var myLatlng = new google.maps.LatLng(latitude, longitude);
+    var mapOptions = {
+        center: myLatlng,
+        zoom: 16,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        map.setCenter(new google.maps.LatLng(latitude, longitude));
+        var myLocation = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),
+            map: map,
+            title: name
+        });
+    });
+    $scope.map = map;
+  };
+
+  DateData.getDateIdeas(function(ideas) {
+    $scope.ideas = ideas;
     console.log($scope.ideas);
+    $scope.currentIdea = $stateParams.ideaId;
+    $scope.idea = $scope.ideas[$scope.currentIdea];
+    setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name), 2000);
   });
+
 
   $scope.like = function() {
     $scope.ideas[currentIdea].liked = 1;
@@ -36,6 +56,9 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
   $scope.goBack = function() {
     $ionicHistory.goBack();
   };
+
+  // MAPS INTEGRATION 
+  
 
 });
 

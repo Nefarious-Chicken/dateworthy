@@ -1,5 +1,4 @@
 describe('Factory Unit Tests', function(){
-  var Friends;
   beforeEach(module('dateworthy.services'));
 
   beforeEach(module(function ($provide) {
@@ -20,7 +19,11 @@ describe('Factory Unit Tests', function(){
 
   it('can get and set date ideas', inject(function(DateData) {
     DateData.setDateIdeas({Idea:"Fish"})
-    expect(DateData.getDateIdeas()).toEqual({Idea:"Fish"});
+    var newIdeas = "foo";
+    DateData.getDateIdeas(function(ideas) {
+      newIdeas = ideas;
+    });
+    expect(newIdeas).toEqual({Idea:"Fish"});
   }));
 
   it('can get getConcatenatedData', inject(function(DateData) {

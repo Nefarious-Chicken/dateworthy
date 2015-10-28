@@ -131,8 +131,8 @@ angular.module('dateworthy.services', [])
     setDateIdeas: function (ideas){
       this.dateIdeas = ideas;
     },
-    getDateIdeas: function (){
-      return this.dateIdeas;
+    getDateIdeas: function (callback){
+      callback(this.dateIdeas);
     },
     getConcatenatedData: function () {
       var data = UserData.getUserData();
