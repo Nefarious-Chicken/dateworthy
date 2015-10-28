@@ -1,12 +1,10 @@
 angular.module('dateworthy.ideas', [])
 .controller('IdeasCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
 
-  $scope.ideas = DateData.getDateIdeas();
-  $scope.currentIdea = 0;
-
-  $scope.$on('$stateChangeSuccess', function () {
-    $scope.ideas = DateData.getDateIdeas();
+  DateData.getDateIdeas(function(ideas) {
+    $scope.ideas = ideas;
   });
+  $scope.currentIdea = 0;
 
   $scope.nextIdea= function(){
     $scope.currentIdea++;
