@@ -2,13 +2,20 @@ describe('IdeaControllers', function(){
   var scope;
 
   // load the controller's module
-  beforeEach(module('dateIdea.controllers'));
+  beforeEach(module('dateworthy.ideas'));
 
-  beforeEach(module('dateClient.services'));
+  beforeEach(module('dateworthy.services'));
+
+  beforeEach(module(function ($provide) {
+    $provide.value('$cordovaGeolocation', {
+        someVariable: 1
+    });
+  }));
 
   beforeEach(inject(function($injector, $rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller('IdeasCtrl', {$scope: scope});
+    cordovaGeolocation = "foo";
+    $controller('IdeasCtrl', {$scope: scope, $cordovaGeolocation: cordovaGeolocation});
   }));
 
 
@@ -102,9 +109,16 @@ describe('FindADateCtrl', function(){
   var location;
 
   // load the controller's module
-  beforeEach(module('dateIdea.controllers'));
+  beforeEach(module('dateworthy.findadate'));
 
-  beforeEach(module('dateClient.services'));
+  beforeEach(module('dateworthy.services'));
+
+  beforeEach(module(function ($provide) {
+    $provide.value('$cordovaGeolocation', {
+        someVariable: 1
+    });
+  }));
+
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$location_) {
     scope = $rootScope.$new();
@@ -112,7 +126,7 @@ describe('FindADateCtrl', function(){
     ionicHistory = "foo";
     ionicPlatform = "bar";
     location = _$location_;
-    $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $ionicHistory: ionicHistory, $ionicPlatform: ionicPlatform, $location: location});
+    $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $cordovaGeolocation: cordovaGeolocation, $ionicHistory: ionicHistory, $ionicPlatform: ionicPlatform, $location: location});
   }));
 
   it('should have obj currentQuestion equal to the current question', function(){
