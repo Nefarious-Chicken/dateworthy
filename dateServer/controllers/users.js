@@ -19,7 +19,7 @@ function getUserURL(user) {
 exports.list = function(req, res, next) {
   User.getAll(function(err, users) {
     if (err) return next(err);
-    else return user;
+    else return users;
   });
 };
 

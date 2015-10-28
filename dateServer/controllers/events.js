@@ -9,7 +9,8 @@ var VenueSQL = require('../models/venueSQL');
 var Promise = require('bluebird');
 var config = require('../secret/config');
 var user = require('../models/user');
-
+var dateIdeaSQL = require('../models/dateIdeaSQL');
+var venueSQL = require('../models/venueSQL');
 
 var clientID = process.env.FS_ID|| config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
@@ -113,12 +114,18 @@ var getMyUserTags = function(myUser){
   });
   userPromise.then(function(user){
     user.username = myUser.username;
+    var userID = function(){return user._node._id;}.bind(this);
     return new Promise(function(resolve, reject){
       var myTags = user.getAllTags(function(err, tags){
         if(err){
           console.log("there was an error getting the user tags in neo4j");
           reject(err);
         } else {
+          console.log("The tags are:  ", tags);
+          if(!tags){
+            tags = {};
+          }
+          tags.userID = userID();
           resolve(tags);
         }
       });
@@ -132,11 +139,9 @@ var getMyUserTags = function(myUser){
 //   equivalent to the number of times the user has liked that tag.
 //  TODO: Weight the user likes.
 var defineEventTagScore = function(event, tags, userTags){
-  //console.log("Event: ", event);
   var similarTags = {};
   var eventScore = 0;
   for(var i = 0; i < event.myTags.length; i ++){
-    //console.log(event.myTags[i]);
     if(tags[event.myTags[i]._node.properties.tagname]){
       similarTags[event.myTags[i]._node.properties.tagname] = 1;
     }
@@ -149,7 +154,6 @@ var defineEventTagScore = function(event, tags, userTags){
         similarTags[key] = 1;
       }
       for(j = 0; i < event.myTags.length; j++){
-        //console.log(event.myTags[i]);
         if(event.myTags[j]._node.properties.tagname === userTags[i]._node.properties.tagname){
           if(similarTags[event.myTags[i]._node.properties.tagname]){
             similarTags[event.myTags[i]._node.properties.tagname]++;
@@ -183,7 +187,6 @@ var compareEventScores = function(eventA, eventB){
  * returns the matching events based on a list of tags.
  */
 exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
-  //console.log('Routing correctly. The body: ', req.body);
 
   var myUser = {
     username: req.body.userName
@@ -194,7 +197,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
 
   //Get all of the user's tags.
   userPromise.then(function(userTags){
-    console.log("User's Tags: ", userTags);
+    console.log("User Id: ", userTags);
     //Get the events that match the questionairre tags
     Event.getMatchingEvents(tags, function(err, events) {
       var promises = [];
@@ -249,15 +252,19 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
   // Randomly select x (limit parameter of this function) number of indices in events input
   // This will choose the categoryId we will query foursquare with
   // These indices should be UNIQUE
-  for(var i = 0; i < events.length; i ++){
+  for(var i = 0; i < events.length && indices.length < limit; i ++){
+    //Increment i if i is equivalent to J
     if(events[i].score !== events[j].score || i === events.length - 1){
+      //if index i is not equal to index J
       if(i-j+indices.length < limit){
+        //add every element between j and i if the elements between j and i are less than the limit.
         for(var k =j; k < i; k++){
           indices.push(k);
           pushedEvents++;
         }
       }
       else{
+        //there are more elements between j and i than we need, so we will select them at random.
         while(indices.length !== limit){
           var generateIndex = Math.floor(Math.random() * (i-j))+j;
           if(indices.indexOf(generateIndex) === -1){
@@ -265,15 +272,14 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
           }
         }
       }
+      //make j equivalent to i once we have added elements to the indices array.
       j = i;
     }
   }
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
-    // console.log('Search Index: ' + indices[i] + ', Event Category: ' + events[indices[i]]._node.properties.venueCategory);
-    // console.log('Specific event');
-    // console.log(events[indices[i]]._node.properties);
+    EventSQL.post(events[indices[i]]._node._id, events[indices[i]]._node.properties.event).then(function(event){});
     var searchObj = {
       ll: '37.8044,-122.2708',
       categoryId: events[indices[i]]._node.properties.fsCategory,
@@ -284,7 +290,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
     if(_geoLoaction){
       searchObj.ll = _geoLoaction;
     }
-    promises.push(exports.venueSearch(searchObj, i, events, ideas));
+    promises.push(exports.venueSearch(searchObj, indices[i], events, ideas));
   }
   // Promise.all is a function which will take in an array and runs all promise functions in the array
   // This allows us to have x number of promises run as though they were chained with .then
@@ -293,6 +299,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
   .then(function(ideas) {
     // Since we resolve all the promises at once
     // We need to take the result of the promise that is last run since it contains all the ideas
+
     res.status(200).send(ideas[ideas.length-1]);
   });
 
@@ -318,15 +325,24 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
         exports.getFourSquareVenueData(venueId, {})
         .then(function(venueData) {
           var idea = {};
+          var venueID = venueData.id;
+          var venueName = venueData.name;
+          venueSQL.post(venueID, venueName);
           for (var key in venueData) {
-            idea[key] = venueData[key]
+            idea[key] = venueData[key];
           }
           idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+          dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID, function(ideaSQL){
+            idea.id = ideaSQL._id;
+
+          });
+
           idea.liked = 0;
           idea.disliked = 0;
           if (venueData.hasOwnProperty('bestPhoto')) {
             idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
           };
+
           ideas.ideaArray.push(idea);
           resolve(ideas);
         });
@@ -350,7 +366,6 @@ exports.removeBunkVenues = function (venues) {
   if (newVenues.length !== 0 && newVenues){
     return newVenues;
   } else {
-    //console.log("Here's the 0th venue: ", venues[0].name);
     return [venues[0]];
   }
 };
@@ -365,7 +380,6 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
       } else {
         var venueObj;
         venueObj = result.response.venue;
-        //console.log(venueObj);
         resolve(venueObj);
       }
     });
@@ -376,12 +390,14 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
-  //console.log(req.body.eventID);
-
   EventSQL.post(req.body.eventID, req.body.eventName)
   .then(function(event){
     res.status(201).send(event);
   });
 
 };
+
+exports.addDateIdeas = function(ideas){};
+
+
 

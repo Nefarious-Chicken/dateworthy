@@ -22,7 +22,7 @@ var userPrefs = sequelize.define('userPrefs', {
 });
 
 var dateIdeas = sequelize.define('dateIdeas', {
-  dateIdeaID: { type: Sequelize.STRING, primaryKey: true, unique: true},
+  dateIdeaName: Sequelize.STRING
 },
 {
     timestamps: false
@@ -34,8 +34,8 @@ var venues = sequelize.define('venues', {
   venueHours: Sequelize.STRING,
   venueLatitude: Sequelize.FLOAT,
   venueLongitude: Sequelize.FLOAT,
-  venueAddress: Sequelize.STRING
-  
+  venueAddress: Sequelize.STRING,
+  venueCityStateZip: Sequelize.STRING
 },
 {
     timestamps: false
