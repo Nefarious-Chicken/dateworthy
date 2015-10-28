@@ -322,10 +322,11 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID)
       radius: '5000'
     };
 
-    if(_geoLoaction){
-      searchObj.ll = _geoLoaction;
+    if(_geoLocation){
+      searchObj.ll = _geoLocation;
     }
     promises.push(exports.venueSearch(searchObj, indices[i], events, ideas, userID));
+
   }
   // Promise.all is a function which will take in an array and runs all promise functions in the array
   // This allows us to have x number of promises run as though they were chained with .then

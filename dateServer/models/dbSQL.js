@@ -28,6 +28,13 @@ var dateIdeas = sequelize.define('dateIdeas', {
     timestamps: false
 });
 
+var dateBlacklist = sequelize.define('dateBlacklist', {
+
+},
+{
+  timestamps: false
+})
+
 var venues = sequelize.define('venues', {
   venueID: { type: Sequelize.STRING, primaryKey: true, unique: true},
   venueName: Sequelize.STRING,
@@ -51,6 +58,7 @@ var events = sequelize.define('events', {
 
 userPrefs.belongsTo(userAuth);
 userPrefs.belongsTo(dateIdeas);
+dateBlacklist.belongsTo(dateIdeas);
 dateIdeas.belongsTo(events);
 dateIdeas.belongsTo(venues);
 userPrefs.belongsToMany(dateIdeas, {through: 'UserPrefDateIdeas'});
