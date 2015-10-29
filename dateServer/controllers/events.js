@@ -1,17 +1,19 @@
 var URL = require('url');
 
 var errors = require('../models/errors');
+var Users = require('./users');
 var User = require('../models/user');
+var Venues = require('./venues');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
 var EventSQL = require('../models/eventSQL');
 var VenueSQL = require('../models/venueSQL');
 var Promise = require('bluebird');
 var config = require('../secret/config');
-var user = require('../models/user');
 var dateIdeaSQL = require('../models/dateIdeaSQL');
 var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
+
 
 var clientID = process.env.FS_ID|| config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
@@ -100,22 +102,9 @@ exports.untag = function(req, res, next) {
   });
 };
 
-//Returns the tags that correspond to the user in the getMatchingEventsNoRest request.
-var getMyUser = function(myUser){
-  console.log("Getting the user: ", myUser.username);
-  return new Promise(function(resolve, reject){
-    user.get(myUser.username, function(err, user){
-      if(err){
-        console.log("there was an error getting the user in neo4j");
-        reject(err);
-      } else {
-        resolve(user);
-      }
-    });
-  });
-};
-
-
+/**
+ * given a user attached to an event, returns all tags associated with the user by calling the user model.
+ */
 var getMyUserTags = function(myUser){
   console.log("Getting the tags for user.");
   return new Promise(function(resolve, reject){
@@ -133,6 +122,8 @@ var getMyUserTags = function(myUser){
     });
   });
 };
+
+
 //The rules for defining an event's score are:
 //  If the event includes a tag from a questionairre, it gets a point.
 //  If the user has liked a tag from the questionairre, it gets points
@@ -169,7 +160,9 @@ var defineEventTagScore = function(event, tags, userTags){
   event.score = eventScore;
 };
 
-//utility function to sort events based on score.
+/**
+ * utility function to sort events based on score.
+ */
 var compareEventScores = function(eventA, eventB){
   if (eventA.score < eventB.score){
     return -1;
@@ -180,6 +173,29 @@ var compareEventScores = function(eventA, eventB){
       return 1;
     }
   }
+};
+
+/**
+ * utility function that will create promises to attach tags to events.
+ */
+var getEventTagPromises = function(events){
+  var promises = [];
+  //Attach the event tags to the event object.
+  for(var i = 0; i < events.length; i ++){
+    //console.log("Pushing Promise for event");
+    var tagPromise = new Promise(
+    function(resolve, reject){
+      events[i].getAllTags(function(err, tags){
+        if(err){
+          reject(err);
+        } else {
+          resolve(tags);
+        }
+      });
+    });
+    promises.push(tagPromise);
+  }
+  return promises;
 };
 
 /**
@@ -195,7 +211,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
     myUser.userObj = user;
   }.bind(this);
   //Get the Neo4J user Object
-  getMyUser(myUser).then(function(user){
+  Users.getMyUser(myUser).then(function(user){
     //need to grab the ID
     setUser(user);
     console.log("User: ", user);
@@ -217,7 +233,6 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
       console.log("Finding events that match tags.");
       Event.getMatchingEvents(tags, function(err, events) {
         //console.log("Events:", events);
-        var promises = [];
         if (err) {
           return res.status(500).send(err);
         }
@@ -232,21 +247,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
           return res.status(200).send(ideas);
         } else {
           var limit = 3;
-          //Attach the event tags to the event object.
-          for(var i = 0; i < events.length; i ++){
-            //console.log("Pushing Promise for event");
-            var tagPromise = new Promise(
-            function(resolve, reject){
-              events[i].getAllTags(function(err, tags){
-                if(err){
-                  reject(err);
-                } else {
-                  resolve(tags);
-                }
-              });
-            });
-            promises.push(tagPromise);
-          }
+          var promises = getEventTagPromises(events);
           Promise.all(promises).then(
             function(theTags){
               console.log("Events length", events.length);
@@ -267,9 +268,11 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
   });
 };
 
-exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
-  var ideas = { ideaArray: [] };
-  var promises = [];
+/**
+ * A helper function that, given a set of events that are scored, will select a # of events
+ * (with randomization for similarly scored events) and return their indices up to a limit.
+ */
+var selectVenuesForEvents = function(events, limit){
   var indices = [];
   var j = 0;
   // Randomly select x (limit parameter of this function) number of indices in events input
@@ -283,7 +286,6 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID)
         //add every element between j and i if the elements between j and i are less than the limit.
         for(var k =j; k < i; k++){
           indices.push(k);
-          pushedEvents++;
         }
       }
       else{
@@ -299,6 +301,16 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID)
       j = i;
     }
   }
+  return indices;
+};
+
+/**
+ * given a set of events and a limit, define foursquare venues that match these events.
+ */
+exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
+  var ideas = { ideaArray: [] };
+  var promises = [];
+  var indices = selectVenuesForEvents(events, limit);
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
@@ -327,6 +339,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID)
   });
 
 };
+
 
 /** Promise helper function for querying foursquare based on an input searchObj
 * Also takes in:

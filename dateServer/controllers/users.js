@@ -69,6 +69,23 @@ exports.create = function(req, res, next) {
 };
 
 /**
+ * Function that, when passed a userName, returns a user Object from Neo4J
+ */
+exports.getMyUser = function(myUser){
+  console.log("Getting the user: ", myUser.username);
+  return new Promise(function(resolve, reject){
+    User.get(myUser.username, function(err, user){
+      if(err){
+        console.log("there was an error getting the user in neo4j");
+        reject(err);
+      } else {
+        resolve(user);
+      }
+    });
+  });
+};
+
+/**
  * GET /users/:username
  */
 exports.show = function(req, res, next) {

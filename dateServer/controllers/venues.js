@@ -1,4 +1,5 @@
-var VenueSQL = require('../models/venueSQL')
+var VenueSQL = require('../models/venueSQL');
+
 
 /*--------------------SQL---------------*/
 
@@ -9,5 +10,4 @@ exports.createVenueSQL = function(req, res, next){
   .then(function(venue){
     res.status(201).send(venue);
   });
-}
-
+};
