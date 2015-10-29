@@ -2,6 +2,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
 .controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate) {
 
+  
   $scope.initMap = function(latitude, longitude, name){
     console.log("Initiating Map...", latitude, longitude);
     var myLatlng = new google.maps.LatLng(latitude, longitude);
@@ -26,8 +27,10 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     $scope.ideas = ideas;
     console.log($scope.ideas);
     $scope.currentIdea = $stateParams.ideaId;
+    $scope.imgWidth = window.innerWidth + 'px'; 
+    console.log("innerwidth is", $scope.imgWidth);
     $scope.idea = $scope.ideas[$scope.currentIdea];
-    setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name), 2000);
+    setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name), 500);
   });
 
 

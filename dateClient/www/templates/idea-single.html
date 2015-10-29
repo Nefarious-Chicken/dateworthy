@@ -9,7 +9,7 @@
         <h2>{{idea.idea}}</h2>
       </div>
       <div ng-if="idea.imgUrl" class="item item-image">
-        <img src="{{idea.imgUrl}}" />
+        <div class="img" style="background-image: url('{{idea.imgUrl}}'); width: {{imgWidth}}; height: {{imgWidth}}"></div>
       </div>
       <div class="item item-text-wrap date-details">
         <!-- <p>{{idea.location}}</p> -->

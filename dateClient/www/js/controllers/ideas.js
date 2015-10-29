@@ -4,6 +4,7 @@ angular.module('dateworthy.ideas', [])
   // Wrapping the `DateData.getDateIdeas` function call inside a $scope.on('$stateChangeSuccess') listener.
   // $stateChangeSuccess - fired once the state transition is complete (https://github.com/angular-ui/ui-router/wiki)
   $scope.ideas = {};
+  $scope.imgWidth = window.innerWidth + 'px'; 
   
   $scope.$on('$stateChangeSuccess', function() {
     DateData.getDateIdeas(function(ideas) {
