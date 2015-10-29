@@ -35,8 +35,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
 
   $scope.like = function() {
-    console.log("What is this?");
-    console.log($scope.ideas);
+    var currentIdea = $scope.currentIdea;
     $scope.ideas[currentIdea].liked = 1;
     $scope.ideas[currentIdea].disliked = 0;
     var tagnames = DateData.getTags();
@@ -45,9 +44,11 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
+    LikeADate.markLike($scope.ideas[currentIdea].dateIdeaID);
   }
 
   $scope.dislike = function() {
+    var currentIdea = $scope.currentIdea;
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
     var tagnames = DateData.getTags();
@@ -56,6 +57,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         LikeADate.decreaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
+    LikeADate.markDislike($scope.ideas[currentIdea].dateIdeaID);
   };
 
   $scope.goBack = function() {
