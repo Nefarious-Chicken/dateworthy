@@ -118,7 +118,7 @@ describe('Event models:', function () {
     // Single event CRUD:
 
     it('List initial events', function (next) {
-        this.timeout = 5000;
+        this.timeout = 10000;
         Event.getAll(function (err, events) {
             if (err) return next(err);
 

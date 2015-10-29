@@ -50,6 +50,7 @@ var User = require('../../models/user');
 var Event = require('../../models/event');
 var Tag = require('../../models/tag');
 var db = require('../../models/db');
+var Promise = require('bluebird');
 
 
 // Shared state:
@@ -163,12 +164,12 @@ function expectUserToTag(user, expTagging, callback) {
  * Calls the given callback when complete.
  */
 function expectTagWeightToEqual(user, tag, expTagWeight, callback) {
-    user.getTagWeight(tag, function (err, actTagWeight) {
-        if (err) return callback(err);
-
-        expect(actTagWeight).to.equal(expTagWeight)
+    var promise = user.getTagWeight(tag);
+    promise.then(function(actTagWeight){
+        expect(actTagWeight).to.equal(expTagWeight);
 
         return callback(null, actTagWeight);
+
     });
 }
 
