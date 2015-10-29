@@ -1,8 +1,10 @@
 var expect = require('chai').expect;
 
 var errors = require('../../models/errors');
-var Event = require('../../models/event');
 var Tag = require('../../models/tag');
+
+var Event = require('../../models/event');
+var db = require('../../models/db');
 
 // Shared state:
 
@@ -116,6 +118,7 @@ describe('Event models:', function () {
     // Single event CRUD:
 
     it('List initial events', function (next) {
+        this.timeout = 5000;
         Event.getAll(function (err, events) {
             if (err) return next(err);
 

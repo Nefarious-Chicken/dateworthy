@@ -47,7 +47,9 @@ var expect = require('chai').expect;
 
 var errors = require('../../models/errors');
 var User = require('../../models/user');
+var Event = require('../../models/event');
 var Tag = require('../../models/tag');
+var db = require('../../models/db');
 
 
 // Shared state:
@@ -499,11 +501,11 @@ describe('User models:', function () {
         });
     });
 
-    it('Have user B tag tag A again', function (next) {
-        USER_B.tag(TAG_A, function (err) {
-            return next(err);
-        });
-    });
+    // it('Have user B tag tag A again', function (next) {
+    //     USER_B.tag(TAG_A, function (err) {
+    //         return next(err);
+    //     });
+    // });
 
     it('Fetch user B’s “tags”', function (next) {
         expectUserToTag(USER_B, [1], next);

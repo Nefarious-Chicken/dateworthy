@@ -5,6 +5,7 @@ angular.module('dateworthy.ideas', [])
   // $stateChangeSuccess - fired once the state transition is complete (https://github.com/angular-ui/ui-router/wiki)
   $scope.ideas = {};
   
+
   $scope.$on('$stateChangeSuccess', function() {
     DateData.getDateIdeas(function(ideas) {
       console.log("Getting the scope ideas right now...");
