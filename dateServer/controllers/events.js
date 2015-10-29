@@ -10,6 +10,7 @@ var Promise = require('bluebird');
 var config = require('../secret/config');
 var user = require('../models/user');
 var dateIdeaSQL = require('../models/dateIdeaSQL');
+var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
 
 var clientID = process.env.FS_ID|| config.clientID;
@@ -100,9 +101,9 @@ exports.untag = function(req, res, next) {
 };
 
 //Returns the tags that correspond to the user in the getMatchingEventsNoRest request.
-var getMyUserTags = function(myUser){
+var getMyUser = function(myUser){
   console.log("Getting the user: ", myUser.username);
-  var userPromise = new Promise(function(resolve, reject){
+  return new Promise(function(resolve, reject){
     user.get(myUser.username, function(err, user){
       if(err){
         console.log("there was an error getting the user in neo4j");
@@ -112,27 +113,27 @@ var getMyUserTags = function(myUser){
       }
     });
   });
-  userPromise.then(function(user){
-    user.username = myUser.username;
-    var userID = function(){return user._node._id;}.bind(this);
-    return new Promise(function(resolve, reject){
-      var myTags = user.getAllTags(function(err, tags){
-        if(err){
-          console.log("there was an error getting the user tags in neo4j");
-          reject(err);
-        } else {
-          console.log("The tags are:  ", tags);
-          if(!tags){
-            tags = {};
-          }
-          tags.userID = userID();
-          resolve(tags);
+};
+
+
+var getMyUserTags = function(myUser){
+  console.log("Getting the tags for user.");
+  return new Promise(function(resolve, reject){
+    var myTags = myUser.getAllTags(function(err, tags){
+      if(err){
+        console.log("there was an error getting the user tags in neo4j");
+        reject(err);
+      } else {
+        console.log("The tags are:  ", tags);
+        if(!tags){
+          tags = {};
         }
-      });
+        //tags.userID = userID();
+        resolve(tags);
+      }
     });
   });
 };
-
 //The rules for defining an event's score are:
 //  If the event includes a tag from a questionairre, it gets a point.
 //  If the user has liked a tag from the questionairre, it gets points
@@ -141,24 +142,22 @@ var getMyUserTags = function(myUser){
 var defineEventTagScore = function(event, tags, userTags){
   var similarTags = {};
   var eventScore = 0;
+  //First we check the event's tags against the tags from the questionairre
   for(var i = 0; i < event.myTags.length; i ++){
     if(tags[event.myTags[i]._node.properties.tagname]){
       similarTags[event.myTags[i]._node.properties.tagname] = 1;
     }
   }
   if(userTags){
+    //check the user's likes against the event tags.
     for(i = 0; i < userTags.length; i ++){
-      if(similarTags[userTags[i]._node.properties.tagname]){
-        similarTags[key]++;
-      } else {
-        similarTags[key] = 1;
-      }
-      for(j = 0; i < event.myTags.length; j++){
+      for(j = 0; j < event.myTags.length; j++){
+        //console.log(j + " " + event.myTags.length + " " + event.myTags[j]);
         if(event.myTags[j]._node.properties.tagname === userTags[i]._node.properties.tagname){
-          if(similarTags[event.myTags[i]._node.properties.tagname]){
-            similarTags[event.myTags[i]._node.properties.tagname]++;
+          if(similarTags[event.myTags[j]._node.properties.tagname]){
+            similarTags[event.myTags[j]._node.properties.tagname]++;
           } else {
-            similarTags[event.myTags[i]._node.properties.tagname] = 1;
+            similarTags[event.myTags[j]._node.properties.tagname] = 1;
           }
         }
       }
@@ -191,15 +190,21 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
   var myUser = {
     username: req.body.userName
   };
-  var userPromise = new Promise(function(resolve, reject){
-    resolve(getMyUserTags(myUser));
-  });
-
+  var setUserID = function(id){
+    myUser.id = id;
+  }.bind(this);
   //Get all of the user's tags.
-  userPromise.then(function(userTags){
-    console.log("User Id: ", userTags);
+  getMyUser(myUser).then(function(user){
+    //need to grab the ID
+    setUserID(user._node._id);
+    console.log("User: ", user);
+    return getMyUserTags(user);
+  }).then(function(userTags){
+    console.log("Finding events that match tags.");
     //Get the events that match the questionairre tags
+    //console.log("Tags: ", tags);
     Event.getMatchingEvents(tags, function(err, events) {
+      //console.log("Events:", events);
       var promises = [];
       if (err) {
         return res.status(500).send(err);
@@ -217,6 +222,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
         var limit = 3;
         //Attach the event tags to the event object.
         for(var i = 0; i < events.length; i ++){
+          //console.log("Pushing Promise for event");
           var tagPromise = new Promise(
           function(resolve, reject){
             events[i].getAllTags(function(err, tags){
@@ -234,17 +240,18 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
             console.log("Events length", events.length);
             //Score the tags based on the scoring algorithm.
             for(var i = 0; i < events.length; i ++){
+              //console.log(events[i].myTags);
               defineEventTagScore(events[i], tags, userTags);
             }
             events.sort(compareEventScores);
-            exports.getFoursquareVenues(events, res, limit, geo);
+            exports.getFoursquareVenues(events, res, limit, geo, myUser.id);
           });
       }
     });
   });
 };
 
-exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
+exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = [];
@@ -290,16 +297,16 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
     if(_geoLoaction){
       searchObj.ll = _geoLoaction;
     }
-    promises.push(exports.venueSearch(searchObj, indices[i], events, ideas));
+    promises.push(exports.venueSearch(searchObj, indices[i], events, ideas, userID));
   }
   // Promise.all is a function which will take in an array and runs all promise functions in the array
   // This allows us to have x number of promises run as though they were chained with .then
   // Now we can run a non-hardcoded number of promises!
   Promise.all(promises)
   .then(function(ideas) {
+    //console.log(ideas[ideas.length - 1]);
     // Since we resolve all the promises at once
     // We need to take the result of the promise that is last run since it contains all the ideas
-
     res.status(200).send(ideas[ideas.length-1]);
   });
 
@@ -310,7 +317,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction) {
 *  the eventIndex and events object to create the random idea string
 *  the ideas object which is the master list of all ideas we want to return
 */
-exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
+exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
   var venuePromise = new Promise(function(resolve, reject) {
     foursquare.venues.search(searchObj, function(err, result) {
       if (err) {
@@ -333,10 +340,10 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas) {
           }
           idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
           dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID, function(ideaSQL){
-            idea.id = ideaSQL._id;
+            console.log("The SQL Idea: ", ideaSQL.id, ". Posting to SQL");
 
+            userPrefSQL.post(userID, ideaSQL.id);
           });
-
           idea.liked = 0;
           idea.disliked = 0;
           if (venueData.hasOwnProperty('bestPhoto')) {

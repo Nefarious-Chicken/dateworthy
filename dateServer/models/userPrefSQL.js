@@ -25,7 +25,7 @@ module.exports = {
     // Use this.get to check if it exists, if not, then create and add foreign keys
     return seqUserPrefs.sync()
     .then(function(){
-      return seqUserPrefs.findOne({ where: {userAuthUserID: userID, dateIdeaDateIdeaID: dateIdeaID }});
+      return seqUserPrefs.findOne({ where: {userAuthUserID: userID, dateIdeaID: dateIdeaID }});
     })
     .then(function(userPref){
       // Create the preference if it doesn't exist;
@@ -41,7 +41,7 @@ module.exports = {
         // Update the value of likeDislike if this userID/dateIdeaID combo already exists
         seqUserPrefs.update({
           likeDislike: likeDislike || 0
-        }, { where: {userAuthUserID: userID, dateIdeaDateIdeaID: dateIdeaID }})
+        }, { where: {userAuthUserID: userID, dateIdeaID: dateIdeaID }})
         .then(function(userPref){
           return userPref;
         });

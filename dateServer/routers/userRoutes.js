@@ -1,4 +1,4 @@
-var userController = require('../controllers/users');
+ var userController = require('../controllers/users');
 
 module.exports = function (app) {
   /*----------------SQL-------------*/

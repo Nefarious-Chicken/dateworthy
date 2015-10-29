@@ -28,9 +28,13 @@ exports.list = function(req, res, next) {
  */
 exports.create = function(req, res, next) {
   //TODO: Remove usernames from Neo4j.
+  console.log("In create user");
   var user = {
     username: req.body.email
   };
+  var getUserName = function(){
+    return user.username;
+  }.bind(this);
   var tags = req.body.tags || {
     participant: 0,
     indoor: 0,
@@ -48,27 +52,17 @@ exports.create = function(req, res, next) {
   User.create(user, function(err, user) {
     if (err) {
       if (err instanceof errors.ValidationError) {
-        // Return to the create form and show the error message.
-        // TODO: Assuming username is the issue; hardcoding for that
-        // being the only input right now.
-        // TODO: It'd be better to use a cookie to "remember" this info,
-        // e.g. using a flash session.
-        return res.redirect(URL.format({
-          pathname: '/users',
-          query: {
-            username: req.body.username,
-            error: err.message,
-          },
-        }));
       } else {
         return next(err, user);
       }
     }
     //console.log("User Created", user._node, user._node._id);
-    userAuthSQL.post(user._node._id, req.body.email, function(err, user){
-      if(err) {
-        console.log(err);
-      }
+    User.get(getUserName(), function(err, user){
+      userAuthSQL.post(user._node._id, req.body.email, function(err, user){
+        if(err) {
+          console.log(err);
+        }
+      });
     });
     res.sendStatus(200);
   });
