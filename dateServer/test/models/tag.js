@@ -1,8 +1,11 @@
 var expect = require('chai').expect;
 
 var errors = require('../../models/errors');
-var Tag = require('../../models/tag');
 var User = require('../../models/user');
+
+var Event = require('../../models/event');
+var Tag = require('../../models/tag');
+var db = require('../../models/db');
 
 
 // Shared state:

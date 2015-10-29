@@ -97,6 +97,10 @@ Edit `scripts.start` in [package.json](./package.json) if you need to change tha
 
 ## Cyphers for Neo4j
 
+DROP CONSTRAINT ON (event:Event) ASSERT event.eventname IS UNIQUE
+DROP CONSTRAINT ON (tag:Tag) ASSERT tag.tagname IS UNIQUE
+DROP CONSTRAINT ON (user:User) ASSERT user.username IS UNIQUE
+
 MATCH (n)
 OPTIONAL MATCH (n)-[r]-()
 DELETE n,r;

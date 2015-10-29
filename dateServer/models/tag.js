@@ -1,6 +1,7 @@
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var db = require('./db');
+require('./constraints');
 
 /**
  * Tag Model
@@ -262,14 +263,3 @@ function isConstraintViolation(err) {
     err.neo4j.code === 'Neo.ClientError.Schema.ConstraintViolation';
 }
 
-db.createConstraint({
-    label: 'Tag',
-    property: 'tagname',
-}, function (err, constraint) {
-    if (err) throw err;     // Failing fast for now, by crash the application.
-    if (constraint) {
-        console.log('(Registered unique tagnames constraint.)');
-    } else {
-        // Constraint already present; no need to log anything.
-    }
-})
