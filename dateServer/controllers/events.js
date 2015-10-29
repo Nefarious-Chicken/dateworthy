@@ -175,7 +175,9 @@ var compareEventScores = function(eventA, eventB){
   }
 };
 
-//utility function that will create promises to attach tags to events.
+/**
+ * utility function that will create promises to attach tags to events.
+ */
 var getEventTagPromises = function(events){
   var promises = [];
   //Attach the event tags to the event object.
@@ -266,9 +268,10 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
   });
 };
 
-
-//A helper function that, given a set of events that are scored, will select a # of events(with randomization for similarly scored events)
-//and return their indices up to a limit.
+/**
+ * A helper function that, given a set of events that are scored, will select a # of events
+ * (with randomization for similarly scored events) and return their indices up to a limit.
+ */
 var selectVenuesForEvents = function(events, limit){
   var indices = [];
   var j = 0;
@@ -301,7 +304,9 @@ var selectVenuesForEvents = function(events, limit){
   return indices;
 };
 
-//given a set of events and a limit, define foursquare venues that match these events.
+/**
+ * given a set of events and a limit, define foursquare venues that match these events.
+ */
 exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
