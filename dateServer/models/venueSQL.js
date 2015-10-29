@@ -21,8 +21,8 @@ module.exports = {
     })
   },
   
-  post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress) {
-    console.log(venueID)
+  post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress, venueCityStateZip) {
+    //console.log("Made it to VenueSQL");
 
     return seqVenues.sync()
     .then(function(){
@@ -31,12 +31,8 @@ module.exports = {
         defaults: {
           venueID: venueID || "null",
           venueName: venueName || "null",
-          venueHours: venueHours || "null",
-          venueLatitude: venueLatitude || 0,
-          venueLongitude: venueLongitude || 0,
-          venueAddress: venueAddress || "null"
         }
       });
     });
   }
-}
+};

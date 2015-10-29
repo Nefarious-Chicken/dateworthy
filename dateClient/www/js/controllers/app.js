@@ -65,11 +65,13 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
         fields: 'id,name,email'
       }
     };
-    return ngFB.api(obj)
-    .then(function(userData){
-      UserData.updateUserData(userData);
-      getUserData();
-    });
+    if(obj.params.access_token){
+      return ngFB.api(obj)
+      .then(function(userData){
+        UserData.updateUserData(userData);
+        getUserData();
+      });
+    }
   }
 
   // Make sure $scope.userData is always loaded, even when page is refreshed

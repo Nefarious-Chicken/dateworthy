@@ -18,10 +18,10 @@ module.exports = {
     })
     .then(function(event) {
       return event;
-    })
+    });
   },
   post: function (eventID, eventName) {
-    console.log(eventName)
+    //console.log(eventName)
 
     // Return the promise in case we want to chain more on to this
     // This way we don't have to pass in res or callback to this function
@@ -36,4 +36,4 @@ module.exports = {
       });
     });
   }
-}
+};
