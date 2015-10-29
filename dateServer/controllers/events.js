@@ -124,7 +124,6 @@ var getMyUserTags = function(myUser){
         console.log("there was an error getting the user tags in neo4j");
         reject(err);
       } else {
-        console.log("The tags are:  ", tags);
         if(!tags){
           tags = {};
         }
@@ -155,7 +154,7 @@ var defineEventTagScore = function(event, tags, userTags){
         //console.log(j + " " + event.myTags.length + " " + event.myTags[j]);
         if(event.myTags[j]._node.properties.tagname === userTags[i]._node.properties.tagname){
           if(similarTags[event.myTags[j]._node.properties.tagname]){
-            similarTags[event.myTags[j]._node.properties.tagname]++;
+            similarTags[event.myTags[j]._node.properties.tagname] += userTags[i].weight;
           } else {
             similarTags[event.myTags[j]._node.properties.tagname] = 1;
           }
@@ -166,6 +165,7 @@ var defineEventTagScore = function(event, tags, userTags){
   for(var tag in similarTags){
     eventScore += similarTags[tag];
   }
+  //console.log("Event Score: ", eventScore);
   event.score = eventScore;
 };
 
@@ -190,63 +190,79 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
   var myUser = {
     username: req.body.userName
   };
-  var setUserID = function(id){
-    myUser.id = id;
+  var setUser = function(user){
+    myUser.id = user._node._id;
+    myUser.userObj = user;
   }.bind(this);
-  //Get all of the user's tags.
+  //Get the Neo4J user Object
   getMyUser(myUser).then(function(user){
     //need to grab the ID
-    setUserID(user._node._id);
+    setUser(user);
     console.log("User: ", user);
+    //Get the user's tags.
     return getMyUserTags(user);
   }).then(function(userTags){
-    console.log("Finding events that match tags.");
-    //Get the events that match the questionairre tags
-    //console.log("Tags: ", tags);
-    Event.getMatchingEvents(tags, function(err, events) {
-      //console.log("Events:", events);
-      var promises = [];
-      if (err) {
-        return res.status(500).send(err);
+    //take the user tags and attach all of the weights to them.
+    var userTagsPromises = [];
+    for(var i = 0; i < userTags.length; i ++){
+      userTagsPromises.push(myUser.userObj.getTagWeight(userTags[i]));
+    }
+    Promise.all(userTagsPromises).then(function(userTagWeights){
+      //Attach the weights to the tags
+      for(var i = 0; i < userTags.length; i ++){
+        userTags[i].weight = userTagWeights[i];
       }
-      if(events.length === 0){
-        var ideas = {
-          ideaArray: [
-            {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0, imgUrl: 'https://irs3.4sqi.net/img/general/960x720/17160664_1pVXH9Lf1AGEF9GiADPhnKDn05nHwEazTCk8XdZr_OQ.jpg'},
-            {idea: "Get schwasted at Bourbon & Branch", liked: 0, disliked: 0, imgUrl:'https://irs2.4sqi.net/img/general/960x720/44636481_XKzA8WwCQan1LueBpfLoHrVDC1rUGfIb6rtq4zMx5fU.jpg' },
-            {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0, imgUrl: 'https://irs2.4sqi.net/img/general/612x612/21220925_aayAh4Nd5fVrcfYx_i1mQ6vKFXhAVqNvDEHqT0JVvl4.jpg' }
-          ]
-        };
-        return res.status(200).send(ideas);
-      } else {
-        var limit = 3;
-        //Attach the event tags to the event object.
-        for(var i = 0; i < events.length; i ++){
-          //console.log("Pushing Promise for event");
-          var tagPromise = new Promise(
-          function(resolve, reject){
-            events[i].getAllTags(function(err, tags){
-              if(err){
-                reject(err);
-              } else {
-                resolve(tags);
-              }
-            });
-          });
-          promises.push(tagPromise);
+      //console.log("User's Tags:", userTags);
+      //Get the events that match the questionairre tags
+      console.log("Finding events that match tags.");
+      Event.getMatchingEvents(tags, function(err, events) {
+        //console.log("Events:", events);
+        var promises = [];
+        if (err) {
+          return res.status(500).send(err);
         }
-        Promise.all(promises).then(
-          function(theTags){
-            console.log("Events length", events.length);
-            //Score the tags based on the scoring algorithm.
-            for(var i = 0; i < events.length; i ++){
-              //console.log(events[i].myTags);
-              defineEventTagScore(events[i], tags, userTags);
+        if(events.length === 0){
+          var ideas = {
+            ideaArray: [
+              {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0, imgUrl: 'https://irs3.4sqi.net/img/general/960x720/17160664_1pVXH9Lf1AGEF9GiADPhnKDn05nHwEazTCk8XdZr_OQ.jpg'},
+              {idea: "Get schwasted at Bourbon & Branch", liked: 0, disliked: 0, imgUrl:'https://irs2.4sqi.net/img/general/960x720/44636481_XKzA8WwCQan1LueBpfLoHrVDC1rUGfIb6rtq4zMx5fU.jpg' },
+              {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0, imgUrl: 'https://irs2.4sqi.net/img/general/612x612/21220925_aayAh4Nd5fVrcfYx_i1mQ6vKFXhAVqNvDEHqT0JVvl4.jpg' }
+            ]
+          };
+          return res.status(200).send(ideas);
+        } else {
+          var limit = 3;
+          //Attach the event tags to the event object.
+          for(var i = 0; i < events.length; i ++){
+            //console.log("Pushing Promise for event");
+            var tagPromise = new Promise(
+            function(resolve, reject){
+              events[i].getAllTags(function(err, tags){
+                if(err){
+                  reject(err);
+                } else {
+                  resolve(tags);
+                }
+              });
+            });
+            promises.push(tagPromise);
+          }
+          Promise.all(promises).then(
+            function(theTags){
+              console.log("Events length", events.length);
+              //Score the tags based on the scoring algorithm.
+              for(var i = 0; i < events.length; i ++){
+                //console.log(events[i].myTags);
+                defineEventTagScore(events[i], tags, userTags);
+              }
+              //Sort the events by Score
+              events.sort(compareEventScores);
+              //Get Venues associated with the top events.
+              exports.getFoursquareVenues(events, res, limit, geo, myUser.id);
             }
-            events.sort(compareEventScores);
-            exports.getFoursquareVenues(events, res, limit, geo, myUser.id);
-          });
-      }
+          );
+        }
+      });
     });
   });
 };
@@ -340,7 +356,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           }
           idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
           dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID, function(ideaSQL){
-            console.log("The SQL Idea: ", ideaSQL.id, ". Posting to SQL");
+            //console.log("The SQL Idea: ", ideaSQL.id, ". Posting to SQL");
 
             userPrefSQL.post(userID, ideaSQL.id);
           });
