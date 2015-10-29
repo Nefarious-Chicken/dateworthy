@@ -266,7 +266,7 @@ User.prototype.untag = function(tag, callback) {
 };
 
 //get the weight property on the user preference tag
-User.prototype.getTagWeight = function(tag, callback) {
+User.prototype.getTagWeight = function(tag) {
   var query = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
@@ -278,11 +278,17 @@ User.prototype.getTagWeight = function(tag, callback) {
     thisUsername: this.username,
     targetTagname: tag.tagname,
   };
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err, results) {
-    callback(err, results[0]["rel.weight"]);
+  return new Promise(function(resolve, reject){
+    db.cypher({
+      query: query,
+      params: params,
+    }, function(err, results) {
+      if(err){
+        console.log(err);
+      } else {
+        resolve(results[0]["rel.weight"]);
+      }
+    });
   });
 };
 
