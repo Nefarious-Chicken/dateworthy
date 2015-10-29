@@ -57,6 +57,31 @@ angular.module('dateworthy.services', [])
         callback(resp.data);
       });
     },
+    markLikeDislike: function(dateIdeaID, likeDislikeFlag){
+      var preferences = {
+        dateIdeaID: dateIdeaID,
+        likeDislike: likeDislikeFlag
+      }
+      
+      return $http({
+        method: 'GET',
+        url: '/users/userInfo',
+        params: { userName: UserData.getUserData().email }
+      })
+      .then(function(resp){
+        preferences.userID = resp.data.userID;
+      })
+      .then(function(){
+        $http({
+          method: 'POST',
+          url: '/users/userpreferences',
+          data: preferences
+        })
+      })
+      .then(function(resp){
+        console.log('Updated user prefs for dateIdeaID ' + dateIdeaID);
+      });
+    }
   };
 })
 .factory('UserData', function ($http, $location, $window) {

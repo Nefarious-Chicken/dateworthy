@@ -36,6 +36,7 @@ module.exports = {
         }).then(function(userPref) {
           userPref.setUserAuth(userID);
           userPref.setDateIdea(dateIdeaID);
+          return userPref;
         });
       } else {
         // Update the value of likeDislike if this userID/dateIdeaID combo already exists
