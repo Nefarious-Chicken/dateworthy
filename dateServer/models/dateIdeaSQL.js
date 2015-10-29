@@ -20,25 +20,27 @@ module.exports = {
       return dateIdea;
     });
   },
-  post: function (dateIdeaName, eventID, venueID, callback) {
+  post: function (dateIdeaName, eventID, venueID) {
 
     // Can't use findOrCreate method since it will not allow access to setEvent and setVenue methods
     // Use this.get to check if it exists, if not, then create and add foreign keys
     return this.get(dateIdeaName)
     .then(function(dateIdea){
       if(!dateIdea){
-        seqDateIdeas.sync().then(function(){
-          seqDateIdeas.create({
+        return seqDateIdeas.sync()
+        .then(function(){
+          return seqDateIdeas.create({
             dateIdeaName: dateIdeaName
           })
           .then(function(dateIdea){
             dateIdea.setEvent(eventID);
             dateIdea.setVenue(venueID);
-            callback(dateIdea);
+            return dateIdea.dataValues;
           });
         });
       } else {
-        return dateIdea;
+        console.log('AN OLD IDEA REPEATING!!!!')
+        return dateIdea.dataValues;
       }
     });
   }

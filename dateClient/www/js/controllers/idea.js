@@ -13,12 +13,12 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     };
     var map = new google.maps.Map(document.getElementById("map"), mapOptions);
     navigator.geolocation.getCurrentPosition(function(pos) {
-        map.setCenter(new google.maps.LatLng(latitude, longitude));
-        var myLocation = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude, longitude),
-            map: map,
-            title: name
-        });
+      map.setCenter(new google.maps.LatLng(latitude, longitude));
+      var myLocation = new google.maps.Marker({
+          position: new google.maps.LatLng(latitude, longitude),
+          map: map,
+          title: name
+      });
     });
     $scope.map = map;
   };
@@ -35,6 +35,8 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
 
   $scope.like = function() {
+    console.log("What is this?");
+    console.log($scope.ideas);
     $scope.ideas[currentIdea].liked = 1;
     $scope.ideas[currentIdea].disliked = 0;
     var tagnames = DateData.getTags();

@@ -350,24 +350,29 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           var idea = {};
           var venueID = venueData.id;
           var venueName = venueData.name;
-          venueSQL.post(venueID, venueName);
-          for (var key in venueData) {
-            idea[key] = venueData[key];
-          }
-          idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
-          dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID, function(ideaSQL){
-            //console.log("The SQL Idea: ", ideaSQL.id, ". Posting to SQL");
 
+          venueSQL.post(venueID, venueName)
+          .then(function(venue){
+            for (var key in venueData) {
+              idea[key] = venueData[key];
+            }
+            idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+            idea.liked = 0;
+            idea.disliked = 0;
+            if (venueData.hasOwnProperty('bestPhoto')) {
+              idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
+            };
+            return venue;            
+          })
+          .then(function(venue){
+            return dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID)
+          })
+          .then(function(ideaSQL){
             userPrefSQL.post(userID, ideaSQL.id);
+            idea.dateIdeaID = ideaSQL.id;
+            ideas.ideaArray.push(idea);
+            resolve(ideas);
           });
-          idea.liked = 0;
-          idea.disliked = 0;
-          if (venueData.hasOwnProperty('bestPhoto')) {
-            idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
-          };
-
-          ideas.ideaArray.push(idea);
-          resolve(ideas);
         });
       }
     });

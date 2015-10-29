@@ -1,7 +1,7 @@
 
 var Sequelize = require('sequelize');
 
-var sequelize = new Sequelize('dateWorthy', 'root', '');
+var sequelize = new Sequelize('dateWorthy', 'root', '', { logging: false });
 
 module.exports.sequelize = sequelize;
 

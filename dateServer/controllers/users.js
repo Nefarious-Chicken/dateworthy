@@ -328,6 +328,13 @@ exports.signupUserSQL = function(req, res, next){
   });
 }
 
+exports.getUserID = function(req, res, next){
+  userAuthSQL.get(req.query.userName)
+  .then(function(user){
+    res.status(200).send(user);
+  })
+}
+
 exports.createUserPrefsSQL = function(req, res, next){
   userPrefsSQL.post(req.body.userID, req.body.dateIdeaID, req.body.likeDislike)
   .then(function(user){

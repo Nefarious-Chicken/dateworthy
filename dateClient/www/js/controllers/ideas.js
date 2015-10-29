@@ -37,9 +37,11 @@ angular.module('dateworthy.ideas', [])
         LikeADate.increaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
+    LikeADate.markLike($scope.ideas[currentIdea].dateIdeaID);
   }
 
   $scope.dislike = function() {
+    var currentIdea = $scope.currentIdea;
     $scope.ideas[$scope.currentIdea].disliked = 1;
     $scope.ideas[$scope.currentIdea].liked = 0;  
     var tagnames = DateData.getTags();
@@ -48,6 +50,7 @@ angular.module('dateworthy.ideas', [])
         LikeADate.decreaseTagWeight(tagnames[prop], function(results){console.log(results)});
       }
     };
+    LikeADate.markDislike($scope.ideas[currentIdea].dateIdeaID);
   }
 
   $scope.isLast = function( idea ) {
