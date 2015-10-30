@@ -3,7 +3,7 @@
 
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
+.controller('IdeaCtrl', function($state, $location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
   
   $scope.initMap = function(latitude, longitude, name){
     console.log("Initiating Map...", latitude, longitude);
@@ -34,22 +34,24 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
   };
 
   $scope.$on('$stateChangeSuccess', function() {
-    DateData.getDateIdeas(function(ideas) {
-      $scope.ideas = ideas;
-      console.log($scope.ideas);
-      $scope.currentIdea = Number($stateParams.ideaId);
-      $scope.imgWidth = window.innerWidth + 'px'; 
-      console.log("innerwidth is", $scope.imgWidth);
-      $scope.idea = $scope.ideas[$scope.currentIdea];
-      $scope.idea.index = $scope.currentIdea;
-      $scope.idea.last = false;
-      console.log("$scope.idea.index", $scope.idea.index);
-      if ($scope.idea.index === $scope.ideas.length - 1) {
-        $scope.idea.last = true; 
-      }
-      $scope.idea.detailsVisible = false;
-      $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
-    });
+    if ($state.includes('idea')) {
+      DateData.getDateIdeas(function(ideas) {
+        $scope.ideas = ideas;
+        console.log($scope.ideas);
+        $scope.currentIdea = Number($stateParams.ideaId);
+        $scope.imgWidth = window.innerWidth + 'px'; 
+        console.log("innerwidth is", $scope.imgWidth);
+        $scope.idea = $scope.ideas[$scope.currentIdea];
+        $scope.idea.index = $scope.currentIdea;
+        $scope.idea.last = false;
+        console.log("$scope.idea.index", $scope.idea.index);
+        if ($scope.idea.index === $scope.ideas.length - 1) {
+          $scope.idea.last = true; 
+        }
+        $scope.idea.detailsVisible = false;
+        $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
+      });
+    }
   });
 
   $scope.currentIdea = 0;
@@ -94,19 +96,19 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
   $scope.nextIdea= function(){
     var next = Number($scope.currentIdea) + 1; 
-    $location.path('/idea/' + next);
+    $state.go('idea', {ideaId: next});
   };
 
   $scope.prevIdea= function(){
     var prev = Number($scope.currentIdea) - 1;
-    $location.path('/idea/' + prev);
+    $state.go('idea', {ideaId: prev});
   };
 
   $scope.clearData = function(){
     $scope.ideas = [];
     $scope.currentIdea = 0;
     DateData.clearData();
-    $location.path('/home');
+    $state.go('home');
   };
 
 });

@@ -13,7 +13,7 @@ angular.module('dateworthy', [
   'dateworthy.services'
 ])
 
-.run(function($ionicPlatform, $rootScope, $location, ngFB) {
+.run(function($ionicPlatform, $rootScope, $state, $location, ngFB) {
   ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -38,7 +38,7 @@ angular.module('dateworthy', [
       .then(function(response){
         if(response.status !== "connected"){
           console.log("User is not logged in.");
-          $location.path('/login');
+          $state.go('login');
         }
       })
     });
