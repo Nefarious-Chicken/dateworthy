@@ -10,7 +10,7 @@
       </div>
     </ion-item>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
-    <div id="map" ng-if="loadMapCheck()"></div>
+    <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
   </ion-content>
   <div class="bar bar-footer">
       <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i> Back</button>

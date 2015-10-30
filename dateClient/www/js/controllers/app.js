@@ -15,12 +15,15 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
   // Creds: https://ccoenraets.github.io/ionic-tutorial/ionic-facebook-integration.html
   // PLEASE NOTE, in the original code, the scope key value pair had the string 
   // 'email,read_stream,publish_actions' as the value, but it was returning errors. 
+
+
+  //once the main controller loads grab users coordinates
+  $ionicPlatform.ready(function() {
+    DateData.setGeoLocation();
+  });
   $scope.fbLogin = function () {
 
     //retrieves users coordinates upon log in attempt
-    $ionicPlatform.ready(function() {
-      DateData.setGeoLocation();
-    });
     
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
