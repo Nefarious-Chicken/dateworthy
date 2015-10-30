@@ -19,6 +19,7 @@ exports.sendDateData = function(req, res, next) {
   var tags = {};
 
   var rawGeo = req.body.geoLocation;
+  var logistics = req.body.logistics;
   if(rawGeo !== null){
     //reformat geo to follow correct format '37.78,-122.41'
     var geoLocation = '' + rawGeo.lat.toFixed(2) + ',' + rawGeo.long.toFixed(2);
@@ -28,7 +29,7 @@ exports.sendDateData = function(req, res, next) {
   }
 
   console.log('Tags: ', tags);
-  Events.getMatchingEventsNoRest(tags, geoLocation, req, res);
+  Events.getMatchingEventsNoRest(tags, geoLocation, logistics, req, res);
 };
 
 /**

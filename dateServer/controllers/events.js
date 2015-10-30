@@ -201,7 +201,7 @@ var getEventTagPromises = function(events){
 /**
  * returns the matching events based on a list of tags.
  */
-exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
+exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
 
   var myUser = {
     username: req.body.userName
@@ -259,7 +259,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, req, res) {
               //Sort the events by Score
               events.sort(compareEventScores);
               //Get Venues associated with the top events.
-              exports.getFoursquareVenues(events, res, limit, geo, myUser.id);
+              exports.getFoursquareVenues(events, res, limit, geo, logistics, myUser.id);
             }
           );
         }
@@ -307,10 +307,22 @@ var selectVenuesForEvents = function(events, limit){
 /**
  * given a set of events and a limit, define foursquare venues that match these events.
  */
-exports.getFoursquareVenues = function(events, res, limit, _geoLocation, userID) {
+
+exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, _logistics, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = selectVenuesForEvents(events, limit);
+  var radius;
+
+  if(_logistics){
+    if(_logistics["transportation"] === "I'm walking"){
+      radius = 1000;
+    } else {
+      radius = 5000;
+    }
+  } else {
+    radius = 5000;
+  }
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
@@ -319,7 +331,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, userID)
       ll: '37.8044,-122.2708',
       categoryId: events[indices[i]]._node.properties.fsCategory,
       intent: 'browse',
-      radius: '5000'
+      radius: radius
     };
 
     if(_geoLocation){
