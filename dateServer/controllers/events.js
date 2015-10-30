@@ -307,7 +307,7 @@ var selectVenuesForEvents = function(events, limit){
 /**
  * given a set of events and a limit, define foursquare venues that match these events.
  */
-exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
+exports.getFoursquareVenues = function(events, res, limit, _geoLocation, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = selectVenuesForEvents(events, limit);
