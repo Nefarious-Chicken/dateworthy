@@ -13,16 +13,16 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    var venueMap = new google.maps.Map(document.getElementById("venueMap"), mapOptions);
     navigator.geolocation.getCurrentPosition(function(pos) {
-      map.setCenter(new google.maps.LatLng(latitude, longitude));
+      venueMap.setCenter(new google.maps.LatLng(latitude, longitude));
       var myLocation = new google.maps.Marker({
           position: new google.maps.LatLng(latitude, longitude),
-          map: map,
+          map: venueMap,
           title: name
       });
     });
-    $scope.map = map;
+    $scope.venueMap = venueMap;
   };
 
   DateData.getDateIdeas(function(ideas) {
