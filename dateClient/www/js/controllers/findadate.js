@@ -1,5 +1,5 @@
 angular.module('dateworthy.findadate', [])
-.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, $ionicPlatform, FindADate, DateData, LikeADate) {
+.controller('FindADateCtrl', function($scope, $location, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
 
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
@@ -10,7 +10,9 @@ angular.module('dateworthy.findadate', [])
     {question: "How long is your date?", type: "logistics", field: "length", possibilities: ["30 minutes", "1 hour", "2 hours"]},
     {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:
       ["I'm walking","I'm taking a cab","I'm driving", "Public trans, baby!"]},
-    {question: "Would you prefer a loud or quiet setting?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]}
+    {question: "Would you prefer a loud or quiet setting?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]},
+    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []}
+    
   ];
   $scope.data = {};
 
@@ -69,6 +71,13 @@ angular.module('dateworthy.findadate', [])
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
 
+      //Update coordinates based off of google maps center location
+      var center = $scope.map.getCenter();
+      var lat = center.lat();
+      var lng = center.lng();
+      debugger
+      DateData.setGeoLocation(lat, lng)
+
       for (prop in $scope.currentTags) {
         tag = $scope.currentTags[prop]
         if(tag !== undefined){
@@ -81,6 +90,7 @@ angular.module('dateworthy.findadate', [])
       };
 
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
+        console.log(DateData.getConcatenatedData(), "DATA WE ARE sending")
         DateData.setDateIdeas(data);
         $scope.loadState();
         $location.path('/idea');
@@ -93,5 +103,93 @@ angular.module('dateworthy.findadate', [])
     }
   };
 
+  // This example adds a search box to a map, using the Google Place Autocomplete
+  // feature. People can enter geographical searches. The search box will return a
+  // pick list containing a mix of places and predicted search terms.
+
+  $scope.initMap = function() {
+    
+    var coordinates = DateData.getGeoLocation();
+    if(coordinates){
+      var latitude = coordinates.lat || -34.6033
+      var longitude = coordinates.long || -58.3817
+    }
+    var map = new google.maps.Map(document.getElementById('map'), {
+      draggable: false,
+      center: {lat: latitude || -34.6033, lng: longitude || -58.3817},
+      zoom: 10,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+
+    var searchBox = new google.maps.places.SearchBox(input);
+    //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    var markers = [];
+    // [START region_getplaces]
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+    $scope.map = map;
+  }
+
+  $scope.loadMapCheck = function () {
+    if ($scope.currentIndex === $scope.questions.length - 1 + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
+      setTimeout($scope.initMap, 1000);
+      return true
+    } else {
+      return false
+    }
+  }
+
   $scope.loadState();
+
 })
+
