@@ -52,6 +52,10 @@
         <a class="button button-balanced button-like" ng-click="like()" ng-class="{'button-outline' : idea.liked == '0'}"><i class="icon ion-checkmark-round"></i></a>
       </div>
     </div>
-    
+    <div class="padding flag">
+      <button class="button button-small" ng-click="flagDate()">
+        <i class="ion-flag"></i> Flag this as a terrible idea
+      </button>
+    </div>
   </ion-content>
 </ion-view>

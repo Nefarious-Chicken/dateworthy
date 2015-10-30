@@ -12,12 +12,18 @@ describe('IdeaControllers', function(){
     });
   }));
 
+  beforeEach(module(function ($provide) {
+    $provide.value('$ionicPopup', {
+        someVariable: 1
+    });
+  }));
+
   beforeEach(inject(function($injector, $rootScope, $controller) {
     scope = $rootScope.$new();
     cordovaGeolocation = "foo";
-    $controller('IdeasCtrl', {$scope: scope, $cordovaGeolocation: cordovaGeolocation});
+    ionicPopup = "bar";
+    $controller('IdeasCtrl', {$scope: scope, $cordovaGeolocation: cordovaGeolocation, $ionicPopup: ionicPopup});
   }));
-
 
   // tests start here
   it('should have ideas equal to an empty object and current idea equal to 0', function(){
@@ -98,7 +104,6 @@ describe('IdeaControllers', function(){
     expect(scope.ideas[scope.currentIdea].disliked).toEqual(1);
     expect(scope.ideas[scope.currentIdea].liked).toEqual(0);
   });
-
 
 
 });
