@@ -109,6 +109,7 @@ angular.module('dateworthy.findadate', [])
   // pick list containing a mix of places and predicted search terms.
 
   $scope.initMap = function() {
+    console.log("Initializing map");
     var coordinates = DateData.getGeoLocation();
     if(coordinates){
       var latitude = coordinates.lat || 37.8044

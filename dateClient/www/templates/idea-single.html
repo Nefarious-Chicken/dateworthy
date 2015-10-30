@@ -45,7 +45,9 @@
           <p class="fs-link" ng-if="idea.canonicalUrl">
             <a ng-href="{{idea.canonicalUrl}}" target="_blank"> <i class="ion-social-foursquare"></i> Open in Foursquare</a>
           </p>
-           <div id="venueMap" class="venueMap" data-tap-disabled="true"></div>
+          <div id="{{'venueMap' + idea.index}}" class="venueMap" data-tap-disabled="true">
+            <!-- {{ init() }} -->
+          </div>
            <!-- <div id="map" ></div> -->
         </div>
 
