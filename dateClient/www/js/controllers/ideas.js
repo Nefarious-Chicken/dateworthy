@@ -1,6 +1,7 @@
-angular.module('dateworthy.ideas', [])
-.controller('IdeasCtrl', function($scope, $timeout, $location, DateData, LikeADate) {
+// This is the controller for the initial ideas view - i.e. the carousel thing of three different ideas. 
 
+angular.module('dateworthy.ideas', [])
+.controller('IdeasCtrl', function($scope, $timeout, $location, $ionicPopup, DateData, LikeADate, FlagADate) {
   // Wrapping the `DateData.getDateIdeas` function call inside a $scope.on('$stateChangeSuccess') listener.
   // $stateChangeSuccess - fired once the state transition is complete (https://github.com/angular-ui/ui-router/wiki)
   $scope.ideas = {};
@@ -67,5 +68,11 @@ angular.module('dateworthy.ideas', [])
     DateData.clearData();
     $location.path('/home');
   };
+
+  $scope.flagDate = function() {
+    var dateIdeaID = $scope.ideas[$scope.currentIdea].dateIdeaID;
+    FlagADate.flagDate(dateIdeaID);
+  };
+
 
 })

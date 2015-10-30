@@ -1,7 +1,9 @@
+// This is the controller for the individual date ideas - i.e. the one that has all the Foursquare venue details,
+// including the address, opening hours, and map. 
+
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate) {
-
+.controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
   
   $scope.initMap = function(latitude, longitude, name){
     console.log("Initiating Map...", latitude, longitude);
@@ -33,7 +35,6 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name), 500);
   });
 
-
   $scope.like = function() {
     var currentIdea = $scope.currentIdea;
     $scope.ideas[currentIdea].liked = 1;
@@ -64,8 +65,10 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     $ionicHistory.goBack();
   };
 
-  // MAPS INTEGRATION 
-  
+  $scope.flagDate = function() {
+    var dateIdeaID = $scope.ideas[$scope.currentIdea].dateIdeaID;
+    FlagADate.flagDate(dateIdeaID);
+  };
 
 });
 

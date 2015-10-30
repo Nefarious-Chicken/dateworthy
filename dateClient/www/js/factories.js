@@ -17,7 +17,6 @@ angular.module('dateworthy.services', [])
   };
 })
 .factory('LikeADate', function ($http, $location, $window, UserData, DateData) {
-  
   return {
     increaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
@@ -84,6 +83,23 @@ angular.module('dateworthy.services', [])
     }
   };
 })
+.factory('FlagADate', function($http, $location, $ionicPopup) {
+  return {
+    flaggedDates: [],
+    flagDate: function(dateIdeaID) {
+      // WRITE SERVER CODE HERE THAT WILL SHOW THIS DATE AS "FLAGGED"
+      console.log("I am sending the date with dateIdeaID", dateIdeaID, "to the SQL database to be queued for removal");
+      this.showAlert();
+    },
+    showAlert: function() {
+      var alertPopup = $ionicPopup.alert({
+       title: 'Thank you!',
+       template: 'Thanks for helping us improve our recommendations. If enough people flag this idea,' + 
+       ' We\'ll scrub it idea from our database. '
+      });
+    }
+  }
+})
 .factory('UserData', function ($http, $location, $window) {
   return {
     userData: {},
@@ -102,9 +118,7 @@ angular.module('dateworthy.services', [])
         data: obj
       });
     },
-
     getUserData: function() {
-
       return this.userData;
     }
   };
@@ -148,7 +162,6 @@ angular.module('dateworthy.services', [])
           // error
         });
     },
-
     getGeoLocation: function(){
       return this.geoLocation;
     },
@@ -161,7 +174,6 @@ angular.module('dateworthy.services', [])
     },
     getConcatenatedData: function () {
       var data = UserData.getUserData();
-
       // Convert the tags object into an array, which the server expects. 
       var tagsArray = [];
       for (var key in this.tags) {
@@ -171,8 +183,6 @@ angular.module('dateworthy.services', [])
       };
       return {userName: data.email, tags: tagsArray, logistics: this.logistics, geoLocation: this.geoLocation};
     },
-
-
     clearData: function () {
       this.tags = {};
       this.logistics = {};
