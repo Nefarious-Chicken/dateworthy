@@ -65,9 +65,11 @@ angular.module('dateworthy.findadate', [])
   // This function determines what should be the next URL that 
   // the user navigates to and saves data from current survey. 
   $scope.nextQuestion = function(){
+
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
+    
     if (nextQuestionId === $scope.questions.length) {
 
 
@@ -107,11 +109,10 @@ angular.module('dateworthy.findadate', [])
   // pick list containing a mix of places and predicted search terms.
 
   $scope.initMap = function() {
-    
     var coordinates = DateData.getGeoLocation();
     if(coordinates){
-      var latitude = coordinates.lat || -34.6033
-      var longitude = coordinates.long || -58.3817
+      var latitude = coordinates.lat || 37.8044
+      var longitude = coordinates.long || -122.2708
     }
     var map = new google.maps.Map(document.getElementById('map'), {
       draggable: false,
@@ -176,12 +177,15 @@ angular.module('dateworthy.findadate', [])
       });
       map.fitBounds(bounds);
     });
+    
     $scope.map = map;
   }
 
-  $scope.loadMapCheck = function () {
-    if ($scope.currentIndex === $scope.questions.length - 1 + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
-      setTimeout($scope.initMap, 1000);
+  $scope.loadMapCheck = function (_decrement) {
+    if(!_decrement){
+      _decrement = 0;
+    }
+    if ($scope.currentIndex === $scope.questions.length - 1 - _decrement + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
       return true
     } else {
       return false
