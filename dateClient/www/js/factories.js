@@ -149,18 +149,25 @@ angular.module('dateworthy.services', [])
     getLogistics: function (){
       return this.logistics;
     },
-    setGeoLocation: function (){
-      var posOptions = {timeout: 10000, enableHighAccuracy: false};
-      var context = this;
-      $cordovaGeolocation
-        .getCurrentPosition(posOptions)
-        .then(function (position) {
-          var lat  = position.coords.latitude;
-          var long = position.coords.longitude;
-          context.geoLocation = {lat:lat,long:long};
-        }, function(err) {
-          // error
-        });
+    setGeoLocation: function (_lat, _long){
+      if(_lat && _long){
+        
+        this.geoLocation = {lat: _lat, long: _long};
+      
+      } else {
+
+        var posOptions = {timeout: 10000, enableHighAccuracy: false};
+        var context = this;
+        $cordovaGeolocation
+          .getCurrentPosition(posOptions)
+          .then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+            context.geoLocation = {lat:lat,long:long};
+          }, function(err) {
+            // error
+          });
+      }
     },
     getGeoLocation: function(){
       return this.geoLocation;

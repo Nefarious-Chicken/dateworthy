@@ -16,7 +16,8 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
   // PLEASE NOTE, in the original code, the scope key value pair had the string 
   // 'email,read_stream,publish_actions' as the value, but it was returning errors. 
   $scope.fbLogin = function () {
-    console.log("trying to get geo location")
+
+    //retrieves users coordinates upon log in attempt
     $ionicPlatform.ready(function() {
       DateData.setGeoLocation();
     });

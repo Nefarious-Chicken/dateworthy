@@ -1,4 +1,4 @@
-<ion-view view-title="findadate">
+<ion-view view-title="findadate" ng-controller = "FindADateCtrl">
   <ion-header-bar class="bar bar-header">
     <div class="h1 title"><i class="ion-erlenmeyer-flask royal"></i> Date Formula Picker</div>
   </ion-header-bar>
@@ -9,6 +9,8 @@
         <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
       </div>
     </ion-item>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
+    <div id="map" ng-if="loadMapCheck()"></div>
   </ion-content>
   <div class="bar bar-footer">
       <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i> Back</button>
