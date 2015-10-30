@@ -11,7 +11,7 @@ exports.createDateIdeaSQL = function(req, res, next){
 }
 
 exports.blacklistDateIdeaSQL = function(req, res, next){
-  DateBlacklistSQL.post(req.body.dateIdeaID, req.body.venueID, req.body.eventID)
+  DateBlacklistSQL.post(req.body.dateIdeaID, req.body.approveFlag)
   .then(function(dateIdea){
     res.status(200).send();
   })

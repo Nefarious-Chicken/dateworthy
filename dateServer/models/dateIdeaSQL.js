@@ -39,7 +39,6 @@ module.exports = {
           });
         });
       } else {
-        console.log('AN OLD IDEA REPEATING!!!!')
         return dateIdea.dataValues;
       }
     });

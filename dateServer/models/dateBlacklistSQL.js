@@ -20,23 +20,33 @@ module.exports = {
       return blacklistIdea;
     })
   },
-  post: function (dateIdeaID, eventID, venueID) {
+  post: function (dateIdeaID, approveFlag) {
     // Can't use findOrCreate method since it will not allow access to setEvent and setVenue methods
     // Use this.get to check if it exists, if not, then create and add foreign keys
+    //approveFlag should be set to 1 if an admin decides a date is bad
     return seqDateBlacklist.sync()
     .then(function(){
-      return seqDateBlacklist.findOne({ where: { dateIdeaDateIdeaID: dateIdeaID }});
+      return seqDateBlacklist.findOne({ where: { dateIdeaID: dateIdeaID }});
     })
     .then(function(dateIdea){
       if(!dateIdea){
-        return seqDateBlacklist.sync().then(function(){
-          seqDateBlacklist.create()
+        return seqDateBlacklist.sync()
+        .then(function(){
+          return seqDateBlacklist.create({
+            approved: approveFlag || 0
+          })
           .then(function(blacklistIdea){
             blacklistIdea.setDateIdea(dateIdeaID);
+            return blacklistIdea;
           });
         });
       } else {
-        return dateIdea;
+        return seqDateBlacklist.update({
+          approved: approveFlag || 0
+        }, { where: { dateIdeaID: dateIdeaID }})
+        .then(function(dateIdea){
+          return dateIdea;
+        });
       }
     });
   }

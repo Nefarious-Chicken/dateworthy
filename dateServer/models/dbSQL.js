@@ -29,7 +29,8 @@ var dateIdeas = sequelize.define('dateIdeas', {
 });
 
 var dateBlacklist = sequelize.define('dateBlacklist', {
-  blacklistID: { type: Sequelize.INTEGER, primaryKey: true, unique: true, autoIncrement: true }
+  blacklistID: { type: Sequelize.INTEGER, primaryKey: true, unique: true, autoIncrement: true }, 
+  approved: { type: Sequelize.INTEGER },
 },
 {
   timestamps: false

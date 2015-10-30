@@ -40,7 +40,7 @@ module.exports = {
         });
       } else {
         // Update the value of likeDislike if this userID/dateIdeaID combo already exists
-        seqUserPrefs.update({
+        return seqUserPrefs.update({
           likeDislike: likeDislike || 0
         }, { where: {userAuthUserID: userID, dateIdeaID: dateIdeaID }})
         .then(function(userPref){
