@@ -71,12 +71,6 @@ angular.module('dateworthy.findadate', [])
     var nextQuestionId = Number($scope.currentIndex) + 1;
     if (nextQuestionId === $scope.questions.length) {
 
-      //Update coordinates based off of google maps center location
-      var center = $scope.map.getCenter();
-      var lat = center.lat();
-      var lng = center.lng();
-      DateData.setGeoLocation(lat, lng)
-
       for (prop in $scope.currentTags) {
         tag = $scope.currentTags[prop]
         if(tag !== undefined){
