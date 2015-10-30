@@ -29,6 +29,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
       });
     });
     $scope["venueMap" + $stateParams.ideaId] = venueMap;
+    $scope.idea.mapInit = true;
     // $scope.venueMap = venueMap;
   };
 
@@ -52,12 +53,13 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         $scope.idea = $scope.ideas[$scope.currentIdea];
         $scope.idea.index = $scope.currentIdea;
         $scope.idea.last = false;
+        $scope.idea.mapInit = false;
         console.log("$scope.idea.index", $scope.idea.index);
         if ($scope.idea.index === $scope.ideas.length - 1) {
           $scope.idea.last = true; 
         }
         $scope.idea.detailsVisible = false;
-        $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
+        // $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
       });
     }
   });
