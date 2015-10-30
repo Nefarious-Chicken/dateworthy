@@ -93,7 +93,7 @@ angular.module('dateworthy.findadate', [])
         console.log(DateData.getConcatenatedData(), "DATA WE ARE sending")
         DateData.setDateIdeas(data);
         $scope.loadState();
-        $location.path('/idea');
+        $location.path('/idea/0');
       });
 
     } else {
