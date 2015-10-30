@@ -10,11 +10,10 @@ angular.module('dateworthy', [
   'dateworthy.app',
   'dateworthy.findadate',
   'dateworthy.idea',
-  'dateworthy.ideas',
   'dateworthy.services'
 ])
 
-.run(function($ionicPlatform, $rootScope, $location, ngFB) {
+.run(function($ionicPlatform, $rootScope, $state, $location, ngFB) {
   ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -39,7 +38,7 @@ angular.module('dateworthy', [
       .then(function(response){
         if(response.status !== "connected"){
           console.log("User is not logged in.");
-          $location.path('/login');
+          $state.go('login');
         }
       })
     });
@@ -75,11 +74,6 @@ angular.module('dateworthy', [
     templateUrl: 'templates/findadate.html',
     controller: 'FindADateCtrl'
   })
-  .state('ideas', {
-    url: '/idea',
-    templateUrl: 'templates/idea.html',
-    controller: 'IdeasCtrl'
-  })
   .state('idea', {
     url: '/idea/:ideaId',
     templateUrl: 'templates/idea-single.html',
@@ -88,5 +82,4 @@ angular.module('dateworthy', [
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 });
-
 

@@ -1,6 +1,6 @@
 angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
+.controller('AppCtrl', function($state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -25,7 +25,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
         if (response.status === 'connected') {
-        $location.path('/home');
+        $state.go('home');
         return response;
       } else {
         alert('Facebook login failed');

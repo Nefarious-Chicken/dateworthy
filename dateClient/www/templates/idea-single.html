@@ -1,7 +1,8 @@
 <ion-view view-title="dateidea">
   <ion-header-bar class="bar bar-header">
-    <button class="button button-clear" ng-click="goBack()"><i class="ion-ios-arrow-back"></i></button>
-    <div class="h1 title">More Details</div>
+    <button class="button button-clear" ng-click="clearData()"><i class="ion-home"></i></button>
+    <div class="h1 title">Date Idea</div>
+    <button class="button button-small button-clear"><i class="ion-heart assertive"></i></button>
   </ion-header-bar>
   <ion-content ng-cloak>
     <div class="card date-idea" ng-model="idea">
@@ -12,38 +13,41 @@
         <div class="img" style="background-image: url('{{idea.imgUrl}}'); width: {{imgWidth}}; height: {{imgWidth}}"></div>
       </div>
       <div class="item item-text-wrap date-details">
-        <!-- <p>{{idea.location}}</p> -->
-        <h3>{{idea.name}}</h3>
-        <p class="category" ng-if="idea.categories">
-          <span ng-repeat="category in idea.categories">
-            {{ category.name }}{{$last ? '' : ' &bull;'}}
-          </span>
-        </p>
-        <p class="address" ng-if="idea.location.formattedAddress">
-          <span ng-repeat="line in idea.location.formattedAddress">
-            {{ line }}
-          </span>
-        </p>
-        <div class="hours" ng-if="idea.hours">
-          <p ng-repeat="timeframe in idea.hours.timeframes">
-            <span class="open-day">{{timeframe.days}}</span>
-            <span ng-repeat="openSeg in timeframe.open">
-              {{openSeg.renderedTime}}
+        <p><a ng-click="toggleDetails()"><i class="ion-information-circled"></i> {{idea.detailsVisible ? 'Hide details' : 'More about this date idea...'}}</a></p>
+        <div class="more-details" ng-show="idea.detailsVisible">
+
+          <!-- <p>{{idea.location}}</p> -->
+          <h3>{{idea.name}}</h3>
+          <p class="category" ng-if="idea.categories">
+            <span ng-repeat="category in idea.categories">
+              {{ category.name }}{{$last ? '' : ' &bull;'}}
             </span>
           </p>
+          <p class="address" ng-if="idea.location.formattedAddress">
+            <span ng-repeat="line in idea.location.formattedAddress">
+              {{ line }}
+            </span>
+          </p>
+          <div class="hours" ng-if="idea.hours">
+            <p ng-repeat="timeframe in idea.hours.timeframes">
+              <span class="open-day">{{timeframe.days}}</span>
+              <span ng-repeat="openSeg in timeframe.open">
+                {{openSeg.renderedTime}}
+              </span>
+            </p>
+          </div>
+          <p class="phone" ng-if="idea.contact.formattedPhone">
+            <i class="ion-ios-telephone"></i> {{idea.contact.formattedPhone}}
+          </p>
+          <p ng-if="idea.description">
+            {{idea.description}}
+          </p>
+          <p class="fs-link" ng-if="idea.canonicalUrl">
+            <a ng-href="{{idea.canonicalUrl}}" target="_blank"> <i class="ion-social-foursquare"></i> Open in Foursquare</a>
+          </p>
+           <div id="venueMap" class="venueMap" data-tap-disabled="true"></div>
+           <!-- <div id="map" ></div> -->
         </div>
-        <p class="phone" ng-if="idea.contact.formattedPhone">
-          <i class="ion-ios-telephone"></i> {{idea.contact.formattedPhone}}
-        </p>
-        <p ng-if="idea.description">
-          {{idea.description}}
-        </p>
-        <p class="fs-link" ng-if="idea.canonicalUrl">
-          <a ng-href="{{idea.canonicalUrl}}" target="_blank"> <i class="ion-social-foursquare"></i> Open in Foursquare</a>
-        </p>
-         <div id="venueMap"></div>
-           <!-- <div id="map" data-tap-disabled="true"></div> -->
-
 
         <!-- <p>{{idea.hours}} -->
       </div>
@@ -58,4 +62,8 @@
       </button>
     </div>
   </ion-content>
+  <div class="bar bar-footer">
+    <button class="button button-small button-outline button-default" type="submit" ng-click="prevIdea()" ng-hide="idea.index === 0">Previous idea</button>
+    <button class="button button-small button-outline button-positive button-default pull-right" type="submit" ng-click="nextIdea()" ng-hide= "idea.last === true">Next idea</button>
+  </div>
 </ion-view>

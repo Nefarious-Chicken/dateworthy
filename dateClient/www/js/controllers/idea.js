@@ -3,7 +3,7 @@
 
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
+.controller('IdeaCtrl', function($state, $location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
   
   $scope.initMap = function(latitude, longitude, name){
     console.log("Initiating Map...", latitude, longitude);
@@ -25,15 +25,43 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     $scope.venueMap = venueMap;
   };
 
-  DateData.getDateIdeas(function(ideas) {
-    $scope.ideas = ideas;
-    console.log($scope.ideas);
-    $scope.currentIdea = $stateParams.ideaId;
-    $scope.imgWidth = window.innerWidth + 'px'; 
-    console.log("innerwidth is", $scope.imgWidth);
-    $scope.idea = $scope.ideas[$scope.currentIdea];
-    setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name), 500);
+  $scope.toggleDetails = function() {
+    if ($scope.idea.detailsVisible === false) {
+      $scope.idea.detailsVisible = true;
+    } else {
+      $scope.idea.detailsVisible = false; 
+    }
+  };
+
+  $scope.$on('$stateChangeSuccess', function() {
+    if ($state.includes('idea')) {
+      DateData.getDateIdeas(function(ideas) {
+        $scope.ideas = ideas;
+        console.log($scope.ideas);
+        $scope.currentIdea = Number($stateParams.ideaId);
+        $scope.imgWidth = window.innerWidth + 'px'; 
+        console.log("innerwidth is", $scope.imgWidth);
+        $scope.idea = $scope.ideas[$scope.currentIdea];
+        $scope.idea.index = $scope.currentIdea;
+        $scope.idea.last = false;
+        console.log("$scope.idea.index", $scope.idea.index);
+        if ($scope.idea.index === $scope.ideas.length - 1) {
+          $scope.idea.last = true; 
+        }
+        $scope.idea.detailsVisible = false;
+        $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
+      });
+    }
   });
+
+  $scope.currentIdea = 0;
+
+
+  $scope.showDetails = function() {
+    console.log("Details should be vis now");
+    $scope.idea.detailsVisible = true;
+    console.log("$scope.idea.detailsVisible", $scope.idea.detailsVisible);
+  }
 
   $scope.like = function() {
     var currentIdea = $scope.currentIdea;
@@ -61,15 +89,26 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     LikeADate.markLikeDislike($scope.ideas[currentIdea].dateIdeaID, -1);
   };
 
-  $scope.goBack = function() {
-    $ionicHistory.goBack();
-  };
-
   $scope.flagDate = function() {
     var dateIdeaID = $scope.ideas[$scope.currentIdea].dateIdeaID;
     FlagADate.flagDate(dateIdeaID);
   };
 
+  $scope.nextIdea= function(){
+    var next = Number($scope.currentIdea) + 1; 
+    $state.go('idea', {ideaId: next});
+  };
+
+  $scope.prevIdea= function(){
+    var prev = Number($scope.currentIdea) - 1;
+    $state.go('idea', {ideaId: prev});
+  };
+
+  $scope.clearData = function(){
+    $scope.ideas = [];
+    $scope.currentIdea = 0;
+    DateData.clearData();
+    $state.go('home');
+  };
+
 });
-
-
