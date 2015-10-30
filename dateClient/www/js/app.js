@@ -60,7 +60,7 @@ angular.module('dateworthy', [
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
   .state('login', {
-    url: '/login',
+    url: '/login/',
     templateUrl: 'templates/login.html',
     controller: 'AppCtrl'
   })
@@ -70,12 +70,12 @@ angular.module('dateworthy', [
     controller: 'AppCtrl'
   })
   .state('findadate', {
-    url: '/findadate/:questionId',
+    url: '/findadate/:questionId/',
     templateUrl: 'templates/findadate.html',
     controller: 'FindADateCtrl'
   })
   .state('idea', {
-    url: '/idea/:ideaId',
+    url: '/idea/:ideaId/',
     templateUrl: 'templates/idea-single.html',
     controller: 'IdeaCtrl'
   });
