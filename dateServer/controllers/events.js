@@ -307,7 +307,7 @@ var selectVenuesForEvents = function(events, limit){
 /**
  * given a set of events and a limit, define foursquare venues that match these events.
  */
-exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID) {
+exports.getFoursquareVenues = function(events, res, limit, _geoLocation, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = selectVenuesForEvents(events, limit);
@@ -322,10 +322,11 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, userID)
       radius: '5000'
     };
 
-    if(_geoLoaction){
-      searchObj.ll = _geoLoaction;
+    if(_geoLocation){
+      searchObj.ll = _geoLocation;
     }
     promises.push(exports.venueSearch(searchObj, indices[i], events, ideas, userID));
+
   }
   // Promise.all is a function which will take in an array and runs all promise functions in the array
   // This allows us to have x number of promises run as though they were chained with .then
