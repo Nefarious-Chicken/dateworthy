@@ -4,7 +4,8 @@ var karma = require('karma').server;
 gulp.task('test', function(done) {
     karma.start({
         configFile: __dirname + '/dateClient/www/test/my.conf.js',
-        singleRun: true
+        singleRun: true,
+        browsers: ["PhantomJS"]
     }, function() {
         done();
     });
