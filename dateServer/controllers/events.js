@@ -382,7 +382,11 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
             for (var key in venueData) {
               idea[key] = venueData[key];
             }
-            idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+            if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
+              idea.idea = events[eventIndex]._node.properties.event + ' ' + venues[venueIndex].name;
+            } else {
+              idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+            }
             idea.liked = 0;
             idea.disliked = 0;
             if (venueData.hasOwnProperty('bestPhoto')) {
