@@ -3,6 +3,8 @@ var errors = require('./errors');
 var db = require('./db');
 require('./constraints');
 var Tag = require('./tag');
+var Promise = require('bluebird');
+
 
 //Event model
 /** TABLE OF CONTENTS:
