@@ -231,39 +231,42 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
       //console.log("User's Tags:", userTags);
       //Get the events that match the questionairre tags
       console.log("Finding events that match tags.");
-      Event.getMatchingEvents(tags, function(err, events) {
-        //console.log("Events:", events);
-        if (err) {
-          return res.status(500).send(err);
-        }
-        if(events.length === 0){
-          var ideas = {
-            ideaArray: [
-              {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0, imgUrl: 'https://irs3.4sqi.net/img/general/960x720/17160664_1pVXH9Lf1AGEF9GiADPhnKDn05nHwEazTCk8XdZr_OQ.jpg'},
-              {idea: "Get schwasted at Bourbon & Branch", liked: 0, disliked: 0, imgUrl:'https://irs2.4sqi.net/img/general/960x720/44636481_XKzA8WwCQan1LueBpfLoHrVDC1rUGfIb6rtq4zMx5fU.jpg' },
-              {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0, imgUrl: 'https://irs2.4sqi.net/img/general/612x612/21220925_aayAh4Nd5fVrcfYx_i1mQ6vKFXhAVqNvDEHqT0JVvl4.jpg' }
-            ]
-          };
-          return res.status(200).send(ideas);
-        } else {
-          var limit = 3;
-          var promises = getEventTagPromises(events);
-          Promise.all(promises).then(
-            function(theTags){
-              console.log("Events length", events.length);
-              //Score the tags based on the scoring algorithm.
-              for(var i = 0; i < events.length; i ++){
-                //console.log(events[i].myTags);
-                defineEventTagScore(events[i], tags, userTags);
+      var limit = 3;
+      var events = [];
+
+      var getEvents = function(events, tags){
+        return Event.getMatchingEvents(tags)
+        .then(function(eventsToAdd){
+          events = events.concat(eventsToAdd);
+          if(events.length >= limit){
+            var promises = getEventTagPromises(events);
+            Promise.all(promises).then(
+              function(theTags){
+                console.log("Events length", events.length);
+                //Score the tags based on the scoring algorithm.
+                for(var i = 0; i < events.length; i ++){
+                  defineEventTagScore(events[i], tags, userTags);
+                }
+                //Sort the events by Score
+                events.sort(compareEventScores);
+                //Get Venues associated with the top events.
+                exports.getFoursquareVenues(events, res, limit, geo, logistics, myUser.id);
               }
-              //Sort the events by Score
-              events.sort(compareEventScores);
-              //Get Venues associated with the top events.
-              exports.getFoursquareVenues(events, res, limit, geo, logistics, myUser.id);
+            );
+          } else {
+            var tagKeys = Object.keys(tags);
+            var fallbackTags = {};
+            // Create a new tag object
+            while(Object.keys(fallbackTags).length !== tagKeys.length-1){
+              var tagKeyIndex = Math.floor(Math.random() * tagKeys.length-1);
+              var key = tagKeys[tagKeyIndex];
+              fallbackTags[key] = tags[key];
             }
-          );
-        }
-      });
+            getEvents(events, fallbackTags);
+          }
+        });
+      }
+      getEvents([], tags);
     });
   });
 };
@@ -345,7 +348,6 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logist
   // Now we can run a non-hardcoded number of promises!
   Promise.all(promises)
   .then(function(ideas) {
-    //console.log(ideas[ideas.length - 1]);
     // Since we resolve all the promises at once
     // We need to take the result of the promise that is last run since it contains all the ideas
     res.status(200).send(ideas[ideas.length-1]);
@@ -361,51 +363,63 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logist
 */
 exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
   var venuePromise = new Promise(function(resolve, reject) {
-    foursquare.venues.search(searchObj, function(err, result) {
-      if (err) {
-        console.log("There was an error sanitizing the venues!", err);
-        reject(err);
-      } else {
+    var foursquareSearch = Promise.promisify(foursquare.venues.search)
+    var findVenue = function(searchObj, eventIndex, events){
+      return foursquareSearch(searchObj)
+      .then(function(result){
         var tempVenues = result.response.venues;
-        console.log("The number of venues attached to this event is: ", tempVenues.length);
-        var venues = exports.removeBunkVenues(tempVenues);
-        var venueIndex = Math.floor(Math.random() * venues.length);
-        var venueId = venues[venueIndex].id;
-        exports.getFourSquareVenueData(venueId, {})
-        .then(function(venueData) {
-          var idea = {};
-          var venueID = venueData.id;
-          var venueName = venueData.name;
+        console.log('The number of venues attached to this event is: ', tempVenues.length);
 
-          venueSQL.post(venueID, venueName)
-          .then(function(venue){
-            for (var key in venueData) {
-              idea[key] = venueData[key];
-            }
-            if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
-              idea.idea = events[eventIndex]._node.properties.event + ' ' + venues[venueIndex].name;
-            } else {
-              idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
-            }
-            idea.liked = 0;
-            idea.disliked = 0;
-            if (venueData.hasOwnProperty('bestPhoto')) {
-              idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
-            };
-            return venue;            
-          })
-          .then(function(venue){
-            return dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID)
-          })
-          .then(function(ideaSQL){
-            userPrefSQL.post(userID, ideaSQL.id);
-            idea.dateIdeaID = ideaSQL.id;
-            ideas.ideaArray.push(idea);
-            resolve(ideas);
+        // There should always at least be one venue before attempting to debunk
+        if(tempVenues.length > 0){
+          var venues = exports.removeBunkVenues(tempVenues);
+          var venueIndex = Math.floor(Math.random() * venues.length);
+          var venueId = venues[venueIndex].id;
+          exports.getFourSquareVenueData(venueId, {})
+          .then(function(venueData) {
+            var idea = {};
+            var venueID = venueData.id;
+            var venueName = venueData.name;
+
+            venueSQL.post(venueID, venueName)
+            .then(function(venue){
+              for (var key in venueData) {
+                idea[key] = venueData[key];
+              }
+              if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
+                idea.idea = events[eventIndex]._node.properties.event + ' ' + venues[venueIndex].name;
+              } else {
+                idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+              }
+              idea.liked = 0;
+              idea.disliked = 0;
+              if (venueData.hasOwnProperty('bestPhoto')) {
+                idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
+              };
+              return venue;            
+            })
+            .then(function(venue){
+              return dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID)
+            })
+            .then(function(ideaSQL){
+              userPrefSQL.post(userID, ideaSQL.id);
+              idea.dateIdeaID = ideaSQL.id;
+              ideas.ideaArray.push(idea);
+              resolve(ideas);
+            });
           });
-        });
-      }
-    });
+        } else {
+          // Get a new index to search according to the same weight scoring
+          // Because there were no venues returned for the event category passed initially passed in
+          var newIndex = Math.floor(Math.random() * events.length);
+          // Alter the category id to be searched in the searchObj (passed into Foursquare)
+          searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
+          findVenue(searchObj, newIndex, events);
+        }
+      });
+    }
+    // Initialize recursive call
+    findVenue(searchObj, eventIndex, events); 
   });
   return venuePromise;
 };
@@ -420,7 +434,7 @@ exports.removeBunkVenues = function (venues) {
       newVenues.push(venues[i]);
     }
   }
-  console.log("Venues left after debunking: ", newVenues.length, venues.length);
+  console.log("Venues left after debunking: ", newVenues.length, "/", venues.length);
   if (newVenues.length !== 0 && newVenues){
     return newVenues;
   } else {
