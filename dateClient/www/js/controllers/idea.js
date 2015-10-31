@@ -3,12 +3,8 @@
 
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($state, $location, $ionicHistory, $q, $ionicLoading, $scope, $stateParams, DateData, LikeADate, FlagADate) {
-  
-  // $scope.initInitMap = function() {
-  //   // you need to invoke init map only once.
-  //   setTimeout($scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name));
-  // }
+.controller('IdeaCtrl', function($state, $location, $q, $scope, $stateParams, DateData, LikeADate, FlagADate) {
+  $scope.ideas = {}; 
 
   $scope.initMap = function(latitude, longitude, name){
     console.log("Initiating Map...", latitude, longitude);
@@ -18,7 +14,6 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    console.log("The venueMap dom element is", document.getElementById("venueMap" + $stateParams.ideaId));
     var venueMap = new google.maps.Map(document.getElementById("venueMap" + $stateParams.ideaId), mapOptions);
     navigator.geolocation.getCurrentPosition(function(pos) {
       venueMap.setCenter(new google.maps.LatLng(latitude, longitude));
@@ -30,7 +25,6 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     });
     $scope["venueMap" + $stateParams.ideaId] = venueMap;
     $scope.idea.mapInit = true;
-    // $scope.venueMap = venueMap;
   };
 
   $scope.toggleDetails = function() {
@@ -59,7 +53,6 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
           $scope.idea.last = true; 
         }
         $scope.idea.detailsVisible = false;
-        // $scope.initMap($scope.idea.location.lat, $scope.idea.location.lng, $scope.idea.name);
       });
     }
   });

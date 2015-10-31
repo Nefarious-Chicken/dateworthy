@@ -8,7 +8,7 @@ if (process.env.CLEARDB_DATABASE_URL) {
     })
   } else {
     // the application is executed on the local machine ... use mysql
-    sequelize = new Sequelize('dateWorthy', 'root', 'password', { logging: false });
+    sequelize = new Sequelize('dateWorthy', 'root', '', { logging: false });
   }
 
 
