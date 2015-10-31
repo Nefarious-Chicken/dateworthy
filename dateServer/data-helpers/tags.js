@@ -9,13 +9,23 @@ var Promise = require('bluebird');
 /** HELPER FUNCTON
 * Purpose: Seeding all tags and its associated properties from a csv into neo4j
 */
-exports.seedTags = function(callback) {
+exports.seedTags = function(env, callback) {
+  console.log("Printing the env from seedTags");
+  var filename;
+  console.log("I'm seeding tags, filename is", filename, "while env is", env);
+  if (env === "remote") {
+    filename = "http://dateworthy.heroku.com/tags.csv";
+  } else if (env === "local") {
+    filename = "file://" + __dirname + "/tags.csv";
+  }
+
   // Query for creating a constraint on a node's eventname so nodes with the same eventname can't be created
   var createConstraintQuery = 'CREATE CONSTRAINT ON (tag:Tag) ASSERT tag.tagname IS UNIQUE';
   
+  var loadLine = 'LOAD CSV WITH HEADERS FROM "' + filename + '" AS csvLine';
   // General query for reading each line from the csv and creating a Tag node based on line contents
   var query = [
-    'LOAD CSV WITH HEADERS FROM "http://dateworthy.heroku.com/events.csv" AS csvLine',
+    loadLine,
     'CREATE (tag:Tag { tagname: csvLine.tags })'
 	].join('\n');
 

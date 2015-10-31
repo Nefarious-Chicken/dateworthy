@@ -17,7 +17,7 @@
     "postinstall": "bower install",
     "start": "node dateServer/app.js",
     "test": "mocha dateServer/test/*/*.js & gulp test",
-    "seed": "node dateServer/data-helpers/seedAll.js"
+    "seedLocal": "node dateServer/data-helpers/seedAllLocal.js"
   },
   "dependencies": {
     "bower": "^1.6.3",
