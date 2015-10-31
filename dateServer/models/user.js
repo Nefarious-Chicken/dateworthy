@@ -1,5 +1,6 @@
 // user.js
 // User model logic.
+var Promise = require('bluebird');
 var neo4j = require('neo4j');
 var errors = require('./errors');
 var Tag = require('./tag');
