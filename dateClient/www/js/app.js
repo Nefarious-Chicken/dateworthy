@@ -78,6 +78,10 @@ angular.module('dateworthy', [
     url: '/idea/:ideaId/',
     templateUrl: 'templates/idea-single.html',
     controller: 'IdeaCtrl'
+  })
+  .state('error',{
+    url: '/dangerWillRobinson/',
+    templateUrl: 'templates/error.html'
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');

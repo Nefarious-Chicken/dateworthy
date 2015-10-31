@@ -1,5 +1,5 @@
 angular.module('dateworthy.services', [])
-.factory('FindADate', function ($http, $location, $window) {
+.factory('FindADate', function ($http, $location, $window, $state) {
   return {
     // you need to convert the tags object into an array.
     // { loudness: quiet , genre: intellectual }
@@ -10,8 +10,11 @@ angular.module('dateworthy.services', [])
         url: '/tags/sendDateData/',
         data: surveyData
       })
-      .then(function (resp) {
+      .then(function successful (resp) {
         callback(resp.data.ideaArray);
+      }, function tryAgainLater() {
+        console.log("error will robinson")
+        $state.go('error');
       });
     },
   };
