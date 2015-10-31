@@ -1,4 +1,4 @@
-angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova'])
+angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
 
 .controller('AppCtrl', function($state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
 

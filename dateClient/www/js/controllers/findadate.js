@@ -1,6 +1,6 @@
 angular.module('dateworthy.findadate', [])
 .controller('FindADateCtrl', function($scope, $state, $location, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
-
+  $scope.showSpinner = false;
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
   // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
   $scope.questions = [
@@ -71,7 +71,7 @@ angular.module('dateworthy.findadate', [])
     
     if (nextQuestionId === $scope.questions.length) {
 
-
+      $scope.showSpinner = true;
       //Update coordinates based off of google maps center location
       var center = $scope.map.getCenter();
       var lat = center.lat();
@@ -116,7 +116,7 @@ angular.module('dateworthy.findadate', [])
     }
     var map = new google.maps.Map(document.getElementById('map'), {
       draggable: false,
-      center: {lat: latitude || -34.6033, lng: longitude || -58.3817},
+      center: {lat: latitude || 37.8044, lng: longitude || -122.2708},
       zoom: 10,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
