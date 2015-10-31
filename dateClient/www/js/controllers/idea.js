@@ -48,6 +48,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         $scope.idea.index = $scope.currentIdea;
         $scope.idea.last = false;
         $scope.idea.mapInit = false;
+        $scope.idea.flagged = $scope.idea.flagged || false;
         console.log("$scope.idea.index", $scope.idea.index);
         if ($scope.idea.index === $scope.ideas.length - 1) {
           $scope.idea.last = true; 
@@ -94,7 +95,9 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
   $scope.flagDate = function() {
     var dateIdeaID = $scope.ideas[$scope.currentIdea].dateIdeaID;
-    FlagADate.flagDate(dateIdeaID);
+    FlagADate.flagDate(dateIdeaID, function() {
+      $scope.idea.flagged = true;
+    });
   };
 
   $scope.nextIdea= function(){
