@@ -9,7 +9,13 @@ var Promise = require('bluebird');
 /** HELPER FUNCTON
 * Purpose: Seeding all events and its associated properties from a csv into neo4j
 */
-exports.seedEvents = function(callback) {
+exports.seedEvents = function(env, callback) {
+  var filename;
+  if (env === "remote") {
+    filename = "http://dateworthy.heroku.com/events.csv";
+  } else if (env === "local") {
+    filename = "file://" + __dirname + "/events.csv";
+  }
   // Query for creating a constraint on a node's eventname so nodes with the same eventname can't be created
   var createConstraintQuery = 'CREATE CONSTRAINT ON (event:Event) ASSERT event.eventname IS UNIQUE';
 
@@ -29,8 +35,9 @@ exports.seedEvents = function(callback) {
 
   // General query for reading each line from the csv and creating an Event node based on line contents
   // http://dateworthy.heroku.com/events.csv
+  var loadLine = 'LOAD CSV WITH HEADERS FROM "' + filename + '" AS csvLine';
   var query = [
-    'LOAD CSV WITH HEADERS FROM "http://dateworthy.heroku.com/events.csv" AS csvLine',
+    loadLine,
     'CREATE (event:Event { ' + props + ' } )'
   ].join('\n');
 
@@ -73,7 +80,7 @@ exports.seedEvents = function(callback) {
 *     ]
 *   }
 */
-exports.seedEventTagRelationships = function(json, callback) {
+exports.seedEventTagRelationships = function(json, env, callback) {
   // Query for taking json input and iterating on every index of allEvents array from JSON object
   // Then secondary iteration through all the tags attached at each relationship and creates event-tag relationship
   var query = [

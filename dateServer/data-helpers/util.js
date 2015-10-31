@@ -39,7 +39,7 @@ var createRelationshipJSON = function(filename) {
         var preposition = lineData.shift();
         var eventJSON = {
           fsCategory: fsCategory,
-          eventname: event + ' at ' + venueCategory,
+          eventname: event + ' ' + preposition + ' ' + venueCategory,
           venueCategory: venueCategory,
           event: event,
           preposition: preposition,
@@ -61,10 +61,11 @@ var createRelationshipJSON = function(filename) {
 * Purpose: Seeding all relationship edges between Event nodes and Tag nodes in neo4j
 *          Async function for first creating the relationship json object then seeding Event-Tag relationships
 */
-exports.seedEventTagRelationships = function(filename){
+exports.seedEventTagRelationships = function(filename, env){
+  console.log("Inside seedEventTagRelationships, the filename is", filename);
   createRelationshipJSON(filename)
   .then(function(json) {
-    events.seedEventTagRelationshipsAsync(json, function(err, relationships) {
+    events.seedEventTagRelationshipsAsync(json, env, function(err, relationships) {
       if (err) {
         console.log("There was an error creating relationships between tags and events", err);
       } else {
