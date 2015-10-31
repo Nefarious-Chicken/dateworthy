@@ -89,16 +89,30 @@ angular.module('dateworthy.services', [])
 .factory('FlagADate', function($http, $location, $ionicPopup) {
   return {
     flaggedDates: [],
-    flagDate: function(dateIdeaID) {
-      // WRITE SERVER CODE HERE THAT WILL SHOW THIS DATE AS "FLAGGED"
-      console.log("I am sending the date with dateIdeaID", dateIdeaID, "to the SQL database to be queued for removal");
-      this.showAlert();
+    flagDate: function(dateIdeaID, callback) {
+      this.showAlert(dateIdeaID, callback);
     },
-    showAlert: function() {
-      var alertPopup = $ionicPopup.alert({
-       title: 'Thank you!',
-       template: 'Thanks for helping us improve our recommendations. If enough people flag this idea,' + 
-       ' We\'ll scrub it idea from our database. '
+    showAlert: function(dateIdeaID, callback) {
+      var confirmPopup = $ionicPopup.confirm({
+       title: 'Are you sure?',
+       template: 'Are you sure you want to flag this as a bad date idea? If enough people flag this idea, we\'ll scrub it from our database.'
+     });
+      confirmPopup.then(function(res) {
+        if (res) {
+          var dateObj = {
+            dateIdeaID: dateIdeaID
+          };
+          return $http({
+            method: 'POST',
+            url: '/dateIdeas/blacklistDate/',
+            data: dateObj
+          })
+          .then(function() {
+            callback(res);
+          })
+        } else {
+          console.log("Didn't flag");
+        }
       });
     }
   }

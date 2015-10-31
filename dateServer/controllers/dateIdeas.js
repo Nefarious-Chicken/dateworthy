@@ -11,6 +11,7 @@ exports.createDateIdeaSQL = function(req, res, next){
 }
 
 exports.blacklistDateIdeaSQL = function(req, res, next){
+  console.log("Blacklisting the dateIdea", req.body.dateIdeaID);
   DateBlacklistSQL.post(req.body.dateIdeaID, req.body.approveFlag)
   .then(function(dateIdea){
     res.status(200).send();

@@ -59,8 +59,8 @@
       </div>
     </div>
     <div class="padding flag">
-      <button class="button button-small" ng-click="flagDate()">
-        <i class="ion-flag"></i> Flag this as a terrible idea
+      <button ng-class="idea.flagged ? 'disabled button button-small' : 'button button-small'" ng-click="flagDate()">
+        <i class="ion-flag"></i> {{idea.flagged ? 'Flagged as a terrible idea' : 'Flag this as a terrible idea'}}
       </button>
     </div>
   </ion-content>
