@@ -15,7 +15,7 @@ var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
 
 
-var clientID = process.env.FS_ID|| config.clientID;
+var clientID = process.env.FS_ID || config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
 var foursquare = require('node-foursquare-venues')(clientID, clientSecret);
 
@@ -308,7 +308,7 @@ var selectVenuesForEvents = function(events, limit){
  * given a set of events and a limit, define foursquare venues that match these events.
  */
 
-exports.getFoursquareVenues = function(events, res, limit, _geoLoaction, _logistics, userID) {
+exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logistics, userID) {
   var ideas = { ideaArray: [] };
   var promises = [];
   var indices = selectVenuesForEvents(events, limit);
