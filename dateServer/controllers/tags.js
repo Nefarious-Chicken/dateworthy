@@ -24,11 +24,14 @@ exports.sendDateData = function(req, res, next) {
     //reformat geo to follow correct format '37.78,-122.41'
     var geoLocation = '' + rawGeo.lat.toFixed(2) + ',' + rawGeo.long.toFixed(2);
   }
+  if(!req.body.tags || req.body.tags.length === 0){
+    req.body.tags[0] = "Romantic";
+  }
   for(var i=0; i < req.body.tags.length; i++){
     tags[req.body.tags[i]] = 1;
   }
 
-  console.log('Tags: ', tags);
+  console.log('Tagss: ', tags);
   Events.getMatchingEventsNoRest(tags, geoLocation, logistics, req, res);
 };
 
