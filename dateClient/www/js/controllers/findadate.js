@@ -1,7 +1,6 @@
 angular.module('dateworthy.findadate', [])
 .controller('FindADateCtrl', function($scope, $state, $location, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
 
-
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
   // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
   $scope.questions = [

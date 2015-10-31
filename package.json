@@ -16,7 +16,7 @@
     "preinstall": "npm --prefix ./dateServer install & npm --prefix ./dateClient install",
     "postinstall": "bower install",
     "start": "node dateServer/app.js",
-    "test": "mocha dateServer/test/*/*.js && gulp test",
+    "test": "gulp test & mocha dateServer/test/*/*.js",
     "seed": "node dateServer/data-helpers/seedAll.js"
   },
   "dependencies": {
