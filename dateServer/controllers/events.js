@@ -411,7 +411,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
         } else {
           // Get a new index to search according to the same weight scoring
           // Because there were no venues returned for the event category passed initially passed in
-          var newIndex = selectVenuesForEvents(events, 1)[0];
+          var newIndex = Math.floor(Math.random() * events.length);
           // Alter the category id to be searched in the searchObj (passed into Foursquare)
           searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
           findVenue(searchObj, newIndex, events);
