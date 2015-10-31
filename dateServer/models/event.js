@@ -307,32 +307,35 @@ Event.prototype.getAllTags = function (callback) {
 
 // Given a profile, find matching events with that profile {'tag1': 1, 'tag2': 0, 'tag3': 1...}
 Event.getMatchingEvents = function(profile, callback) {
-  var query = ['MATCH'];
-  var where = 'WHERE ';
-  var count = 0;
-  for (var tag in profile) {
-    if (profile[tag] === 1) {
-      count++;
-      where += "tag" + count + ".tagname =~ \"" + tag + "\" AND ";
-      query.push('(event:Event)-[:is]->(tag' + count + ':Tag),');
+  var eventsPromise = new Promise(function(resolve, reject){
+    var query = ['MATCH'];
+    var where = 'WHERE ';
+    var count = 0;
+    for (var tag in profile) {
+      if (profile[tag] === 1) {
+        count++;
+        where += "tag" + count + ".tagname =~ \"" + tag + "\" AND ";
+        query.push('(event:Event)-[:is]->(tag' + count + ':Tag),');
+      }
     }
-  }
-  var lastEventRelation = query[query.length - 1];
-  //remove unecessary comma from last match statement
-  query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1)
-    //remove unecessary AND statement and space
-  where = where.substring(0, where.length - 4);
-  query.push(where);
-  query.push('RETURN event as event;');
-  query = query.join('\n');
-  db.cypher({
-    query: query,
-  }, function(err, results) {
-    if (err) return callback(err);
-    var events = results.map(function(result) {
-      return new Event(result['event']);
+    var lastEventRelation = query[query.length - 1];
+    //remove unecessary comma from last match statement
+    query[query.length - 1] = lastEventRelation.substring(0, lastEventRelation.length - 1)
+      //remove unecessary AND statement and space
+    where = where.substring(0, where.length - 4);
+    query.push(where);
+    query.push('RETURN event as event;');
+    query = query.join('\n');
+    db.cypher({
+      query: query,
+    }, function(err, results) {
+      if (err) return reject(err);
+      var events = results.map(function(result) {
+        return new Event(result['event']);
+      });
+      resolve(events);
     });
-    callback(null, events);
   });
+  return eventsPromise;
 }
 

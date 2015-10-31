@@ -231,39 +231,45 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
       //console.log("User's Tags:", userTags);
       //Get the events that match the questionairre tags
       console.log("Finding events that match tags.");
-      Event.getMatchingEvents(tags, function(err, events) {
-        //console.log("Events:", events);
-        if (err) {
-          return res.status(500).send(err);
-        }
-        if(events.length === 0){
-          var ideas = {
-            ideaArray: [
-              {idea: "Play frisbee at Mission Dolores Park", liked: 0, disliked: 0, imgUrl: 'https://irs3.4sqi.net/img/general/960x720/17160664_1pVXH9Lf1AGEF9GiADPhnKDn05nHwEazTCk8XdZr_OQ.jpg'},
-              {idea: "Get schwasted at Bourbon & Branch", liked: 0, disliked: 0, imgUrl:'https://irs2.4sqi.net/img/general/960x720/44636481_XKzA8WwCQan1LueBpfLoHrVDC1rUGfIb6rtq4zMx5fU.jpg' },
-              {idea: "Kiss in the middle of the Golden Gate Bridge", liked: 0, disliked: 0, imgUrl: 'https://irs2.4sqi.net/img/general/612x612/21220925_aayAh4Nd5fVrcfYx_i1mQ6vKFXhAVqNvDEHqT0JVvl4.jpg' }
-            ]
-          };
-          return res.status(200).send(ideas);
-        } else {
-          var limit = 3;
-          var promises = getEventTagPromises(events);
-          Promise.all(promises).then(
-            function(theTags){
-              console.log("Events length", events.length);
-              //Score the tags based on the scoring algorithm.
-              for(var i = 0; i < events.length; i ++){
-                //console.log(events[i].myTags);
-                defineEventTagScore(events[i], tags, userTags);
+      var limit = 3;
+      var events = [];
+
+      var getEvents = function(events, tags){
+        return Event.getMatchingEvents(tags)
+        .then(function(eventsToAdd){
+          events = events.concat(eventsToAdd);
+          if(events.length >= limit){
+            console.log("MADE IT THROUGH THE LENGTH THRESHOLD")
+            console.log("These are the events");
+            console.log(events);
+            var promises = getEventTagPromises(events);
+            Promise.all(promises).then(
+              function(theTags){
+                console.log("Events length", events.length);
+                //Score the tags based on the scoring algorithm.
+                for(var i = 0; i < events.length; i ++){
+                  defineEventTagScore(events[i], tags, userTags);
+                }
+                //Sort the events by Score
+                events.sort(compareEventScores);
+                //Get Venues associated with the top events.
+                exports.getFoursquareVenues(events, res, limit, geo, logistics, myUser.id);
               }
-              //Sort the events by Score
-              events.sort(compareEventScores);
-              //Get Venues associated with the top events.
-              exports.getFoursquareVenues(events, res, limit, geo, logistics, myUser.id);
+            );
+          } else {
+            var tagKeys = Object.keys(tags);
+            var fallbackTags = {};
+            // Create a new tag object
+            while(Object.keys(fallbackTags).length !== tagKeys.length-1){
+              var tagKeyIndex = Math.floor(Math.random() * tagKeys.length-1);
+              var key = tagKeys[tagKeyIndex];
+              fallbackTags[key] = tags[key];
             }
-          );
-        }
-      });
+            getEvents(events, fallbackTags);
+          }
+        });  
+      }
+      getEvents([], tags);
     });
   });
 };
