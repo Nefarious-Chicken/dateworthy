@@ -18,6 +18,7 @@ describe('IdeaController', function(){
     });
   }));
 
+
   beforeEach(inject(function($injector, $rootScope, $controller) {
     scope = $rootScope.$new();
     cordovaGeolocation = "foo";
@@ -83,6 +84,11 @@ describe('FindADateCtrl', function(){
 
   beforeEach(module(function ($provide) {
     $provide.value('$cordovaGeolocation', {
+        someVariable: 1
+    });
+  }));
+  beforeEach(module(function ($provide) {
+    $provide.value('$state', {
         someVariable: 1
     });
   }));
