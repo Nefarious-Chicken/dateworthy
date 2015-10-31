@@ -6,12 +6,13 @@
     <ion-item class="item-text-wrap">
       <h2>{{currentQuestion.question}}</h2>
       <div class="card">
-        <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
+        <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-click="nextQuestion()" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
       </div>
     </ion-item>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
     <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
   </ion-content>
+  <span us-spinner="{radius:30, width:8, length: 16}" spinner-on="showSpinner"></span>
   <div class="bar bar-footer">
       <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i> Back</button>
       <button class="button button-small button-clear button-positive" type="submit" ng-click="nextQuestion()">Next <i class="ion-ios-arrow-forward"></i></button>
