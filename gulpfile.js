@@ -6,7 +6,9 @@ gulp.task('test', function(done) {
         configFile: __dirname + '/dateClient/www/test/my.conf.js',
         singleRun: true,
         browsers: ["PhantomJS"]
-    }, function() {
-        done();
-    });
+    }, function(result) {
+        //return result
+        done(result);
+
+    })
 });
