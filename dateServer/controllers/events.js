@@ -15,7 +15,7 @@ var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
 
 
-var clientID = process.env.FS_ID|| config.clientID;
+var clientID = process.env.FS_ID || config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
 var foursquare = require('node-foursquare-venues')(clientID, clientSecret);
 
