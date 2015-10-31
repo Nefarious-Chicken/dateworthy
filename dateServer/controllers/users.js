@@ -1,7 +1,7 @@
 // users.js
 // Routes to CRUD users.
 var URL = require('url');
-
+var Promise = require('bluebird');
 var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');

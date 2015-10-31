@@ -1,8 +1,8 @@
-describe('IdeaControllers', function(){
+describe('IdeaController', function(){
   var scope;
 
   // load the controller's module
-  beforeEach(module('dateworthy.ideas'));
+  beforeEach(module('dateworthy.idea'));
 
   beforeEach(module('dateworthy.services'));
 
@@ -22,54 +22,17 @@ describe('IdeaControllers', function(){
     scope = $rootScope.$new();
     cordovaGeolocation = "foo";
     ionicPopup = "bar";
-    $controller('IdeasCtrl', {$scope: scope, $cordovaGeolocation: cordovaGeolocation, $ionicPopup: ionicPopup});
+    var state = {};
+    state.go = function(){};
+    ionicHistory = "Buzz"
+    ionicLoading = "flip"
+    stateParams = "flop"
+    $controller('IdeaCtrl', {$scope: scope, $state: state, $stateParams: stateParams, $ionicLoading: ionicLoading, $ionicHistory: ionicHistory, $cordovaGeolocation: cordovaGeolocation, $ionicPopup: ionicPopup});
   }));
 
   // tests start here
-  it('should have ideas equal to an empty object and current idea equal to 0', function(){
-    expect(scope.ideas).toEqual({});
+  it('should have current idea equal to 0', function(){
     expect(scope.currentIdea).toEqual(0)
-  });
-
-  it('should have a function nextIdea that increases the currentIdea index by 1', function(){
-    scope.nextIdea()
-    expect(scope.currentIdea).toEqual(1)
-    scope.nextIdea()
-    expect(scope.currentIdea).toEqual(2)
-  });
-
-  it('should have a function prevIdea that decreases the currentIdea index by 1', function(){
-    scope.prevIdea()
-    expect(scope.currentIdea).toEqual(-1)
-    scope.prevIdea()
-    expect(scope.currentIdea).toEqual(-2)
-  });
-
-  it('should have a function isCurrent that checks if a given idea is the current idea', function(){
-    scope.ideas = [{idea: 'testFirst'}, {idea: 'testSecond'}, {idea: 'testLast'}];
-    expect(scope.isCurrent('testFirst')).toEqual(true);
-    scope.nextIdea()
-    expect(scope.isCurrent('testSecond')).toEqual(true);
-    scope.nextIdea()
-    expect(scope.isCurrent('testLast')).toEqual(true);
-  });
-
-  it('should have a function isLast that checks if the current idea is the last idea', function(){
-    scope.ideas = [{idea: 'testFirst'}, {idea: 'testSecond'}, {idea: 'testLast'}];
-    expect(scope.isLast()).toEqual(false);
-    scope.nextIdea()
-    expect(scope.isLast()).toEqual(false);
-    scope.nextIdea()
-    expect(scope.isLast()).toEqual(true);
-  });
-
-  it('should have a function isFirst that checks if the current idea is the first idea', function(){
-    scope.ideas = [{idea: 'testFirst'}, {idea: 'testSecond'}, {idea: 'testLast'}];
-    expect(scope.isFirst()).toEqual(true);
-    scope.nextIdea()
-    expect(scope.isFirst()).toEqual(false);
-    scope.nextIdea()
-    expect(scope.isFirst()).toEqual(false);
   });
 
   it('should have a function clearData that resets the ideas and currentIdea variables', function(){
@@ -130,8 +93,10 @@ describe('FindADateCtrl', function(){
     stateParams = { questionId: 0 };
     ionicHistory = "foo";
     ionicPlatform = "bar";
+    state = {};
+    state.go = function(){}
     location = _$location_;
-    $controller('FindADateCtrl', {$scope: scope, $stateParams: stateParams, $cordovaGeolocation: cordovaGeolocation, $ionicHistory: ionicHistory, $ionicPlatform: ionicPlatform, $location: location});
+    $controller('FindADateCtrl', {$scope: scope, $state: state, $stateParams: stateParams, $cordovaGeolocation: cordovaGeolocation, $ionicHistory: ionicHistory, $ionicPlatform: ionicPlatform, $location: location});
 
   }));
 
