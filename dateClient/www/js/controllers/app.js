@@ -87,6 +87,11 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     }
   }
 
+  $scope.savedLikes = function() {
+    $rootScope.history.push($location.$$path);
+    $state.go('favorites');
+  }
+
   // Make sure $scope.userData is always loaded, even when page is refreshed
   $scope.$on('$stateChangeSuccess', function () {
     if(!$scope.userData || Object.keys($scope.userData).length === 0){

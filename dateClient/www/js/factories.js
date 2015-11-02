@@ -21,6 +21,23 @@ angular.module('dateworthy.services', [])
 })
 .factory('LikeADate', function ($http, $state,$location, $window, UserData, DateData) {
   return {
+    getLikedDates: function(callback){
+      return $http({
+        method: 'GET',
+        url: '/users/userInfo',
+        params: { userName: UserData.getUserData().email }
+      })
+      .then(function(resp){
+        return $http({
+          method: 'GET',
+          url: '/users/userpreferences',
+          params: {userID: resp.data.userID }
+        })
+      })
+      .then(function (resp) {
+        callback(resp.data);
+      });
+    },
     increaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
       var likeData = {tagname: tagname};

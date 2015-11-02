@@ -10,6 +10,7 @@ angular.module('dateworthy', [
   'dateworthy.app',
   'dateworthy.findadate',
   'dateworthy.idea',
+  'dateworthy.favorites',
   'dateworthy.services'
 ])
 
@@ -42,6 +43,9 @@ angular.module('dateworthy', [
         }
       })
     });
+
+    // History state
+    $rootScope.history = [];
   });
 })
 
@@ -80,9 +84,14 @@ angular.module('dateworthy', [
     controller: 'IdeaCtrl',
     cache: false
   })
-  .state('error',{
+  .state('error', {
     url: '/dangerWillRobinson/',
     templateUrl: 'templates/error.html'
+  })
+  .state('favorites', {
+    url: '/favorites/',
+    templateUrl: 'templates/favorites.html',
+    controller: 'FavoritesCtrl'
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');

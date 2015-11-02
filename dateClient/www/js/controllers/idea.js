@@ -3,7 +3,7 @@
 
 angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
-.controller('IdeaCtrl', function($state, $location, $q, $scope, $stateParams, DateData, LikeADate, FlagADate) {
+.controller('IdeaCtrl', function($state, $location, $q, $scope, $rootScope, $stateParams, DateData, LikeADate, FlagADate) {
   $scope.ideas = {}; 
 
   $scope.initMap = function(latitude, longitude, name){
@@ -117,5 +117,10 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     DateData.clearData();
     $state.go('home');
   };
+
+  $scope.savedLikes = function() {
+    $rootScope.history.push($location.$$path);
+    $state.go('favorites');
+  }
 
 });
