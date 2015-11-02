@@ -39,6 +39,8 @@ angular.module('dateworthy', [
         if(response.status !== "connected"){
           console.log("User is not logged in.");
           $state.go('login');
+        } else {
+          
         }
       })
     });
