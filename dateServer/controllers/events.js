@@ -82,10 +82,10 @@ exports.tag = function(req, res, next) {
  * POST /events/:eventname/untag {tagname}
  */
 exports.untag = function(req, res, next) {
+  console.log("Trying to untag something???");
   Event.get(req.params.eventname, function(err, event) {
     // TODO: Gracefully handle "no such user" error somehow.
     // This is the source user, so e.g. 404 page?
-
     if (err) return next(err);
     Tag.get(req.body.tagname, function(err, tag) {
 
@@ -202,7 +202,7 @@ var getEventTagPromises = function(events){
  * returns the matching events based on a list of tags.
  */
 exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
-
+  console.log("Getting events.");
   var myUser = {
     username: req.body.userName
   };
@@ -211,13 +211,16 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
     myUser.userObj = user;
   }.bind(this);
   //Get the Neo4J user Object
+  console.log("Getting the user.");
   Users.getMyUser(myUser).then(function(user){
+    console.log("User retrieved");
     //need to grab the ID
     setUser(user);
     console.log("User: ", user);
     //Get the user's tags.
     return getMyUserTags(user);
   }).then(function(userTags){
+    console.log("User Tags Retrieved");
     //take the user tags and attach all of the weights to them.
     var userTagsPromises = [];
     for(var i = 0; i < userTags.length; i ++){
@@ -235,6 +238,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
       var events = [];
 
       var getEvents = function(events, tags){
+        console.log("Searching for matching events: ", tags);
         return Event.getMatchingEvents(tags)
         .then(function(eventsToAdd){
           events = events.concat(eventsToAdd);
@@ -255,13 +259,16 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
             );
           } else {
             var tagKeys = Object.keys(tags);
+            console.log("Tag Keys: ", tagKeys);
             var fallbackTags = {};
             // Create a new tag object
             while(Object.keys(fallbackTags).length !== tagKeys.length-1){
-              var tagKeyIndex = Math.floor(Math.random() * tagKeys.length-1);
+              var tagKeyIndex = Math.floor(Math.random() * (tagKeys.length-1));
+              console.log("Tag Key Index: ", tagKeyIndex);
               var key = tagKeys[tagKeyIndex];
               fallbackTags[key] = tags[key];
             }
+            console.log("Fallback Tags: ", fallbackTags);
             getEvents(events, fallbackTags);
           }
         });

@@ -3,30 +3,50 @@ angular.module('dateworthy.findadate', [])
 .controller('FindADateCtrl', function($scope, $state, $location, $rootScope, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
   $scope.showSpinner = false;
 
-  // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user. 
-  // These will eventually come from a REST API endpoint on the server, so we can dynamically serve questions. 
-  $scope.questions = [
+  // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user.
+  $scope.mandatoryQuestions = [
+    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []},
+    {question: "What time of day are you going?", type: "tag", field: "time", possibilities: ["Daytime", "Nighttime"], answerTags: ["Day", "Night"]},
+    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
     {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Goofy", "Geeky"]},
-    {question: "When are you going?", type: "logistics", field: "time", possibilities: ["Today", "Tonight", "Tomorrow"]},
-    {question: "How long is your date?", type: "logistics", field: "length", possibilities: ["30 minutes", "1 hour", "2 hours"]},
-    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking","I'm taking a cab","I'm driving", "Public trans, baby!"]},
-    {question: "Would you prefer a loud or quiet setting?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]},
-    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []}
-    
+    {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]}
+  ];
+
+  //Each questionairre will come with a single optional question chosen randomly from this list.
+  $scope.optionalQuestions = [
+    {question: "Is this a first date?", type: "tag", field: "noiseLevel", optional: true, possibilities: ["Yes", "No"], answerTags: ["First-date", "NONE"]},
+    {question: 'Are you in an indoors-y or outdoors-y mood?', type: "tag", field: "indoorsOutdoors", optional: true,  possibilities: ["Indoor", "Outdoor"]},
+    {question: 'Do you want to get some fresh air?', type: "tag", field: "nature", optional: true,  possibilities: ["Yes, lets get to nature", "No, lets hit up the town!"], answerTags: ["Nature", "NONE"]},
+    {question: 'Take it all in, or get your hands dirty?', type: "tag", field: "creative", optional: true,  possibilities: ["Take it all in", "Get my hands dirty"], answerTags: ["Visual", "Creative"]}
   ];
   $scope.data = {};
 
   // We need this code to help the app know which question should be served to the user, given the
-  // param in the URL. 
-  $scope.currentIndex = $stateParams.questionId;
-  $scope.currentQuestion = $scope.questions[$scope.currentIndex];
+  // param in the URL.
+  $scope.addOptionalQuestion = function(){
+    var myQ = DateData.getOptionalQuestion();
+    if(myQ === -1){
+      var randomQ = Math.floor(Math.random() * $scope.optionalQuestions.length);
+      $scope.mandatoryQuestions.push($scope.optionalQuestions[randomQ]);
+      DateData.setOptionalQuestion(randomQ);
+    } else {
+      $scope.mandatoryQuestions.push($scope.optionalQuestions[myQ]);
 
+    }
+  };
+
+  $scope.addOptionalQuestion();
+  $scope.currentIndex = $stateParams.questionId;
+  $scope.currentQuestion = $scope.mandatoryQuestions[$scope.currentIndex];
+
+  //Anytime the state changes in this controller, this code runs to reinforce code stability.
   $scope.loadState = function(){
     $scope.currentLogistics = DateData.getLogistics();
     $scope.currentTags = DateData.getTags();
     preloadChosenOption($scope.currentQuestion);
-  }; 
+  };
 
+  //If you hit the back button, we will pre-load your pre-selected option.
   var preloadChosenOption = function(currentQuestion) {
     if ($scope.currentLogistics !== undefined) {
       if ($scope.currentLogistics.hasOwnProperty(currentQuestion.field)) {
@@ -36,9 +56,9 @@ angular.module('dateworthy.findadate', [])
         $scope.currentQuestion.chosenOption = $scope.currentTags[currentQuestion.field];
       }
     }
-  }
+  };
 
-  // This allows the user to navigate back and forth between the questions. 
+  // This allows the user to navigate back and forth between the questions.
   $scope.prevQuestion = function() {
     submitSoFar();
     $ionicHistory.goBack();
@@ -47,79 +67,95 @@ angular.module('dateworthy.findadate', [])
 
   //creates and formats an object so that the factory can append the data
   $scope.createQuestionObject = function (question){
+    console.log("Current Question: ", question);
+    //console.log(question.possibilities.indexOf(question.chosenOption));
     var obj = {};
     var key = question.field;
-    obj[key] = question.chosenOption;
+    if(question.answerTags){
+      if(question.answerTags[question.possibilities.indexOf(question.chosenOption)] === "NONE"){
+        return null;
+      } else {
+        obj[key] = question.answerTags[question.possibilities.indexOf(question.chosenOption)];
+      }
+    } else {
+      obj[key] = question.chosenOption;
+    }
     return obj;
   };
 
+  //generates a question answer key value pair and sends it to the data factory.
+  //will skip a question if no tag is provided, IE, a yes or no question to a single tag.
   var submitSoFar = function() {
     var currentQuestion = $scope.currentQuestion;
     var questionObject = $scope.createQuestionObject(currentQuestion);
-    if (currentQuestion.type === "logistics") {
-      DateData.appendLogistics(questionObject);
-    } else {
-      DateData.appendTags(questionObject);
+    if(questionObject !== null){
+      if (currentQuestion.type === "logistics") {
+        DateData.appendLogistics(questionObject);
+      } else {
+        DateData.appendTags(questionObject);
+      }
     }
-  }
+  };
 
-  // This function determines what should be the next URL that 
-  // the user navigates to and saves data from current survey. 
+  // This function determines what should be the next URL that
+  // the user navigates to and saves data from current survey.
   $scope.nextQuestion = function(){
-
+    console.log("Next question called");
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
-    
-    if (nextQuestionId === $scope.questions.length) {
 
-      $scope.showSpinner = true;
-      //Update coordinates based off of google maps center location
+    //Update coordinates based off of google maps center location
+    if ($scope.mandatoryQuestions[$scope.currentIndex].field === "location") {
       var center = $scope.map.getCenter();
       var lat = center.lat();
       var lng = center.lng();
       DateData.setGeoLocation(lat, lng);
-
-
-      for (prop in $scope.currentTags) {
-        tag = $scope.currentTags[prop]
+      $state.go('findadate', {questionId: nextQuestionId});
+      $scope.loadState();
+    }
+    //If we are at the end of the question list, we will send the data to the server and get date ideas.
+    if(nextQuestionId === $scope.mandatoryQuestions.length){
+      $scope.showSpinner = true;
+      for (var prop in $scope.currentTags) {
+        tag = $scope.currentTags[prop];
         if(tag !== undefined){
           LikeADate.tag(null, tag, function(err, results){
             if(err){
-              console.log(err)
+              console.log(err);
             }
-          })
+          });
         }
-      };
-
+      }
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
-        console.log(DateData.getConcatenatedData(), "DATA WE ARE sending")
+        console.log("Data sent to the server: ", DateData.getConcatenatedData());
         DateData.setDateIdeas(data);
-        $scope.loadState();
         $state.go('idea', {ideaId: 0});
+        $scope.loadState();
       });
-
+    //else we will go to the next question.
     } else {
       $state.go('findadate', {questionId: nextQuestionId});
       $scope.loadState();
     }
   };
 
-  
   // Initializes map and allows people to enter geographical searches. The search box will return a
   // pick list containing a mix of places and predicted search terms.
-
   $scope.initMap = function() {
+    var latitude;
+    var longitude;
+    console.log("Latutude: ", latitude);
     console.log("Initializing map");
     var coordinates = DateData.getGeoLocation();
     if(coordinates){
-      var latitude = coordinates.lat || 37.8044
-      var longitude = coordinates.long || -122.2708
+      latitude = coordinates.lat || 37.8044;
+      longitude = coordinates.long || -122.2708;
     }
     var map = new google.maps.Map(document.getElementById('map'), {
       draggable: false,
       center: {lat: latitude || 37.8044, lng: longitude || -122.2708},
-      zoom: 10,
+      zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
@@ -141,7 +177,7 @@ angular.module('dateworthy.findadate', [])
     searchBox.addListener('places_changed', function() {
       var places = searchBox.getPlaces();
 
-      if (places.length == 0) {
+      if (places.length === 0) {
         return;
       }
 
@@ -179,20 +215,37 @@ angular.module('dateworthy.findadate', [])
       });
       map.fitBounds(bounds);
     });
-    
     $scope.map = map;
-  }
+    // var center = $scope.map.getCenter();
+    // var lat = center.lat();
+    // var lng = center.lng();
+    // DateData.setGeoLocation(lat, lng);
+    // for (var prop in $scope.currentTags) {
+    //   tag = $scope.currentTags[prop];
+    //   if(tag !== undefined){
+    //     LikeADate.tag(null, tag, function(err, results){
+    //       if(err){
+    //         console.log(err);
+    //       }
+    //     });
+    //   }
+    // }
+  };
 
+  //Determines if the question being loaded requires the map control.
   $scope.loadMapCheck = function (_decrement) {
     if(!_decrement){
+      //console.log("Decrement exists!");
       _decrement = 0;
     }
-    if ($scope.currentIndex === $scope.questions.length - 1 - _decrement + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
-      return true
+    //console.log("Current Index", +$scope.currentIndex);
+    //console.log("Field: ", $scope.mandatoryQuestions[+$scope.currentIndex].field);
+    if ($scope.mandatoryQuestions[+$scope.currentIndex].field === "location"){//$scope.currentIndex === $scope.mandatoryQuestions.length - 1 - _decrement + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
+      return true;
     } else {
-      return false
+      return false;
     }
-  }
+  };
 
   $scope.savedLikes = function() {
     $rootScope.history.push($location.$$path);
@@ -201,5 +254,5 @@ angular.module('dateworthy.findadate', [])
 
   $scope.loadState();
 
-})
+});
 
