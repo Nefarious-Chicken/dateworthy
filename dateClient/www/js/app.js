@@ -77,7 +77,8 @@ angular.module('dateworthy', [
   .state('idea', {
     url: '/idea/:ideaId/',
     templateUrl: 'templates/idea-single.html',
-    controller: 'IdeaCtrl'
+    controller: 'IdeaCtrl',
+    cache: false
   })
   .state('error',{
     url: '/dangerWillRobinson/',
