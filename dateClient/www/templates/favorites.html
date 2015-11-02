@@ -6,8 +6,8 @@
   <ion-content>
     <ion-item class="item-text-wrap">
       <h2>Saved Dates</h2>
-      <div class="card" ng-repeat="favorite in favorites" ng-click="getDetails($index)" tabIndex={{$index}}>
-        {{favorite.dateIdea.dateIdeaName}}
+      <div class="card">
+        <ion-radio ng-repeat="favorite in favorites" ng-click="getDetails($index)" tabIndex={{$index}}>{{favorite.dateIdea.dateIdeaName}}</ion-radio>
       </div>
     </ion-item>
   </ion-content>
