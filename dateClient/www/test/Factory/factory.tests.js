@@ -7,6 +7,12 @@ describe('Factory Unit Tests', function(){
     });
   }));
 
+  beforeEach(module(function ($provide) {
+    $provide.value('$state', {
+        someVariable: 1
+    });
+  }));
+
   it('can append active tags and get all tags', inject(function(DateData) {
     DateData.appendTags({"dateGenre": "Romantic", "noiseLevel": "Quiet"})
     expect(DateData.getTags()).toEqual({"dateGenre": "Romantic", "noiseLevel": "Quiet"});

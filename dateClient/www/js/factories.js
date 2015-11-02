@@ -19,7 +19,7 @@ angular.module('dateworthy.services', [])
     },
   };
 })
-.factory('LikeADate', function ($http, $location, $window, UserData, DateData) {
+.factory('LikeADate', function ($http, $state,$location, $window, UserData, DateData) {
   return {
     increaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
@@ -55,8 +55,11 @@ angular.module('dateworthy.services', [])
         url: '/users/' + userName +'/tag/',
         data: tagData
       })
-      .then(function (resp) {
+      .then(function successful (resp) {
         callback(resp.data);
+      }, function tryAgainLater() {
+        console.log("error will robinson")
+        $state.go('error');
       });
     },
     markLikeDislike: function(dateIdeaID, likeDislikeFlag){
@@ -117,7 +120,7 @@ angular.module('dateworthy.services', [])
     }
   }
 })
-.factory('UserData', function ($http, $location, $window) {
+.factory('UserData', function ($http, $location, $window, $state) {
   return {
     userData: {},
     updateUserData: function(obj) {
@@ -133,6 +136,12 @@ angular.module('dateworthy.services', [])
         method: 'POST',
         url: '/users/',
         data: obj
+      })
+      .then(function successful (resp) {
+        
+      }, function tryAgainLater() {
+        console.log("error will robinson")
+        $state.go('error');
       });
     },
     getUserData: function() {
