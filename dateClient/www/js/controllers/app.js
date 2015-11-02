@@ -23,7 +23,6 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
   });
   $scope.fbLogin = function () {
 
-    //retrieves users coordinates upon log in attempt
     
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
