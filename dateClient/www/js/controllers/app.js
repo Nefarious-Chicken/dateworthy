@@ -18,12 +18,9 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
 
 
   //once the main controller loads grab users coordinates
-  $ionicPlatform.ready(function() {
-    DateData.setGeoLocation();
-  });
+  
   $scope.fbLogin = function () {
 
-    //retrieves users coordinates upon log in attempt
     
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
@@ -54,6 +51,18 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
       // and... write it to the database of course! 
     })
   }
+
+  $ionicPlatform.ready(function() {
+    DateData.setGeoLocation();
+    ngFB.getLoginStatus()
+    .then(function(response){
+      if(response.status !== "connected"){
+        console.log("User is not logged in.");
+        $state.go('login');
+      }
+      
+    });
+  });
 
   // Removed $scope from these, they aren't externally exposed functions
   // adding functions to $scope object is resource intensive

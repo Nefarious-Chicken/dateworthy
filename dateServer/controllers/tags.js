@@ -31,7 +31,6 @@ exports.sendDateData = function(req, res, next) {
     tags[req.body.tags[i]] = 1;
   }
 
-  console.log('Tagss: ', tags);
   Events.getMatchingEventsNoRest(tags, geoLocation, logistics, req, res);
 };
 

@@ -17,6 +17,11 @@ describe('IdeaController', function(){
         someVariable: 1
     });
   }));
+  beforeEach(module(function ($provide) {
+    $provide.value('$state', {
+        someVariable: 1
+    });
+  }));
 
 
   beforeEach(inject(function($injector, $rootScope, $controller) {
