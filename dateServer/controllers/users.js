@@ -359,3 +359,11 @@ exports.createUserPrefsSQL = function(req, res, next){
   });
 }
 
+exports.getUserPrefsSQL = function(req, res, next){
+  console.log("GOT THE USER ID: " + req.query.userID);
+  userPrefsSQL.get(req.query.userID)
+  .then(function(userPrefs){
+    res.status(200).send(userPrefs);
+  })
+}
+

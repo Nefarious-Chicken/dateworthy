@@ -13,10 +13,13 @@ module.exports = {
     return seqUserPrefs.sync()
     .then(function(){
       // Find all the preferences for a single user
-      return seqUserPrefs.findAll({ where: {userAuthUserID: userID} });
+      return seqUserPrefs.findAll({ 
+        where: {userAuthUserID: userID, likeDislike: 1}, 
+        include: [db.tables.dateIdeas] 
+      });
     })
-    .then(function(users) {
-      return users;
+    .then(function(userPrefs){
+      return userPrefs;
     });
   },
 

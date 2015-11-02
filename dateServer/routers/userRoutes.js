@@ -3,8 +3,9 @@
 module.exports = function (app) {
   /*----------------SQL-------------*/
   app.post('/signup', userController.signupUserSQL);
-  app.get('/userInfo', userController.getUserID)
+  app.get('/userInfo', userController.getUserID);
   app.post('/userpreferences', userController.createUserPrefsSQL);
+  app.get('/userpreferences', userController.getUserPrefsSQL);
 
   /*----------------NEO4J-------------*/
 
