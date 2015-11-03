@@ -17,45 +17,170 @@ $dark:                            #444 !default;
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
+$grey: #878795;
+$lightgrey: #ECE9EF;
+$main: #6465B1;
+$positive: $main;
+
+$lato: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
+@charset "UTF-8";
+
+// This is the icon font with the dateworthy logo in it. DO NOT DELETE. 
+@font-face {
+  font-family: "dateworthy";
+  src:url("./fonts/dateworthy.eot");
+  src:url("./fonts/dateworthy.eot?#iefix") format("embedded-opentype"),
+    url("./fonts/dateworthy.woff") format("woff"),
+    url("./fonts/dateworthy.ttf") format("truetype"),
+    url("./fonts/dateworthy.svg#dateworthy") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[data-icon]:before {
+  font-family: "dateworthy" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="dateworthy-i-"]:before,
+[class*=" dateworthy-i-"]:before {
+  font-family: "dateworthy" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dateworthy-i-logo:before {
+  content: "a";
+  vertical-align: middle;
+}
+
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
-.like-dislike .button {
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  width: 47px;
-  height: 47px;
-  min-width: auto; 
-  min-height: auto;
+// Override default fonts with Lato. 
+body, input, button, select, textarea {
+  font-family: $lato;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $lato;
 }
 
-.button-dislike {
-  float: left;
-}
-
-.button-like {
-  float: right;
-}
-
-.button-prev {
-  float: left;
-}
-.button-next {
-  float: right;
-}
-
+// Basic layout overrides
 a {
   color: $positive;
   text-decoration: none;
 }
+.bar {
+  background: $main;
+  font-family: $lato;
+}
+.bar .footer {
+  background: lighten($main, 10%);
+}
 
+.bar .button.button-clear {
+  color: #fff;
+}
+
+.bar .title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.has-header {
+  background: $lightgrey;
+}
+
+// Like and Dislike buttons, loosely based on Tinder. 
+.like-dislike {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  .button {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    min-width: auto; 
+    min-height: auto;
+    border: 3px solid #eee; 
+  }
+  .button-like:hover {
+    color: $balanced;
+  }
+  .button-dislike:hover {
+    color: $assertive;
+  }
+  .button:active, .button:focus, .button.activated{
+    .icon:before, .icon:before, .icon-left:before, .icon-right:before {
+      line-height: 30px;
+      font-size: 18px;
+    }
+    background: #fff;
+    width: 36px;
+    height: 36px;
+    margin: 6px;
+    padding: 0;
+    &.button-dislike {
+      margin-right: 10px;
+    }
+  }
+  .button-liked {
+    border-color: $balanced;
+  }
+  .button-disliked {
+    border-color: $assertive;
+  }
+}
+.image-container {
+  min-height: 84px;
+  margin-top: -2px;
+}
+.button-dislike {
+  float: left;
+  margin-right: 4px;
+  color: $assertive;
+}
+.button-like {
+  float: right;
+  color: $balanced;
+}
+
+// Typography overrides
 .item {
   h2 {
     text-align: center;
+    font-style: italic;
+    color: $grey;
+    font-weight: 700;
+    font-size: 17px;
+    &.question {
+      margin: 1em 0 2em;
+    }
   }
 }
-.item.date-details {
+
+// Date details CSS.
+.date-details {
+  margin-bottom: 80px;
   p {
     margin: 1em 0;
     font-size: 12px;
@@ -64,12 +189,13 @@ a {
     margin-top: 1em;
     width: 100%;
     height: 300px;
+    margin-bottom: 20px;
   }
   .category, .address {
     margin: 0;
   }
   .category {
-    color: #464648;
+    color: $grey;
   }
   .address {
     color: #878795;
@@ -94,14 +220,42 @@ a {
     margin: 0;
   }
 }
-
+.more-details {
+  padding-top: 0.5em;
+}
 .item .img {
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
 }
-
 .flag {
-  text-align: center;
-  padding-bottom: 120px;
+  float: right;
+}
+.show-more {
+  text-align: right;
+}
+
+// style the radio button things
+.item-radio input:checked ~ .item-content {
+  background: $main;
+  color: #fff;
+}
+
+.item-radio .radio-icon {
+  display: none;
+}
+
+.item-complex .item-content, .item-radio .item-content {
+  font-size: 90%;
+}
+
+// override light buttons for prev/next buttons on idea view
+.button.button-light.button-outline {
+  color: #fff;
+  border-color: #fff;
+}
+
+.button.button-light.button-outline.active, .button.button-light.button-outline.activated {
+  background: #fff;
+  color: $main;
 }
