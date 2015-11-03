@@ -31,9 +31,12 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 // app.use(express.favicon());
-app.use('/', express.static(path.join(__dirname, '../dateClient/www/')));
-app.get('/about', function(req, res) {
-  res.render('index', {title: 'Dateworthy'});
+app.use('/app', express.static(path.join(__dirname, '../dateClient/www/')));
+app.get('/', function(req, res) {
+  res.render('index', {title: 'dateworthy.io'});
+});
+app.get('/demo', function(req, res) {
+  res.render('demo', {title: 'dateworthy.io demo'});
 });
 app.use(logger('dev'));
 app.use(bodyParser.json());
