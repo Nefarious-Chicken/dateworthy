@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+html(lang="en")
+head
+  meta(charset="UTF-8")
+  title Document
+  link(href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic', rel='stylesheet', type='text/css')
+  link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
+  link(href="/public/css/app.css", rel="stylesheet", type="text/css")
+  link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
+body
+  header
+    nav.navbar.navbar-default
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar", aria-expanded="false", aria-controls="navbar")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand
+            img(alt="dateworthy", src="/public/images/dateworthy.png", class="logo")
+        #navbar.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href="submit") Submit an idea
+            li 
+              a(href="about") About
+  .jumbotron
+    .container
+      .row
+        .col-sm-3.col-sm-offset-2.text-right
+          img(src="public/images/iphone.png", class="img-responsive")
+        .col-sm-5.text
+          h3 Need a last-minute date idea?
+          p.intro There's an app for that!
+          a.btn.btn-lg.btn-main(href="/") Get a date idea now!
+  section.never-run-out
+    .container
+      .row.text-center
+        .col-sm-12
+          h4 Never run out of dating ideas again.
+      .row
+        .col-sm-4
+          .icon
+            i.fa.fa-flask
+          h5 It's smart.
+          p Dateworthy makes better recommendations the more you use it. Try it out for yourself! 
+        .col-sm-4
+          .icon
+            i.fa.fa-map-o
+          h5 Explore new places.
+          p Dateworthy is powered by Foursquare’s API, giving you access to millions of venues that you haven’t explored yet. 
+        .col-sm-4
+          .icon
+            i.fa.fa-hand-spock-o
+          h5 Fun time guaranteed.
+          p Are our ideas too vanilla for you? Turn on troll mode and bring on the mayhem! 
+  section.testimonials
+    .container
+      .row
+        .col-sm-10.col-sm-offset-1
+          .row
+            .col-sm-12
+              h4.text-center Look! People <span class="glyphicon glyphicon-heart"></span> us!
+          .row.testimonial
+            .col-xs-3.col-sm-2.img
+              img.img-responsive(src="public/images/adam.jpg")
+            .col-xs-9
+              .text
+                p This has been a godsend. I’m too swamped with work during the week to plan good dates on the weekends, but now I always have something new and fun to do at my fingertips. My wife loves it! 
+          .row.testimonial
+            .col-xs-3.col-sm-2.img
+              img.img-responsive(src="public/images/dan.jpg")
+            .col-xs-9
+              .text
+                p I used dateworthy. And I survived.
+          .row.testimonial
+            .col-xs-3.col-sm-2.img
+              img.img-responsive(src="public/images/jing.jpg")
+            .col-xs-9
+              .text
+                p This is incredibly fun to play with, and I love that I can bookmark good date ideas. And just keep bookmarking. 
+          .row.testimonial
+            .col-xs-3.col-sm-2.img
+              img.img-responsive(src="public/images/alex.jpg")
+            .col-xs-9
+              .text
+                p There’s so much more to dating than Netflix and Chill! Thanks for making this, guys! 
+          .row.testimonial
+            .col-xs-3.col-sm-2.img
+              img.img-responsive(src="public/images/jess.jpg")
+            .col-xs-9
+              .text
+                p Dateworthy is more fun than you can shake a stick at!
+        .col-sm-8.col-sm-offset-2
+          .row
+            .col-sm-2
+            .col-sm-10
+        .col-sm-8.col-sm-offset-2
+          .row
+            .col-sm-2
+            .col-sm-10
+  footer
+    .container
+      .row
+        .col-sm-8.col-sm-offset-2.text-center
+          ul.footer-nav
+            li
+              a(href="/")
+                | Home 
+            li
+              a(href="team")
+                | Team 
+            li
+              a(href="mailto:thenefariouschicken@gmail.com")
+                | Email us
+          p &copy; 2015, dateworthy
+  script(src="/public/lib/jquery/dist/jquery.min.js")
+  script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")

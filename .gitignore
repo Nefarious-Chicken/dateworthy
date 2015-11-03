@@ -10,4 +10,5 @@ dateClient/www/lib/
 dateClient/resources/
 node_modules/
 *.log
+dateServer/public/lib/
 
