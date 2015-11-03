@@ -1,14 +1,14 @@
 <ion-view view-title="Home">
   <ion-header-bar class="bar bar-header">
     <div class="h1 title">Dateworthy</div>
-    <button class="button button-small button-clear" ng-click="savedLikes()"><i class="ion-heart assertive"></i></button>
+    <button class="button button-small button-clear" ng-click="savedLikes()"><i class="ion-bookmark"></i></button>
   </ion-header-bar>
   <ion-content>
     <div class="item item-text-wrap">
       <p>Hi, {{ userData.firstName }}. What kind of date do you want to go on today?</p>
     </div>
     <div class="item">
-      <a class="button button-block button-positive" type="submit" ui-sref="findadate({questionId: 0})">Talk me through it.</a>
+      <a class="button button-block button-positive button-outline" type="submit" ui-sref="findadate({questionId: 0})">Talk me through it.</a>
     </div>
   </ion-content>
 </ion-view>

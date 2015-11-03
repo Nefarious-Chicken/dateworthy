@@ -122,17 +122,8 @@ angular.module('dateworthy.findadate', [])
     }
     //If we are at the end of the question list, we will send the data to the server and get date ideas.
     if(nextQuestionId === $scope.mandatoryQuestions.length){
+      $scope.showSpinner = true;
       console.log("Doing stuff now!");
-      // for (var prop in $scope.currentTags) {
-      //   tag = $scope.currentTags[prop];
-      //   if(tag !== undefined){
-      //     LikeADate.tag(null, tag, function(err, results){
-      //       if(err){
-      //         console.log(err);
-      //       }
-      //     });
-      //   }
-      // }
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         console.log("Data sent to the server: ", DateData.getConcatenatedData());
         DateData.setDateIdeas(data);

@@ -2,19 +2,37 @@
   <ion-header-bar class="bar bar-header">
     <button class="button button-clear" ng-click="clearData()"><i class="ion-home"></i></button>
     <div class="h1 title">Date Idea</div>
-    <button class="button button-small button-clear" ng-click="savedLikes()"><i class="ion-heart assertive"></i></button>
+    <button class="button button-small button-clear" ng-click="savedLikes()"><i class="ion-bookmark"></i></button>
   </ion-header-bar>
   <ion-content ng-cloak>
     <div class="card date-idea" ng-model="idea">
+      <div class="image-container">
+        <div class="like-dislike">
+          <a class="button button-dislike" ng-click="dislike()" ng-class="{'button-disliked' : idea.disliked == '1'}"><i class="icon ion-close-round"></i></a>
+          <a class="button button-like" ng-click="like()" ng-class="{'button-liked' : idea.liked == '1'}"><i class="icon ion-ios-heart"></i></a>
+        </div>
+        <div class="item item-image">
+          <div ng-if="idea.imgUrl" class="img" style="background-image: url('{{idea.imgUrl}}'); width: {{imgWidth}}; height: {{imgWidth}}">
+          </div>
+
+        </div>
+      </div>
       <div class="idea item item-text-wrap">
         <h2>{{idea.idea}}</h2>
+        <div class="show-more">
+          <a ng-click="toggleDetails()">
+            <i class="ion-more"></i> 
+          </a>
+        </div>
+
       </div>
-      <div ng-if="idea.imgUrl" class="item item-image">
-        <div class="img" style="background-image: url('{{idea.imgUrl}}'); width: {{imgWidth}}; height: {{imgWidth}}"></div>
-      </div>
-      <div class="item item-text-wrap date-details">
-        <p><a ng-click="toggleDetails()"><i class="ion-information-circled"></i> {{idea.detailsVisible ? 'Hide details' : 'More about this date idea...'}}</a></p>
+    </div>
+    <div class="card date-details" ng-show="idea.detailsVisible">
+      <div class="item item-text-wrap">
         <div class="more-details" ng-show="idea.detailsVisible">
+          <button ng-class="idea.flagged ? 'disabled button button-small flag' : 'flag button button-small'" ng-click="flagDate()">
+            <i class="ion-flag"></i>
+          </button>
 
           <!-- <p>{{idea.location}}</p> -->
           <h3>{{idea.name}}</h3>
@@ -48,24 +66,13 @@
           <div id="{{'venueMap' + idea.index}}" class="venueMap" data-tap-disabled="true">
             {{ idea.mapInit ? null : initMap(idea.location.lat, idea.location.lng, idea.name) }}
           </div>
-           <!-- <div id="map" ></div> -->
         </div>
-
-        <!-- <p>{{idea.hours}} -->
-      </div>
-      <div class="item like-dislike">
-        <a class="button button-assertive button-dislike" ng-click="dislike()" ng-class="{'button-outline' : idea.disliked == '0'}"><i class="icon ion-close-round"></i></a>
-        <a class="button button-balanced button-like" ng-click="like()" ng-class="{'button-outline' : idea.liked == '0'}"><i class="icon ion-checkmark-round"></i></a>
       </div>
     </div>
-    <div class="padding flag">
-      <button ng-class="idea.flagged ? 'disabled button button-small' : 'button button-small'" ng-click="flagDate()">
-        <i class="ion-flag"></i> {{idea.flagged ? 'Flagged as a terrible idea' : 'Flag this as a terrible idea'}}
-      </button>
-    </div>
+    
   </ion-content>
   <div class="bar bar-footer">
-    <button class="button button-small button-outline button-default" type="submit" ng-click="prevIdea()" ng-hide="idea.index === 0">Previous idea</button>
-    <button class="button button-small button-outline button-positive button-default pull-right" type="submit" ng-click="nextIdea()" ng-hide= "idea.last === true">Next idea</button>
+    <button class="button button-small button-light" type="submit" ng-click="prevIdea()" ng-hide="idea.index === 0">Previous idea</button>
+    <button class="button button-small button-light pull-right" type="submit" ng-click="nextIdea()" ng-hide= "idea.last === true">Next idea</button>
   </div>
 </ion-view>

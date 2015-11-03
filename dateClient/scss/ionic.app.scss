@@ -17,25 +17,70 @@ $dark:                            #444 !default;
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
-
+$main: #6465B1;
+$positive: $main;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
-
-.like-dislike .button {
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  width: 47px;
-  height: 47px;
-  min-width: auto; 
-  min-height: auto;
+body {
+  font-family: 'Lato';
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Lato';
+}
+.like-dislike {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  .button {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    min-width: auto; 
+    min-height: auto;
+    border: 3px solid #eee; 
+  }
+  .button-like:hover {
+    color: $balanced;
+  }
+  .button-dislike:hover {
+    color: $assertive;
+  }
+  .button:active, .button:focus, .button.activated{
+    .icon:before, .icon:before, .icon-left:before, .icon-right:before {
+      line-height: 30px;
+      font-size: 18px;
+    }
+    background: #fff;
+    width: 36px;
+    height: 36px;
+    margin: 6px;
+    padding: 0;
+    &.button-dislike {
+      margin-right: 10px;
+    }
+  }
+  .button-liked {
+    border-color: $balanced;
+  }
+  .button-disliked {
+    border-color: $assertive;
+  }
+}
+.image-container {
+  min-height: 84px;
+  margin-top: -2px;
 }
 
 .button-dislike {
   float: left;
+  margin-right: 4px;
+  color: $assertive;
 }
-
 .button-like {
   float: right;
+  color: $balanced;
 }
 
 .button-prev {
@@ -44,18 +89,33 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .button-next {
   float: right;
 }
-
+// layout overrides
 a {
   color: $positive;
   text-decoration: none;
 }
+.bar {
+  background: $main;
+  font-family: 'Lato';
+}
+.bar .footer {
+  background: lighten($main, 10%);
+}
 
+.bar .button.button-clear {
+  color: #fff;
+}
+
+.bar .title {
+  color: #fff;
+}
 .item {
   h2 {
     text-align: center;
   }
 }
-.item.date-details {
+.date-details {
+  margin-bottom: 40px;
   p {
     margin: 1em 0;
     font-size: 12px;
@@ -64,6 +124,7 @@ a {
     margin-top: 1em;
     width: 100%;
     height: 300px;
+    margin-bottom: 20px;
   }
   .category, .address {
     margin: 0;
@@ -95,6 +156,9 @@ a {
   }
 }
 
+.more-details {
+  padding-top: 0.5em;
+}
 .item .img {
   background-position: center center;
   background-repeat: no-repeat;
@@ -102,6 +166,24 @@ a {
 }
 
 .flag {
-  text-align: center;
-  padding-bottom: 120px;
+  float: right;
+}
+
+
+.has-header {
+  background: darken($main, 20%);
+}
+.show-more {
+  text-align: right;
+}
+
+// style the radio button things
+
+.item-radio input:checked ~ .item-content {
+  background: $main;
+  color: #fff;
+}
+
+.item-radio .radio-icon {
+  display: none;
 }

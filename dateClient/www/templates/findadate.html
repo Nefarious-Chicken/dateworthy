@@ -1,21 +1,19 @@
 <ion-view view-title="findadate" ng-controller = "FindADateCtrl">
   <ion-header-bar class="bar bar-header">
+    <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i></button>
     <div class="h1 title"><i class="ion-erlenmeyer-flask royal"></i> Date Formula Picker</div>
-    <button class="button button-small button-clear" ng-click="savedLikes()"><i class="ion-heart assertive"></i></button>
+    <!-- <button class="button button-small button-clear button-main" type="submit" ng-click="nextQuestion()">Next <i class="ion-ios-arrow-forward"></i></button> -->
   </ion-header-bar>
   <ion-content>
     <ion-item class="item-text-wrap">
       <h2>{{currentQuestion.question}}</h2>
       <div class="card">
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
+        <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
         <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-click="nextQuestion()" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
       </div>
+      <button class="button button-block button-positive button-outline" type="submit" ng-click="nextQuestion()">{{currentQuestion.field == 'location' ? 'Next' : currentIndex == mandatoryQuestions.length - 1 ? 'Show me the date ideas' : 'Skip'}} <i class="ion-ios-arrow-forward"></i></button>
     </ion-item>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
-    <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
   </ion-content>
   <span us-spinner="{radius:30, width:8, length: 16}"  ng-if="canSpin()"></span>
-  <div class="bar bar-footer">
-      <button class="button button-small button-clear" type="submit" ng-click="prevQuestion()"><i class="ion-ios-arrow-back"></i> Back</button>
-      <button class="button button-small button-clear button-positive" type="submit" ng-click="nextQuestion()">Next <i class="ion-ios-arrow-forward"></i></button>
-  </div>
 </ion-view>
