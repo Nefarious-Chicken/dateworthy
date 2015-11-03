@@ -5,6 +5,7 @@ angular.module('dateworthy.services', [])
     // { loudness: quiet , genre: intellectual }
     // turn this into ['quiet', 'intellectual'];
     sendDateData: function(surveyData, callback){
+      console.log("Survey Data: ", surveyData);
       return $http({
         method: 'POST',
         url: '/tags/sendDateData/',
@@ -173,6 +174,15 @@ angular.module('dateworthy.services', [])
     logistics: {},
     dateIdeas: {},
     geoLocation: null,
+    optionalQuestion: -1,
+
+    setOptionalQuestion: function(ID){
+      this.optionalQuestion = ID;
+    },
+
+    getOptionalQuestion: function(){
+      return this.optionalQuestion;
+    },
 
     appendTags: function (tags){
       for (var tag in tags){
@@ -184,21 +194,21 @@ angular.module('dateworthy.services', [])
     getTags: function (){
       return this.tags;
     },
+
     appendLogistics: function (logistics){
       for (var logistic in logistics){
         this.logistics[logistic] = logistics[logistic];
       }
     },
+
     getLogistics: function (){
       return this.logistics;
     },
+
     setGeoLocation: function (_lat, _long){
       if(_lat && _long){
-        
         this.geoLocation = {lat: _lat, long: _long};
-      
       } else {
-
         var posOptions = {timeout: 10000, enableHighAccuracy: false};
         var context = this;
         $cordovaGeolocation

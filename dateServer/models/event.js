@@ -288,6 +288,7 @@ Event.prototype.getAllTags = function (callback) {
     'MATCH (event:Event {eventname: {thisEventname}})-[:is]->(tag:Tag)',
     'RETURN DISTINCT tag'
   ].join('\n');
+  console.log("Query: ", query);
   var setTags = function(tags){this.myTags = tags;}.bind(this);
   var params = {
     thisEventname: this.eventname
