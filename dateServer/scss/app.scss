@@ -1,0 +1,217 @@
+$primary: #6465B1;
+
+.btn-main {
+  color: #fff;
+  background-color: #6465B1;
+  border: 0 none;
+  padding: 15px 30px;
+  text-transform: uppercase;
+  font-size: 14px;
+  &:focus, &.focus {
+    color: #fff;
+    background-color: darken($primary, 10%);
+  }
+  &:hover, &.hover {
+    color: #fff;
+    background-color: darken($primary, 10%);
+  }
+  &:active, &.active {
+    color: #fff;
+    background-color: darken($primary, 10%);
+  }
+}
+
+body {
+  background: $primary;
+  font-family: 'Lato';
+  font-size: 15px; 
+  color: #fff;
+  line-height: 1.5;
+  border-top: 6px solid #6465B1;
+}
+
+a {
+  text-decoration: none;
+  color: $primary;
+}
+a:hover {
+  text-decoration: none;
+}
+
+section {
+  padding: 100px 0;
+}
+.testimonials {
+  background: darken($primary, 10%);
+  h4 {
+    margin-bottom: 40px;
+  }
+}
+.testimonial {
+  margin-bottom: 40px;
+  @media(max-width: 767px) {
+    margin-bottom: 20px;
+  }
+}
+.testimonial .img {
+  @media (min-width: 768px) {
+    text-align: center;
+  }
+  text-align: left;
+}
+.testimonials img {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border: 3px solid white;
+  display: inline;
+  @media(min-width: 768px) {
+    max-width: 80px;
+  }
+}
+.arrow_box {
+  position: relative;
+  background: #6465B1;
+}
+.testimonial .text:after {
+  right: 100%;
+  top: 20px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(100, 101, 177, 0);
+  border-right-color: $primary;
+  border-width: 5px;
+  margin-top: -10px;
+}
+.testimonial .text {
+  position: relative;
+  padding: 10px 20px;
+  background: $primary;
+  border-radius: 10px;
+  font-size: 14px;
+  p {
+    padding-top: 10px;
+    font-size: 15px;
+  }
+}
+.never-run-out {
+  text-align: center;
+  padding-top: 40px;
+  @media (max-width: 767px) {
+    text-align: left;
+  }
+}
+.icon {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 80px;
+}
+.icon i {
+  // color: lighten($primary, 30%);
+}
+footer {
+  padding: 40px 0;
+}
+
+.container {
+  max-width: 900px;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+a.navbar-brand {
+  margin-bottom: 1.5em; 
+}
+
+.navbar-nav {
+  margin-top: 12px;
+}
+
+.navbar-default {
+  border: 0 none;
+  background: #fff;
+  // color: #fff; 
+}
+
+h3 {
+  font-weight: 200;
+  font-size: 48px;
+  color: white;
+  font-style: italic;
+}
+
+h5 {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.navbar-brand img {
+  width: 152px;
+  height: 44px;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: $primary;
+}
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+  color: #ccc;
+}
+
+.jumbotron {
+  background: #fff url('../images/heart2.jpg') center center no-repeat;
+  background-size: cover;
+  color: #fff;
+  @media (min-width: 768px) {
+    height: 400px;
+    .text {
+      padding-left: 2em;
+    }
+  }
+  @media (max-width: 767px) {
+    img {
+      max-width: 60%;
+      margin: 0 auto;
+    }
+  }
+}
+
+section {
+  clear: both;
+}
+.navbar-toggle {
+  margin-top: 21px;
+}
+
+.btn {
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
+
+footer {
+  background: #222;
+  color: #fff;
+  padding-top: 2em;
+}
+
+ul.footer-nav {
+  list-style: none;
+  margin: 40px 0 20px;
+  padding: 0;
+  li {
+    display: inline;
+    margin: 0 20px;
+    text-transform: uppercase;
+  }
+}
+
+h4 {
+  font-weight: 200;
+  font-style: italic;
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 32px;
+}

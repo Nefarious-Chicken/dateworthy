@@ -10,15 +10,31 @@ var methodOverride = require('method-override');
 var errorHandler = require('errorhandler');
 var http = require('http');
 var path = require('path');
+var sass = require('node-sass-middleware');
 
 var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
+console.log(__dirname + '/scss');
+console.log(__dirname + '/public/css');
+
+app.use(sass({
+    /* Options */
+    src: __dirname + '/scss',
+    dest: __dirname + '/public/css',
+    debug: true,
+    outputStyle: 'compressed',
+    prefix:  '/public/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/> 
+}));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 // app.use(express.favicon());
-app.use(express.static(path.join(__dirname, '../dateClient/www/')));
+app.use('/', express.static(path.join(__dirname, '../dateClient/www/')));
+app.get('/about', function(req, res) {
+  res.render('index', {title: 'Dateworthy'});
+});
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
