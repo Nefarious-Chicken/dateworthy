@@ -15,6 +15,41 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
+@font-face {
+  font-family: "dateworthy";
+  src: url("./fonts/dateworthy.eot");
+  src: url("./fonts/dateworthy.eot?#iefix") format("embedded-opentype"), url("./fonts/dateworthy.woff") format("woff"), url("./fonts/dateworthy.ttf") format("truetype"), url("./fonts/dateworthy.svg#dateworthy") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+[data-icon]:before {
+  font-family: "dateworthy" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+[class^="dateworthy-i-"]:before,
+[class*=" dateworthy-i-"]:before {
+  font-family: "dateworthy" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.dateworthy-i-logo:before {
+  content: "a";
+  vertical-align: middle; }
+
 /*!
   Ionicons, v2.0.1
   Created by Ben Sperry for the Ionic Framework, http://ionicons.com/
@@ -9287,11 +9322,34 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
-body {
-  font-family: 'Lato'; }
+body, input, button, select, textarea {
+  font-family: "Lato", "Helvetica Neue", Helvetica, sans-serif; }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: 'Lato'; }
+  font-family: "Lato", "Helvetica Neue", Helvetica, sans-serif; }
+
+a {
+  color: #6465B1;
+  text-decoration: none; }
+
+.bar {
+  background: #6465B1;
+  font-family: "Lato", "Helvetica Neue", Helvetica, sans-serif; }
+
+.bar .footer {
+  background: #8687c2; }
+
+.bar .button.button-clear {
+  color: #fff; }
+
+.bar .title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic; }
+
+.has-header {
+  background: #ECE9EF; }
 
 .like-dislike {
   position: absolute;
@@ -9339,34 +9397,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   float: right;
   color: #33cd5f; }
 
-.button-prev {
-  float: left; }
-
-.button-next {
-  float: right; }
-
-a {
-  color: #6465B1;
-  text-decoration: none; }
-
-.bar {
-  background: #6465B1;
-  font-family: 'Lato'; }
-
-.bar .footer {
-  background: #8687c2; }
-
-.bar .button.button-clear {
-  color: #fff; }
-
-.bar .title {
-  color: #fff; }
-
 .item h2 {
-  text-align: center; }
+  text-align: center;
+  font-style: italic;
+  color: #878795;
+  font-weight: 700;
+  font-size: 17px; }
+  .item h2.question {
+    margin: 1em 0 2em; }
 
 .date-details {
-  margin-bottom: 40px; }
+  margin-bottom: 80px; }
   .date-details p {
     margin: 1em 0;
     font-size: 12px; }
@@ -9378,7 +9419,7 @@ a {
   .date-details .category, .date-details .address {
     margin: 0; }
   .date-details .category {
-    color: #464648; }
+    color: #878795; }
   .date-details .address {
     color: #878795; }
     .date-details .address span {
@@ -9406,9 +9447,6 @@ a {
 .flag {
   float: right; }
 
-.has-header {
-  background: #3b3b74; }
-
 .show-more {
   text-align: right; }
 
@@ -9418,3 +9456,14 @@ a {
 
 .item-radio .radio-icon {
   display: none; }
+
+.item-complex .item-content, .item-radio .item-content {
+  font-size: 90%; }
+
+.button.button-light.button-outline {
+  color: #fff;
+  border-color: #fff; }
+
+.button.button-light.button-outline.active, .button.button-light.button-outline.activated {
+  background: #fff;
+  color: #6465B1; }

@@ -72,7 +72,10 @@
     
   </ion-content>
   <div class="bar bar-footer">
-    <button class="button button-small button-light" type="submit" ng-click="prevIdea()" ng-hide="idea.index === 0">Previous idea</button>
-    <button class="button button-small button-light pull-right" type="submit" ng-click="nextIdea()" ng-hide= "idea.last === true">Next idea</button>
+    <div class="button-bar">
+      <button class="button button-outline button-light" type="submit" ng-click="prevIdea()" ng-if="!(idea.index === 0)">Previous idea</button>
+      <button class="button button-outline button-light" type="submit" ng-click="nextIdea()" ng-if= "!(idea.last === true)">Next idea</button>
+    </div>
   </div>
+
 </ion-view>
