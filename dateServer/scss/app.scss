@@ -138,10 +138,14 @@ a.navbar-brand {
 }
 
 h3 {
+  margin-top: 1em;
   font-weight: 200;
   font-size: 48px;
   color: white;
   font-style: italic;
+  @media (max-width: 979px) {
+    font-size: 32px;
+  }
 }
 
 h5 {
@@ -172,9 +176,16 @@ h5 {
     }
   }
   @media (max-width: 767px) {
+    text-align: center;
     img {
-      max-width: 60%;
+      max-width: 40%;
       margin: 0 auto;
+    }
+  }
+  @media (min-width: 1200px) {
+    img {
+      max-width: 80%;
+      float: right;
     }
   }
 }
@@ -214,4 +225,26 @@ h4 {
   color: #fff;
   font-size: 32px;
   margin-bottom: 32px;
+}
+
+.demo {
+  background: #222;
+}
+.demo-wrapper {
+  background: url('../images/iphone-skin.png') 0 0 no-repeat; 
+  width: 360px;
+  height: 732px;
+  position: relative;
+  margin: 0 auto;
+  background-size: contain;
+}
+iframe {
+  position: absolute;
+  bottom: 89px;
+  left: 24px;
+}
+.demo {
+  a:hover, a:active, a:focus {
+    color: #fff;
+  }
 }

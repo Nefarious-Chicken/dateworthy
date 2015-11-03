@@ -2,7 +2,7 @@
 html(lang="en")
 head
   meta(charset="UTF-8")
-  title Document
+  title dateworthy.io - a date idea generator
   link(href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic', rel='stylesheet', type='text/css')
   link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
   link(href="/public/css/app.css", rel="stylesheet", type="text/css")
@@ -17,12 +17,14 @@ body
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand
+          a.navbar-brand(href="/")
             img(alt="dateworthy", src="/public/images/dateworthy.png", class="logo")
         #navbar.collapse.navbar-collapse
           ul.nav.navbar-nav.navbar-right
             li
-              a(href="submit") Submit an idea
+              a(href="demo") Demo
+            li
+              a(href="http://goo.gl/forms/h6WCRZcyqR", target="_blank") Submit an idea
             li 
               a(href="about") About
   .jumbotron
@@ -30,10 +32,10 @@ body
       .row
         .col-sm-3.col-sm-offset-2.text-right
           img(src="public/images/iphone.png", class="img-responsive")
-        .col-sm-5.text
+        .col-sm-6.text
           h3 Need a last-minute date idea?
           p.intro There's an app for that!
-          a.btn.btn-lg.btn-main(href="/") Get a date idea now!
+          a.btn.btn-lg.btn-main(href="/demo") See a demo!
   section.never-run-out
     .container
       .row.text-center
