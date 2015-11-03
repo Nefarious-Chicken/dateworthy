@@ -6,7 +6,7 @@ angular.module('dateworthy.findadate', [])
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user.
   $scope.mandatoryQuestions = [
     {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []},
-    {question: "What time of day are you going?", type: "tag", field: "time", possibilities: ["Daytime", "Nighttime"], answerTags: ["Day", "Night"]},
+    //{question: "What time of day are you going?", type: "tag", field: "time", possibilities: ["Daytime", "Nighttime"], answerTags: ["Day", "Night"]},
     {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
     {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Goofy", "Geeky"]},
     {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]}
@@ -65,6 +65,11 @@ angular.module('dateworthy.findadate', [])
     $scope.loadState();
   };
 
+  $scope.canSpin = function(){
+    console.log("Spin status: ", $scope.showSpinner);
+    return $scope.showSpinner;
+  };
+
   //creates and formats an object so that the factory can append the data
   $scope.createQuestionObject = function (question){
     console.log("Current Question: ", question);
@@ -104,7 +109,8 @@ angular.module('dateworthy.findadate', [])
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
-
+    console.log("Length of questions: ", $scope.mandatoryQuestions.length);
+    console.log("nextQuestionID", nextQuestionId);
     //Update coordinates based off of google maps center location
     if ($scope.mandatoryQuestions[$scope.currentIndex].field === "location") {
       var center = $scope.map.getCenter();
@@ -116,17 +122,17 @@ angular.module('dateworthy.findadate', [])
     }
     //If we are at the end of the question list, we will send the data to the server and get date ideas.
     if(nextQuestionId === $scope.mandatoryQuestions.length){
-      $scope.showSpinner = true;
-      for (var prop in $scope.currentTags) {
-        tag = $scope.currentTags[prop];
-        if(tag !== undefined){
-          LikeADate.tag(null, tag, function(err, results){
-            if(err){
-              console.log(err);
-            }
-          });
-        }
-      }
+      console.log("Doing stuff now!");
+      // for (var prop in $scope.currentTags) {
+      //   tag = $scope.currentTags[prop];
+      //   if(tag !== undefined){
+      //     LikeADate.tag(null, tag, function(err, results){
+      //       if(err){
+      //         console.log(err);
+      //       }
+      //     });
+      //   }
+      // }
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         console.log("Data sent to the server: ", DateData.getConcatenatedData());
         DateData.setDateIdeas(data);
