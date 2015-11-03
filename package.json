@@ -28,5 +28,13 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "mocha": "^2.3.3",
     "phantomjs": "^1.9.18"
+  },
+  "devDependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-usemin": "^0.3.15"
   }
 }

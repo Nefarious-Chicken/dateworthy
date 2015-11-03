@@ -1,5 +1,5 @@
 angular.module('dateworthy.services', [])
-.factory('FindADate', function ($http, $location, $window, $state) {
+.factory('FindADate',['$http', '$location', '$window', '$state', function ($http, $location, $window, $state) {
   return {
     // you need to convert the tags object into an array.
     // { loudness: quiet , genre: intellectual }
@@ -19,8 +19,8 @@ angular.module('dateworthy.services', [])
       });
     },
   };
-})
-.factory('LikeADate', function ($http, $state,$location, $window, UserData, DateData) {
+}])
+.factory('LikeADate', ['$http', '$state','$location', '$window', 'UserData', 'DateData', function ($http, $state,$location, $window, UserData, DateData) {
   return {
     getLikedDates: function(callback){
       return $http({
@@ -106,8 +106,8 @@ angular.module('dateworthy.services', [])
       });
     }
   };
-})
-.factory('FlagADate', function($http, $location, $ionicPopup) {
+}])
+.factory('FlagADate',['$http', '$location', '$ionicPopup', function($http, $location, $ionicPopup) {
   return {
     flaggedDates: [],
     flagDate: function(dateIdeaID, callback) {
@@ -137,8 +137,8 @@ angular.module('dateworthy.services', [])
       });
     }
   }
-})
-.factory('UserData', function ($http, $location, $window, $state) {
+}])
+.factory('UserData', ['$http', '$location', '$window', '$state', function ($http, $location, $window, $state) {
   return {
     userData: {},
     updateUserData: function(obj) {
@@ -166,8 +166,8 @@ angular.module('dateworthy.services', [])
       return this.userData;
     }
   };
-})
-.factory('DateData', function ($http, $location, $window, $cordovaGeolocation, UserData){
+}])
+.factory('DateData', ['$http', '$location', '$window', '$cordovaGeolocation', 'UserData',function ($http, $location, $window, $cordovaGeolocation, UserData){
   return {
 
     tags: {},
@@ -250,8 +250,8 @@ angular.module('dateworthy.services', [])
     }
 
   };
-})
-.factory('Auth', function ($http, $location){
+}])
+.factory('Auth', ['$http', '$location', function ($http, $location){
   return {
     login: function(obj, callback) {
       return $http({
@@ -264,5 +264,4 @@ angular.module('dateworthy.services', [])
       });
     }
   }
-})
-;
+}]);

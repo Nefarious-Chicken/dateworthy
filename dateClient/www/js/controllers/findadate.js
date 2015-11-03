@@ -1,6 +1,6 @@
 angular.module('dateworthy.findadate', [])
 
-.controller('FindADateCtrl', function($scope, $state, $location, $rootScope, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
+.controller('FindADateCtrl', ['$scope', '$state', '$location', '$rootScope', '$timeout', '$stateParams', '$ionicHistory', '$ionicPlatform', '$document', 'FindADate', 'DateData', 'LikeADate', function($scope, $state, $location, $rootScope, $timeout, $stateParams, $ionicHistory, $ionicPlatform, $document, FindADate, DateData, LikeADate) {
   $scope.showSpinner = false;
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user.
@@ -260,5 +260,7 @@ angular.module('dateworthy.findadate', [])
 
   $scope.loadState();
 
-});
+
+}]);
+
 
