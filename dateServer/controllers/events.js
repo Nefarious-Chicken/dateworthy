@@ -473,8 +473,14 @@ exports.createEventSQL = function(req, res, next){
   .then(function(event){
     res.status(201).send(event);
   });
-
 };
+
+exports.sendFoursquareVenueData = function(req, res, next){
+  exports.getFourSquareVenueData(req.query.venueId, {})
+  .then(function(venueData){
+    res.status(200).send(venueData);
+  })
+}
 
 exports.addDateIdeas = function(ideas){};
 
