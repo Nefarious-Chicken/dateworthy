@@ -9468,3 +9468,6 @@ a {
 .button.button-light.button-outline.active, .button.button-light.button-outline.activated {
   background: #fff;
   color: #6465B1; }
+
+#pac-input {
+  padding-left: 12px; }
