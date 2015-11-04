@@ -29,6 +29,14 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
     });
   }
 
+  $scope.hasDates = function() {
+    console.log("has dates?, $scope.favorites", $scope.favorites)
+    if ($scope.favorites == undefined || $scope.favorites.length == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   $scope.goBack = function () {
     var lastPath = $rootScope.history.pop();
     $location.path(lastPath);

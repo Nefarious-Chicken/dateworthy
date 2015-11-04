@@ -12,7 +12,7 @@ var http = require('http');
 var path = require('path');
 var sass = require('node-sass-middleware');
 var parser = require('ua-parser-js');
-
+var favicon = require('serve-favicon');
 var app = express();
 
 // all environments
@@ -28,7 +28,7 @@ app.use(sass({
     outputStyle: 'compressed',
     prefix:  '/public/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/> 
 }));
-
+app.use(favicon(__dirname + '/favicon.ico'));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -37,13 +37,13 @@ app.use('/app', express.static(path.join(__dirname, '../dateClient/www/')));
 app.get('/', function(req, res) {
   res.render('index', {title: 'dateworthy.io'});
 });
-app.get('/demo', function(req, res) {
+app.get('/go', function(req, res) {
   var ua = parser(req.headers['user-agent']);
   console.log(ua.device.type);
   if (ua.device.type === 'mobile') {
     res.redirect('/app');
   } else {
-    res.render('demo', {title: 'dateworthy.io demo'});
+    res.render('go', {title: 'dateworthy.io app'});
   }
 });
 app.get('/about', function(req, res) {
