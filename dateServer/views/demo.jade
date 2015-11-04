@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+html(lang="en")
+head
+  meta(charset="UTF-8")
+  title dateworthy.io demo - a date idea generator
+  link(href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic', rel='stylesheet', type='text/css')
+  link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
+  link(href="/public/css/app.css", rel="stylesheet", type="text/css")
+  link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
+body.demo
+  header
+    .row
+      .col-sm-12
+        a(href="/", class="btn btn-lg") <span class="glyphicon glyphicon-chevron-left"></span> back to dateworthy.io
+    .row
+      .col-sm-12
+        .demo-wrapper
+          iframe(src="/app", width="312", height="524", frameborder="0")
+  footer
+    .container
+      .row
+        .col-sm-8.col-sm-offset-2.text-center
+          ul.footer-nav
+            li
+              a(href="/")
+                | Home 
+            li
+              a(href="about")
+                | About 
+            li
+              a(href="privacy")
+                | Privacy 
+            li
+              a(href="mailto:thenefariouschicken@gmail.com")
+                | Email us
+          p &copy; 2015 dateworthy.
+  script(src="/public/lib/jquery/dist/jquery.min.js")
+  script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")

@@ -59,13 +59,15 @@ section {
   }
   text-align: left;
 }
-.testimonials img {
+.testimonials img, .bios img {
   border-radius: 50%;
   -webkit-border-radius: 50%;
   border: 3px solid white;
   display: inline;
+}
+.testimonials img { 
   @media(min-width: 768px) {
-    max-width: 80px;
+    max-width: 90px;
   }
 }
 .arrow_box {
@@ -95,6 +97,12 @@ section {
   p {
     padding-top: 10px;
     font-size: 15px;
+    margin: 0;
+  }
+  p.author {
+    padding: 0 0 12px;
+    font-style: italic;
+    color: lighten($primary, 30%);
   }
 }
 .never-run-out {
@@ -113,15 +121,32 @@ section {
   // color: lighten($primary, 30%);
 }
 footer {
-  padding: 40px 0;
+  padding: 40px 0; 
+  a {
+    &:hover {
+      color: #fff;
+    }
+  }
 }
-
+a {
+  color: #fff;
+  &:hover {
+    color: lighten($primary, 20%);
+  }
+}
 .container {
   max-width: 900px;
 }
 
 .navbar {
   margin-bottom: 0;
+}
+
+.navbar-default .navbar-nav>li>a {
+  &.current {
+    color: #ccc;
+  }
+
 }
 a.navbar-brand {
   margin-bottom: 1.5em; 
@@ -138,10 +163,14 @@ a.navbar-brand {
 }
 
 h3 {
+  margin-top: 2em;
   font-weight: 200;
-  font-size: 48px;
+  font-size: 42px;
   color: white;
   font-style: italic;
+  @media (max-width: 979px) {
+    font-size: 32px;
+  }
 }
 
 h5 {
@@ -161,10 +190,13 @@ h5 {
   color: #ccc;
 }
 
-.jumbotron {
+.home .jumbotron {
   background: #fff url('../images/heart2.jpg') center center no-repeat;
   background-size: cover;
   color: #fff;
+  .text {
+    padding-bottom: 1em;
+  }
   @media (min-width: 768px) {
     height: 400px;
     .text {
@@ -172,9 +204,16 @@ h5 {
     }
   }
   @media (max-width: 767px) {
+    text-align: center;
     img {
-      max-width: 60%;
+      max-width: 50%;
       margin: 0 auto;
+    }
+  }
+  @media (min-width: 1200px) {
+    img {
+      max-width: 70%;
+      float: right;
     }
   }
 }
@@ -199,11 +238,11 @@ footer {
 
 ul.footer-nav {
   list-style: none;
-  margin: 40px 0 20px;
+  margin: 40px 0 10px;
   padding: 0;
   li {
     display: inline;
-    margin: 0 20px;
+    margin: 0 8px;
     text-transform: uppercase;
   }
 }
@@ -214,4 +253,65 @@ h4 {
   color: #fff;
   font-size: 32px;
   margin-bottom: 32px;
+}
+
+.demo {
+  background: #222;
+}
+.demo-wrapper {
+  background: url('../images/iphone-skin.png') 0 0 no-repeat; 
+  width: 360px;
+  height: 732px;
+  position: relative;
+  margin: 0 auto;
+  background-size: contain;
+}
+iframe {
+  position: absolute;
+  bottom: 89px;
+  left: 24px;
+}
+.demo {
+  a:hover, a:active, a:focus {
+    color: #fff;
+  }
+}
+
+.about {
+  h3 {
+    margin: 0;
+  }
+  .bios {
+    padding: 80px 0 40px;
+  }
+}
+.bios {
+  background: $primary;
+}
+.about .jumbotron {
+  margin-bottom: 0;
+  background: darken($primary, 10%);
+}
+.bio {
+  border-bottom: 1px solid $primary;
+  padding-bottom: 3em;
+  .text {
+    @media (max-width: 767px) {
+      padding-top: 1em;
+    }
+    p {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    h5 {
+      font-size: 20px;
+    }
+  }
+  a {
+    color: #fff;
+    border-bottom: 2px solid white;
+    &:hover, &:active, &:focus {
+      color: darken(#fff, 10%);
+    }
+  }
 }

@@ -7,7 +7,7 @@ head
   link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
   link(href="/public/css/app.css", rel="stylesheet", type="text/css")
   link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
-body.home
+body.about
   header
     nav.navbar.navbar-default
       .container
@@ -26,60 +26,18 @@ body.home
             li
               a(href="http://goo.gl/forms/h6WCRZcyqR", target="_blank") Submit an idea
             li 
-              a(href="about") About
+              a(href="about", class="current") About
   .jumbotron
     .container
       .row
-        .col-sm-4.col-sm-offset-1.text-right
-          img(src="public/images/iphone.png", class="img-responsive")
-        .col-sm-6.text
-          h3 Need a last-minute date idea?
-          p.intro There's an app for that!
-          a.btn.btn-lg.btn-main(href="/demo") See a demo!
-  section.never-run-out
-    .container
-      .row.text-center
         .col-sm-12
-          h4 Never run out of dating ideas again.
-      .row
-        .col-sm-4
-          .icon
-            i.fa.fa-flask
-          h5 It's smart.
-          p Dateworthy makes better recommendations the more you use it. Try it out for yourself! 
-        .col-sm-4
-          .icon
-            i.fa.fa-map-o
-          h5 Explore new places.
-          p Dateworthy is powered by Foursquare’s API, giving you access to millions of venues that you haven’t explored yet. 
-        .col-sm-4
-          .icon
-            i.fa.fa-hand-spock-o
-          h5 Fun time guaranteed.
-          p Are our ideas too vanilla for you? Turn on troll mode and bring on the mayhem! 
-  section.testimonials
+          h3.text-center Privacy
+  section.bios
     .container
       .row
-        .col-sm-10.col-sm-offset-1
-          .row
-            .col-sm-12
-              h4.text-center Look! People <span class="glyphicon glyphicon-heart"></span> us!
-          .row.testimonial
-            .col-xs-3.col-sm-2.img
-              img.img-responsive(src="public/images/dan.jpg")
-            .col-xs-9
-              .text
-                p I used dateworthy. And I survived. 
-                p.author &mdash; Dan, 31, San Francisco
-        .col-sm-8.col-sm-offset-2
-          .row
-            .col-sm-2
-            .col-sm-10
-        .col-sm-8.col-sm-offset-2
-          .row
-            .col-sm-2
-            .col-sm-10
-  footer
+        .col-sm-12
+          p We promise we won't give or sell your data to anyone. We only require Facebook logins so that you can have a better user experience. 
+  section
     .container
       .row
         .col-sm-8.col-sm-offset-2.text-center
