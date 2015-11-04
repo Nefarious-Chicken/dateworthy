@@ -16,7 +16,7 @@ angular.module('dateworthy.findadate', [])
   $scope.optionalQuestions = [
     {question: "Is this a first date?", type: "tag", field: "noiseLevel", optional: true, possibilities: ["Yes", "No"], answerTags: ["First-date", "NONE"]},
     {question: 'Are you in an indoors-y or outdoors-y mood?', type: "tag", field: "indoorsOutdoors", optional: true,  possibilities: ["Indoor", "Outdoor"]},
-    {question: 'Do you want to get some fresh air?', type: "tag", field: "nature", optional: true,  possibilities: ["Yes, lets get to nature", "No, lets hit up the town!"], answerTags: ["Nature", "NONE"]},
+    {question: 'Do you want to get some fresh air?', type: "tag", field: "nature", optional: true,  possibilities: ["Yes, let's get to nature", "No, let's hit up the town"], answerTags: ["Nature", "NONE"]},
     {question: 'Take it all in, or get your hands dirty?', type: "tag", field: "creative", optional: true,  possibilities: ["Take it all in", "Get my hands dirty"], answerTags: ["Visual", "Creative"]}
   ];
   $scope.data = {};

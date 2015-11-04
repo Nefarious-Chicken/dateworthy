@@ -175,8 +175,11 @@ a {
 
 
 // Date details CSS.
+.date-idea {
+  margin-bottom: 40px;
+}
 .date-details {
-  margin-bottom: 160px;
+  margin-top: -20px;
   p {
     margin: 1em 0;
     font-size: 12px;
@@ -274,4 +277,10 @@ a {
     width: 70%;
     margin: 0 auto;
   }
+}
+
+.hidden-height {
+  display: block;
+  height: 44px;
+  width: 100%;
 }
