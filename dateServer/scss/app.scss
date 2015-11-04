@@ -260,23 +260,28 @@ h4 {
   p.intro {
     font-size: 18px;
     margin-bottom: 2em;
-    text-align: center;
+    text-align: left;
     font-style: italic;
     color: lighten($primary, 10%);
+  }
+  header {
+    margin-bottom: 1em;
   }
 }
 .demo-wrapper {
   background: url('../images/iphone-skin.png') 0 0 no-repeat; 
-  width: 360px;
-  height: 732px;
+  width: 334px;
+  height: 679px;
   position: relative;
   margin: 0 auto;
   background-size: contain;
 }
 iframe {
   position: absolute;
-  bottom: 89px;
+  bottom: 83px;
   left: 24px;
+  width: 287px;
+  height: 511px;
 }
 .demo {
   a:hover, a:active, a:focus {
