@@ -46,6 +46,13 @@ app.get('/demo', function(req, res) {
     res.render('demo', {title: 'dateworthy.io demo'});
   }
 });
+app.get('/about', function(req, res) {
+  res.render('about', {title: 'about dateworthy.io'});
+});
+app.get('/privacy', function(req, res) {
+  res.render('privacy', {title: 'privacy policy'});
+});
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

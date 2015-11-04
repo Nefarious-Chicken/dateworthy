@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+html(lang="en")
+head
+  meta(charset="UTF-8")
+  title dateworthy.io - a date idea generator
+  link(href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic', rel='stylesheet', type='text/css')
+  link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
+  link(href="/public/css/app.css", rel="stylesheet", type="text/css")
+  link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
+body.about
+  header
+    nav.navbar.navbar-default
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar", aria-expanded="false", aria-controls="navbar")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="/")
+            img(alt="dateworthy", src="/public/images/dateworthy.png", class="logo")
+        #navbar.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href="demo") Demo
+            li
+              a(href="http://goo.gl/forms/h6WCRZcyqR", target="_blank") Submit an idea
+            li 
+              a(href="about", class="current") About
+  .jumbotron
+    .container
+      .row
+        .col-sm-12
+          h3.text-center about the dateworthy.io team
+  section.bios
+    .container
+      .row
+        .col-sm-12
+          .row.bio
+            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+              img.img-responsive(src="public/images/adam.jpg")
+            .col-xs-12.col-sm-10
+              .text
+                h5 Adam Hedgpeth
+                p Tinkerer from Texas who is always looking for better date ideas for him and his lovely wife. Thinks of code like legos and thrives on making complex systems work together.  Loves guitar and mountains. You can find him on <a href="https://www.linkedin.com/in/adamhedgpeth">LinkedIn</a> and <a href="https://github.com/adamhedge">Github</a>.
+          .row.bio
+            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+              img.img-responsive(src="public/images/alex.jpg")
+            .col-xs-12.col-sm-10
+              .text
+                h5 Alex Liotta
+                p Renewable energy fanatic. Loves full-stack engineering, NoSQL databases, card games, discovering new foods, and dancing the night away. Find him on <a href="https://www.linkedin.com/in/alexliotta">LinkedIn</a>.
+          .row.bio
+            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+              img.img-responsive(src="public/images/jing.jpg")
+            .col-xs-12.col-sm-10
+              .text
+                h5 Jing Pei 
+                p  Loves photography, scrapbooking, board games, baking macarons, pogo-sticking, and rock climbing. Loves promises and bluebirds. Find her on <a href="https://www.linkedin.com/in/jingjpei">LinkedIn</a>
+          .row.bio
+            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+              img.img-responsive(src="public/images/jess.jpg")
+            .col-xs-12.col-sm-10
+              .text
+                h5 Jessica Chong 
+                p Maker of things and stringer-together of words from Hong Kong. Loves drawing exquisite corpses and spying on other people's dogs. Find her on <a href="https://twitter.com/crocophant">Twitter</a>, <a href="https://instagram.com/crocophant">Instagram</a>, or <a href="https://www.linkedin.com/in/jessicalaurenchong">LinkedIn</a>. Sometimes she <a href="http://github.com/jessicalc">commits code on Github</a>. 
+  footer
+    .container
+      .row
+        .col-sm-8.col-sm-offset-2.text-center
+          ul.footer-nav
+            li
+              a(href="/")
+                | Home 
+            li
+              a(href="about")
+                | About 
+            li
+              a(href="privacy")
+                | Privacy 
+            li
+              a(href="mailto:thenefariouschicken@gmail.com")
+                | Email us
+          p &copy; 2015 dateworthy.
+  script(src="/public/lib/jquery/dist/jquery.min.js")
+  script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")
