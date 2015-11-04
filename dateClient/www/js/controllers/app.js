@@ -69,6 +69,14 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     $scope.userData = UserData.getUserData();
   };
 
+  $scope.showFavorites = function(){
+    if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   var updateUserData = function(anonymous) {
     var myUser = UserData.getUserData();
     if(myUser.email && myUser.email !== "thenefariouschicken@gmail.com"){

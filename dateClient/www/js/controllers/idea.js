@@ -133,7 +133,14 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
       $location.path(lastPage);
     }
   };
-
+  
+  $scope.showFavorites = function(){
+    if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
+      return false;
+    } else {
+      return true;
+    }
+  };
   $scope.clearData = function(){
     $scope.ideas = [];
     $scope.currentIdea = 0;
