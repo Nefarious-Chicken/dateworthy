@@ -8,7 +8,7 @@
   <ion-content ng-cloak ng-class="{'has-footer': ideaOrFavorite == 'idea'}">
     <div class="card date-idea" ng-model="idea">
       <div class="image-container">
-        <div class="like-dislike">
+        <div class="like-dislike" ng-if="showFavorites()">
           <a class="button button-dislike" ng-click="dislike()" ng-class="{'button-disliked' : idea.disliked == '1'}"><i class="icon ion-close-round"></i></a>
           <a class="button button-like" ng-click="like()" ng-class="{'button-liked' : idea.liked == '1'}"><i class="icon ion-ios-heart"></i></a>
         </div>
