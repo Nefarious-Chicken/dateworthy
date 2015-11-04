@@ -14,7 +14,7 @@ angular.module('dateworthy', [
   'dateworthy.services'
 ])
 
-.run(['$ionicPlatform', '$rootScope', '$state', '$location', 'ngFB',function($ionicPlatform, $rootScope, $state, $location, ngFB) {
+.run(['$ionicPlatform', '$rootScope', '$state', '$location', 'ngFB', 'UserData',function($ionicPlatform, $rootScope, $state, $location, ngFB, UserData) {
   ngFB.init({appId: '996902650371971'});
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -35,13 +35,21 @@ angular.module('dateworthy', [
     // Get the user's login status on page render. If the user is logged in, let them go to
     // the home view.
     $rootScope.$on('$ionicView.enter', function(e) {
-      ngFB.getLoginStatus()
-      .then(function(response){
-        if(response.status !== "connected"){
-          console.log("User is not logged in.");
-          $state.go('login');
+      $rootScope.userData = UserData.getUserData();
+      console.log($rootScope.userData.email);
+      if($rootScope.userData.email){
+        if($rootScope.userData.email !== "thenefariouschicken@gmail.com"){
+          ngFB.getLoginStatus()
+          .then(function(response){
+            if(response.status !== "connected"){
+              console.log("User is not logged in.");
+              $state.go('login');
+            }
+          });
         }
-      })
+      } else {
+        $state.go('login');
+      }
     });
 
     // History state

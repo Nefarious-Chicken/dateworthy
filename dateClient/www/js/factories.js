@@ -85,7 +85,6 @@ angular.module('dateworthy.services', [])
         dateIdeaID: dateIdeaID,
         likeDislike: likeDislikeFlag
       }
-      
       return $http({
         method: 'GET',
         url: '/users/userInfo',
@@ -144,7 +143,11 @@ angular.module('dateworthy.services', [])
     updateUserData: function(obj) {
       for (var prop in obj) {
         if (prop === "name") {
-          this.userData.firstName = obj[prop].split(' ')[0];
+          if(obj.split){
+            this.userData.firstName = obj[prop].split(obj.split)[0];
+          } else{
+            this.userData.firstName = obj[prop].split(" ")[0];
+          }
         }
         this.userData[prop] = obj[prop];
       }

@@ -9395,6 +9395,8 @@ a {
   font-size: 17px; }
   .item h2.question {
     margin: 1em 0 2em; }
+  .item h2.loginQ {
+    margin: 1em 0 1em; }
 
 .scroll {
   height: 100%; }

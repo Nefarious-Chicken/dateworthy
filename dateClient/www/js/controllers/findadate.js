@@ -229,6 +229,13 @@ angular.module('dateworthy.findadate', [])
     // }
   };
 
+  $scope.showFavorites = function(){
+    if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
+      return false;
+    } else {
+      return true;
+    }
+  };
   //Determines if the question being loaded requires the map control.
   $scope.loadMapCheck = function (_decrement) {
     if(!_decrement){

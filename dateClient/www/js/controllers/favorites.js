@@ -29,6 +29,14 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
     });
   }
 
+  $scope.showFavorites = function(){
+    if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
+      return false;
+    } else {
+      return true;
+    }
+  };
+  
   $scope.hasDates = function() {
     if ($scope.favorites == undefined || $scope.favorites.length == 0) {
       return false;
