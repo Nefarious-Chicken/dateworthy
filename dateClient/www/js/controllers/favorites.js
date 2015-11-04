@@ -30,7 +30,6 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
   }
 
   $scope.hasDates = function() {
-    console.log("has dates?, $scope.favorites", $scope.favorites)
     if ($scope.favorites == undefined || $scope.favorites.length == 0) {
       return false;
     } else {

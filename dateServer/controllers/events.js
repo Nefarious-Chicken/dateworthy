@@ -391,13 +391,21 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
 
             venueSQL.post(venueID, venueName)
             .then(function(venue){
+              var eventActivity;
               for (var key in venueData) {
                 idea[key] = venueData[key];
               }
-              if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
-                idea.idea = events[eventIndex]._node.properties.event + ' ' + venues[venueIndex].name;
+              if (events[eventIndex]._node.properties.event.indexOf('&#44;') > -1) {
+                var commas = /&#44;/gi;
+                var tempEvent = events[eventIndex]._node.properties.event;
+                eventActivity = tempEvent.replace(commas, ',');
               } else {
-                idea.idea = events[eventIndex]._node.properties.event + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+                eventActivity = events[eventIndex]._node.properties.event;
+              }
+              if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
+                idea.idea = eventActivity + ' ' + venues[venueIndex].name;
+              } else {
+                idea.idea = eventActivity + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
               }
               idea.liked = 0;
               idea.disliked = 0;
