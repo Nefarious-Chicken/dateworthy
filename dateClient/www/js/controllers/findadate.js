@@ -126,6 +126,7 @@ angular.module('dateworthy.findadate', [])
       console.log("Doing stuff now!");
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
         console.log("Data sent to the server: ", DateData.getConcatenatedData());
+        $scope.showSpinner = false;
         DateData.setDateIdeas(data);
         $state.go('idea', {ideaId: 0});
         $scope.loadState();
@@ -151,6 +152,7 @@ angular.module('dateworthy.findadate', [])
     }
     var map = new google.maps.Map(document.getElementById('map'), {
       draggable: false,
+      scrollwheel: false,
       center: {lat: latitude || 37.8044, lng: longitude || -122.2708},
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -213,20 +215,7 @@ angular.module('dateworthy.findadate', [])
       map.fitBounds(bounds);
     });
     $scope.map = map;
-    // var center = $scope.map.getCenter();
-    // var lat = center.lat();
-    // var lng = center.lng();
-    // DateData.setGeoLocation(lat, lng);
-    // for (var prop in $scope.currentTags) {
-    //   tag = $scope.currentTags[prop];
-    //   if(tag !== undefined){
-    //     LikeADate.tag(null, tag, function(err, results){
-    //       if(err){
-    //         console.log(err);
-    //       }
-    //     });
-    //   }
-    // }
+    
   };
 
   $scope.showFavorites = function(){
