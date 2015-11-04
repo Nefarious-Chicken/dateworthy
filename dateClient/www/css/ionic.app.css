@@ -9466,3 +9466,11 @@ a {
   font-size: 16px;
   height: 42px;
   width: 100%; }
+
+.like-demo {
+  width: 100%;
+  text-align: center;
+  margin-top: 1em; }
+  .like-demo img {
+    width: 70%;
+    margin: 0 auto; }

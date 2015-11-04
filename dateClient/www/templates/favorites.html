@@ -5,8 +5,13 @@
   </ion-header-bar>
   <ion-content>
     <ion-item class="item-text-wrap">
-      <h2>Saved Dates</h2>
-      <div class="card">
+      <div ng-if="!hasDates()">
+        <h2>It looks like you haven't saved any date ideas. You can save the date ideas that you like by tapping on the heart icon on each date idea.</h2>
+        <div class="like-demo">
+          <img src="./img/like-demo.jpg" />
+        </div>
+      </div>
+      <div class="card" ng-if="hasDates()">
         <ion-radio ng-repeat="favorite in favorites" ng-click="getDetails($index)" tabIndex={{$index}}>{{favorite.dateIdea.dateIdeaName}}</ion-radio>
       </div>
     </ion-item>
