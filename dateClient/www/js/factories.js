@@ -144,7 +144,7 @@ angular.module('dateworthy.services', [])
     updateUserData: function(obj) {
       for (var prop in obj) {
         if (prop === "name") {
-          this.userData.firstName = obj[prop].split(' ')[0];
+          this.userData.firstName = obj[prop].split(obj.split)[0];
         }
         this.userData[prop] = obj[prop];
       }

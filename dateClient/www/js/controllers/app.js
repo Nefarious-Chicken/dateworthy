@@ -21,7 +21,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
   
   $scope.fbLogin = function () {
 
-    
+    console.log("You're logging into facebook?");
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
         if (response.status === 'connected') {
@@ -44,24 +44,23 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
       return ngFB.api(obj);
     })
     .then(function(response) {
-      
       UserData.updateUserData(response);
       getUserData();
-      // TODO: Write a factory function to make the user object persist across all controllers
-      // and... write it to the database of course! 
-    })
-  }
+    });
+  };
 
   $ionicPlatform.ready(function() {
     DateData.setGeoLocation();
-    ngFB.getLoginStatus()
-    .then(function(response){
-      if(response.status !== "connected"){
-        console.log("User is not logged in.");
-        $state.go('login');
-      }
-      
-    });
+    myUser = UserData.getUserData();
+    if(myUser.email !== "thenefariouschicken@gmail.com"){
+      ngFB.getLoginStatus()
+      .then(function(response){
+        if(response.status !== "connected"){
+          console.log("User is not logged in.");
+          $state.go('login');
+        }
+      });
+    }
   });
 
   // Removed $scope from these, they aren't externally exposed functions
@@ -70,27 +69,39 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     $scope.userData = UserData.getUserData();
   };
 
-  var updateUserData = function() {
-    var obj = {
-      path: '/me',
-      params: {
-        access_token: window.sessionStorage.fbAccessToken,
-        fields: 'id,name,email'
+  var updateUserData = function(anonymous) {
+    var myUser = UserData.getUserData();
+    if(myUser.email && myUser.email !== "thenefariouschicken@gmail.com"){
+      var obj = {
+        path: '/me',
+        params: {
+          access_token: window.sessionStorage.fbAccessToken,
+          fields: 'id,name,email'
+        }
+      };
+      if(obj.params.access_token){
+        return ngFB.api(obj)
+        .then(function(userData){
+          userData.split = " ";
+          UserData.updateUserData(userData);
+          getUserData();
+        });
       }
-    };
-    if(obj.params.access_token){
-      return ngFB.api(obj)
-      .then(function(userData){
-        UserData.updateUserData(userData);
-        getUserData();
-      });
     }
-  }
+  };
+
+  $scope.noLogin = function(){
+    console.log("Don't log into facebook!");
+    UserData.updateUserData({name: "date seeker~", split: "~", email: "thenefariouschicken@gmail.com"});
+    getUserData();
+    $state.go('home');
+    //$state.go('login');
+  };
 
   $scope.savedLikes = function() {
     $rootScope.history.push($location.$$path);
     $state.go('favorites');
-  }
+  };
 
   // Make sure $scope.userData is always loaded, even when page is refreshed
   $scope.$on('$stateChangeSuccess', function () {
@@ -99,6 +110,6 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     }
   });
 
-  updateUserData();
+  //updateUserData();
 
 }])
