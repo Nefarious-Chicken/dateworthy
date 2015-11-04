@@ -173,6 +173,7 @@ angular.module('dateworthy.services', [])
     tags: {},
     logistics: {},
     dateIdeas: {},
+    favorite: {},
     geoLocation: null,
     optionalQuestion: -1,
 
@@ -247,6 +248,20 @@ angular.module('dateworthy.services', [])
       this.tags = {};
       this.logistics = {};
       this.dateIdeas = {};
+    },
+    getVenueData: function (venueId, callback) {
+      return $http({
+        method: 'GET',
+        url: '/venues/venueDetails',
+        params: { venueId: venueId }
+      })
+      .then(function (resp) {
+        callback(resp.data);
+      })
+    },
+    setFavorite: function(idea){
+      this.favorite = idea;
+      console.log("Favorite is now: " + this.favorite);
     }
 
   };

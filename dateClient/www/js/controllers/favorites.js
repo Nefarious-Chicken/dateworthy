@@ -9,7 +9,19 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
   });
 
   $scope.getDetails = function (index) {
-    console.log("Clicked #" + index);
+    DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, function(venueData){
+      var idea = {};
+      for(var key in venueData){
+        idea[key] = venueData[key];
+      }
+      idea['idea'] = $scope.favorites[index].dateIdea.dateIdeaName;
+      idea['imgUrl'] = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix || null;
+      idea['mapInit'] = false;
+      DateData.setFavorite(idea)
+      $rootScope.history.push($location.$$path);
+      $state.go('favorite-single', {ideaId: index})
+      // $location.path('/favorites/' + index);
+    });
   }
 
   $scope.goBack = function () {
