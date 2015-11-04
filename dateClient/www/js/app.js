@@ -36,14 +36,19 @@ angular.module('dateworthy', [
     // the home view.
     $rootScope.$on('$ionicView.enter', function(e) {
       $rootScope.userData = UserData.getUserData();
-      if($rootScope.userData.email && $rootScope.userData.email !== "thenefariouschicken@gmail.com"){
-        ngFB.getLoginStatus()
-        .then(function(response){
-          if(response.status !== "connected"){
-            console.log("User is not logged in.");
-            $state.go('login');
-          }
-        });
+      console.log($rootScope.userData.email);
+      if($rootScope.userData.email){
+        if($rootScope.userData.email !== "thenefariouschicken@gmail.com"){
+          ngFB.getLoginStatus()
+          .then(function(response){
+            if(response.status !== "connected"){
+              console.log("User is not logged in.");
+              $state.go('login');
+            }
+          });
+        }
+      } else {
+        $state.go('login');
       }
     });
 

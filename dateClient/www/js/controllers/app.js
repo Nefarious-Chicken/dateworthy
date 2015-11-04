@@ -79,22 +79,20 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
 
   var updateUserData = function(anonymous) {
     var myUser = UserData.getUserData();
-    if(myUser.email && myUser.email !== "thenefariouschicken@gmail.com"){
-      var obj = {
-        path: '/me',
-        params: {
-          access_token: window.sessionStorage.fbAccessToken,
-          fields: 'id,name,email'
-        }
-      };
-      if(obj.params.access_token){
-        return ngFB.api(obj)
-        .then(function(userData){
-          userData.split = " ";
-          UserData.updateUserData(userData);
-          getUserData();
-        });
+    var obj = {
+      path: '/me',
+      params: {
+        access_token: window.sessionStorage.fbAccessToken,
+        fields: 'id,name,email'
       }
+    };
+    if(obj.params.access_token){
+      return ngFB.api(obj)
+      .then(function(userData){
+        userData.split = " ";
+        UserData.updateUserData(userData);
+        getUserData();
+      });
     }
   };
 
