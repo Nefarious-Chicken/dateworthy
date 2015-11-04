@@ -9396,6 +9396,13 @@ a {
   .item h2.question {
     margin: 1em 0 2em; }
 
+.scroll {
+  height: 100%; }
+
+#map {
+  width: 100%;
+  height: 240px; }
+
 .date-details {
   margin-bottom: 160px; }
   .date-details p {

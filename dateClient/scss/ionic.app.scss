@@ -164,6 +164,16 @@ a {
   }
 }
 
+// Map overrides
+.scroll {
+    height: 100%;
+}
+#map {
+    width: 100%;
+    height: 240px;
+}
+
+
 // Date details CSS.
 .date-details {
   margin-bottom: 160px;
