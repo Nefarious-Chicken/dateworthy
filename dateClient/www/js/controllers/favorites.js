@@ -15,7 +15,12 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
         idea[key] = venueData[key];
       }
       idea['idea'] = $scope.favorites[index].dateIdea.dateIdeaName;
-      idea['imgUrl'] = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix || null;
+      if(idea.bestPhoto){
+        idea['imgUrl'] = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
+        console.log(idea.imgUrl);
+      } else {
+        idea['imgUrl'] = "./img/placeholder.jpg";
+      }
       idea['mapInit'] = false;
       DateData.setFavorite(idea)
       $rootScope.history.push($location.$$path);

@@ -46,7 +46,8 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         $scope.ideas = ideas;
         console.log($scope.ideas);
         $scope.currentIdea = Number($stateParams.ideaId);
-        $scope.imgWidth = window.innerWidth + 'px'; 
+        $scope.imgWidth = window.innerWidth + 'px';
+        console.log($scope.idea.imgUrl); 
         console.log("innerwidth is", $scope.imgWidth);
         $scope.idea = $scope.ideas[$scope.currentIdea];
         $scope.idea.index = $scope.currentIdea;
