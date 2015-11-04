@@ -129,20 +129,6 @@ a {
   .button-dislike:hover {
     color: $assertive;
   }
-  .button:active, .button:focus, .button.activated{
-    .icon:before, .icon:before, .icon-left:before, .icon-right:before {
-      line-height: 30px;
-      font-size: 18px;
-    }
-    background: #fff;
-    width: 36px;
-    height: 36px;
-    margin: 6px;
-    padding: 0;
-    &.button-dislike {
-      margin-right: 10px;
-    }
-  }
   .button-liked {
     border-color: $balanced;
   }
@@ -180,7 +166,7 @@ a {
 
 // Date details CSS.
 .date-details {
-  margin-bottom: 80px;
+  margin-bottom: 160px;
   p {
     margin: 1em 0;
     font-size: 12px;
@@ -222,6 +208,9 @@ a {
 }
 .more-details {
   padding-top: 0.5em;
+}
+.item.idea {
+  padding-bottom: 0;
 }
 .item .img {
   background-position: center center;
