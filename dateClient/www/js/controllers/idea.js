@@ -40,6 +40,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
 
   $scope.$on('$stateChangeSuccess', function() {
     if ($state.includes('idea')) {
+      $scope.ideaOrFavorite = 'idea';
       DateData.getDateIdeas(function(ideas) {
         $scope.ideas = ideas;
         console.log($scope.ideas);
@@ -57,6 +58,17 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         }
         $scope.idea.detailsVisible = false;
       });
+    } else if ($state.includes('favorite-single')) {
+      $scope.ideaOrFavorite = 'favorite';
+      $scope.imgWidth = window.innerWidth + 'px'; 
+      console.log("innerwidth is", $scope.imgWidth);
+      $scope.idea = DateData.favorite;
+      $scope.idea.index = $stateParams.ideaId;
+      $scope.idea.last = true;
+      $scope.idea.mapInit = false;
+      console.log($scope.idea);
+      $scope.idea.flagged = $scope.idea.flagged || false;
+      $scope.idea.detailsVisible = false;      
     }
   });
 
@@ -108,8 +120,13 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
   };
 
   $scope.prevIdea= function(){
-    var prev = Number($scope.currentIdea) - 1;
-    $state.go('idea', {ideaId: prev});
+    if($scope.ideaOrFavorite === 'idea'){
+      var prev = Number($scope.currentIdea) - 1;
+      $state.go('idea', {ideaId: prev});
+    } else {
+      var lastPage = $rootScope.history.pop();
+      $location.path(lastPage);
+    }
   };
 
   $scope.clearData = function(){

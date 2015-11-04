@@ -91,7 +91,13 @@ angular.module('dateworthy', [
   .state('favorites', {
     url: '/favorites/',
     templateUrl: 'templates/favorites.html',
-    controller: 'FavoritesCtrl'
+    controller: 'FavoritesCtrl',
+  })
+  .state('favorite-single', {
+    url: '/favorites/:ideaId',
+    templateUrl: 'templates/idea-single.html',
+    controller: 'IdeaCtrl',
+    cache: false
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
