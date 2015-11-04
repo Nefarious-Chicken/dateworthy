@@ -336,6 +336,7 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logist
   // Create a unique foursquare search object using each of the randomly chosen categoryIds
   // Also push promise functions to array which will run all the foursquare queries
   for(var i = 0; i < indices.length; i++){
+    console.log("Posting Event to SQL");
     EventSQL.post(events[indices[i]]._node._id, events[indices[i]]._node.properties.event).then(function(event){});
     var searchObj = {
       ll: '37.8044,-122.2708',
@@ -403,7 +404,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
               if (venueData.hasOwnProperty('bestPhoto')) {
                 idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
               };
-              return venue;            
+              return venue;
             })
             .then(function(venue){
               return dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID)
@@ -419,12 +420,14 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           // Get a new index to search according to the same weight scoring
           // Because there were no venues returned for the event category passed initially passed in
           var newIndex = Math.floor(Math.random() * events.length);
-          // Alter the category id to be searched in the searchObj (passed into Foursquare)
-          searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
-          findVenue(searchObj, newIndex, events);
+          EventSQL.post(events[newIndex]._node._id, events[newIndex]._node.properties.event).then(function(event){
+            // Alter the category id to be searched in the searchObj (passed into Foursquare)
+            searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
+            findVenue(searchObj, newIndex, events);
+          });
         }
       });
-    }
+    };
     // Initialize recursive call
     findVenue(searchObj, eventIndex, events); 
   });

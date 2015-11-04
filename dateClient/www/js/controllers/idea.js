@@ -14,7 +14,8 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         draggable: false,
         center: myLatlng,
         zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        scrollwheel: false
     };
     var venueMap = new google.maps.Map(document.getElementById("venueMap" + $stateParams.ideaId), mapOptions);
     navigator.geolocation.getCurrentPosition(function(pos) {

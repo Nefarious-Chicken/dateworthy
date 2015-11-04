@@ -22,8 +22,6 @@ module.exports = {
   },
   
   post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress, venueCityStateZip) {
-    //console.log("Made it to VenueSQL");
-
     return seqVenues.sync()
     .then(function(){
       return seqVenues.findOrCreate({

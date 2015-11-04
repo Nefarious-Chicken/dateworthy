@@ -21,8 +21,6 @@ module.exports = {
     });
   },
   post: function (eventID, eventName) {
-    //console.log(eventName)
-
     // Return the promise in case we want to chain more on to this
     // This way we don't have to pass in res or callback to this function
     return seqEvents.sync()
