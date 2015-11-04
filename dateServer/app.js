@@ -11,6 +11,7 @@ var errorHandler = require('errorhandler');
 var http = require('http');
 var path = require('path');
 var sass = require('node-sass-middleware');
+var parser = require('ua-parser-js');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use(sass({
     outputStyle: 'compressed',
     prefix:  '/public/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/> 
 }));
+
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -36,7 +38,13 @@ app.get('/', function(req, res) {
   res.render('index', {title: 'dateworthy.io'});
 });
 app.get('/demo', function(req, res) {
-  res.render('demo', {title: 'dateworthy.io demo'});
+  var ua = parser(req.headers['user-agent']);
+  console.log(ua.device.type);
+  if (ua.device.type === 'mobile') {
+    res.redirect('/app');
+  } else {
+    res.render('demo', {title: 'dateworthy.io demo'});
+  }
 });
 app.use(logger('dev'));
 app.use(bodyParser.json());
