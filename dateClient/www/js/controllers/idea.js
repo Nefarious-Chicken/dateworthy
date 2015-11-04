@@ -8,6 +8,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
   $scope.ideas = {}; 
 
   $scope.initMap = function(latitude, longitude, name){
+    console.log($scope.idea);
     console.log("Initiating Map...", latitude, longitude);
     var myLatlng = new google.maps.LatLng(latitude, longitude);
     var mapOptions = {
@@ -46,9 +47,12 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
         $scope.ideas = ideas;
         console.log($scope.ideas);
         $scope.currentIdea = Number($stateParams.ideaId);
-        $scope.imgWidth = window.innerWidth + 'px'; 
+        $scope.imgWidth = window.innerWidth + 'px';
         console.log("innerwidth is", $scope.imgWidth);
         $scope.idea = $scope.ideas[$scope.currentIdea];
+        if(!$scope.idea.imgUrl){
+          $scope.idea.imgUrl = "./img/placeholder.jpg";
+        }
         $scope.idea.index = $scope.currentIdea;
         $scope.idea.last = false;
         $scope.idea.mapInit = false;
