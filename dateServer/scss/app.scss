@@ -257,13 +257,13 @@ h4 {
 
 .demo {
   background: #222;
-}
-p.intro {
-  font-size: 18px;
-  margin-bottom: 2em;
-  text-align: center;
-  font-style: italic;
-  color: lighten($primary, 10%);
+  p.intro {
+    font-size: 18px;
+    margin-bottom: 2em;
+    text-align: center;
+    font-style: italic;
+    color: lighten($primary, 10%);
+  }
 }
 .demo-wrapper {
   background: url('../images/iphone-skin.png') 0 0 no-repeat; 
