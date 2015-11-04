@@ -15,6 +15,7 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300italic,300,400italic,700,700italic);
 @font-face {
   font-family: "dateworthy";
   src: url("./fonts/dateworthy.eot");
