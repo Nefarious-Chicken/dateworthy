@@ -13,7 +13,7 @@ var config = require('../secret/config');
 var dateIdeaSQL = require('../models/dateIdeaSQL');
 var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
-
+var _ = require('underscore');
 
 var clientID = process.env.FS_ID || config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
@@ -237,11 +237,22 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
       var limit = 3;
       var events = [];
 
-      var getEvents = function(events, tags){
-        console.log("Searching for matching events: ", tags);
-        return Event.getMatchingEvents(tags)
+      var getEvents = function(events, tagSubset, count){
+        console.log("Searching for matching events: ", tagSubset);
+        return Event.getMatchingEvents(tagSubset)
         .then(function(eventsToAdd){
           events = events.concat(eventsToAdd);
+          // give default options if we've looked over 10 time for events and there are none returned from neo4j
+          if(events.length < limit && count > 10){
+            var ideas = exports.defaultIdeas;
+            _.each(ideas.ideaArray, function(idea){
+              idea['location'] = {};
+              idea.location.lat = parseFloat(geo.split(',')[0]);
+              idea.location.lng = parseFloat(geo.split(',')[1]);
+            })
+            res.status(200).send(ideas);
+            return;
+          }
           if(events.length >= limit){
             var promises = getEventTagPromises(events);
             Promise.all(promises).then(
@@ -249,7 +260,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
                 console.log("Events length", events.length);
                 //Score the tags based on the scoring algorithm.
                 for(var i = 0; i < events.length; i ++){
-                  defineEventTagScore(events[i], tags, userTags);
+                  defineEventTagScore(events[i], tagSubset, userTags);
                 }
                 //Sort the events by Score
                 events.sort(compareEventScores);
@@ -269,11 +280,11 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
               fallbackTags[key] = tags[key];
             }
             console.log("Fallback Tags: ", fallbackTags);
-            getEvents(events, fallbackTags);
+            getEvents(events, fallbackTags, count + 1);
           }
         });
       }
-      getEvents([], tags);
+      getEvents([], tags, 1);
     });
   });
 };
@@ -477,6 +488,13 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
   return venuePromise;
 };
 
+exports.defaultIdeas = {
+  ideaArray: [
+    {idea: "Go to a fancy dinner at a fancy restaurant", liked: 0, disliked: 0},
+    {idea: "Build a pillow fort and pretend you're hiding from pirates at home", liked: 0, disliked: 0},
+    {idea: "Light a candle and make a smores at the park", liked: 0, disliked: 0}
+  ]
+};
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
