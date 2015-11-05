@@ -9491,3 +9491,14 @@ a {
   display: block;
   height: 44px;
   width: 100%; }
+
+.login .logo {
+  text-align: center; }
+
+.login img {
+  margin: 2em auto 1em;
+  width: 110px;
+  height: 106px; }
+
+.login h2 {
+  margin: 1em 0 2em; }

@@ -69,7 +69,8 @@ angular.module('dateworthy', [
 // - /likes
 
 
-.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+.config(['$ionicConfigProvider', '$stateProvider', '$urlRouterProvider', function($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
+  $ionicConfigProvider.navBar.alignTitle('center');
   $stateProvider
   .state('login', {
     url: '/login/',
