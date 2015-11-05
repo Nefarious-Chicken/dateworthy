@@ -213,7 +213,7 @@ angular.module('dateworthy.services', [])
       if(_lat && _long){
         this.geoLocation = {lat: _lat, long: _long};
       } else {
-        var posOptions = {timeout: 10000, enableHighAccuracy: false};
+        var posOptions = {maximumAge: 300000, timeout: 10000, enableHighAccuracy: false};
         var context = this;
         $cordovaGeolocation
           .getCurrentPosition(posOptions)

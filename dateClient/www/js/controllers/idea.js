@@ -8,16 +8,15 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
   $scope.ideas = {}; 
 
   $scope.initMap = function(latitude, longitude, name){
-    console.log($scope.idea);
-    console.log("Initiating Map...", latitude, longitude);
+    //console.log($scope.idea);
+    //console.log("Initiating Map...", latitude, longitude);
     var myLatlng = new google.maps.LatLng(latitude, longitude);
     var mapOptions = {
         draggable: false,
         scrollwheel: false,
         center: myLatlng,
         zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        scrollwheel: false
+        mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var venueMap = new google.maps.Map(document.getElementById("venueMap" + $stateParams.ideaId), mapOptions);
     navigator.geolocation.getCurrentPosition(function(pos) {
@@ -65,7 +64,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
       $scope.idea.mapInit = false;
       console.log($scope.idea);
       $scope.idea.flagged = $scope.idea.flagged || false;
-      $scope.idea.detailsVisible = false;      
+      $scope.idea.detailsVisible = false;
     }
   });
 

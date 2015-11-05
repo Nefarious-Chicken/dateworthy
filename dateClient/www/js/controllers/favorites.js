@@ -17,7 +17,7 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
       idea['idea'] = $scope.favorites[index].dateIdea.dateIdeaName;
       if(idea.bestPhoto){
         idea['imgUrl'] = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
-        console.log(idea.imgUrl);
+        //console.log(idea.imgUrl);
       } else {
         idea['imgUrl'] = "./img/placeholder.jpg";
       }

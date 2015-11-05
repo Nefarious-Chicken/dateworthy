@@ -21,7 +21,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
   
   $scope.fbLogin = function () {
 
-    console.log("You're logging into facebook?");
+    //console.log("You're logging into facebook?");
     ngFB.login({scope: 'email,publish_actions'})
     .then(function (response) {
         if (response.status === 'connected') {
@@ -97,7 +97,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
   };
 
   $scope.noLogin = function(){
-    console.log("Don't log into facebook!");
+    //console.log("Don't log into facebook!");
     UserData.updateUserData({name: "date seeker~", split: "~", email: "thenefariouschicken@gmail.com"});
     getUserData();
     $state.go('home');
@@ -118,4 +118,4 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
 
   //updateUserData();
 
-}])
+}]);
