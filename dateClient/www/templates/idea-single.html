@@ -20,17 +20,12 @@
       </div>
       <div class="idea item item-text-wrap">
         <h2>{{idea.idea}}</h2>
-        <div class="show-more">
-          <a ng-click="toggleDetails()" class="button button-clear">
-            <i class="ion-more"></i> 
-          </a>
-        </div>
-
+        <br>
       </div>
     </div>
-    <div class="card date-details" ng-show="idea.detailsVisible">
+    <div class="card date-details" >
       <div class="item item-text-wrap">
-        <div class="more-details" ng-show="idea.detailsVisible">
+        <div class="more-details">
           <button ng-class="idea.flagged ? 'disabled button button-small flag' : 'flag button button-small'" ng-click="flagDate()">
             <i class="ion-flag"></i>
           </button>
