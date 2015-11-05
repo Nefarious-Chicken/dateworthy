@@ -14,7 +14,10 @@ module.exports = {
   get: function (dateIdeaName) {
     return seqDateIdeas.sync()
     .then(function(){
-      return seqDateIdeas.findOne({ where: {dateIdeaName: dateIdeaName} });
+      return seqDateIdeas.findOne({ 
+        where: {dateIdeaName: dateIdeaName},
+        include: [db.tables.venues] 
+      });
     })
     .then(function(dateIdea) {
       return dateIdea;

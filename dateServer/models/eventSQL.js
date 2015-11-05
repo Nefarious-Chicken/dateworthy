@@ -32,6 +32,9 @@ module.exports = {
           eventName: eventName
         }
       });
+    })
+    .then(function(event){
+      return event;
     });
   }
 };
