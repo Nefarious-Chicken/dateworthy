@@ -30,7 +30,9 @@ describe('IdeaController', function(){
     ionicPopup = "bar";
     var state = {};
     state.go = function(){};
-    ionicHistory = "Buzz"
+    ionicHistory = {};
+    ionicHistory.clearCache = function(){};
+    ionicHistory.clearHistory = function(){};
     ionicLoading = "flip"
     stateParams = "flop"
     $controller('IdeaCtrl', {$scope: scope, $state: state, $stateParams: stateParams, $ionicLoading: ionicLoading, $ionicHistory: ionicHistory, $cordovaGeolocation: cordovaGeolocation, $ionicPopup: ionicPopup});

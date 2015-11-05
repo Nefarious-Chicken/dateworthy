@@ -67,7 +67,8 @@ describe('Event recommendations with tag inputs:', function () {
     var tagsFromClient = {};
     tagsFromClient[tagA.tagname] = 1;
 
-    Event.getMatchingEvents(tagsFromClient, function (err, matches) {
+    Event.getMatchingEvents(tagsFromClient)
+    .then(function(matches){
       expect(matches).to.be.an('array');
       expect(matches).to.have.length(2);
       return next();
@@ -79,7 +80,8 @@ describe('Event recommendations with tag inputs:', function () {
     tagsFromClient[tagA.tagname] = 1;
     tagsFromClient[tagB.tagname] = 1;
 
-    Event.getMatchingEvents(tagsFromClient, function (err, matches) {
+    Event.getMatchingEvents(tagsFromClient)
+    .then(function(matches){
       expect(matches).to.be.an('array');
       expect(matches).to.have.length(1);
       expect(matches[0]._node.properties.eventname).to.equal(eventA.eventname);
@@ -92,7 +94,8 @@ describe('Event recommendations with tag inputs:', function () {
     tagsFromClient[tagA.tagname] = 1;
     tagsFromClient[tagC.tagname] = 1;
 
-    Event.getMatchingEvents(tagsFromClient, function (err, matches) {
+    Event.getMatchingEvents(tagsFromClient)
+    .then(function(matches){
       expect(matches).to.be.an('array');
       expect(matches).to.have.length(0);
       return next();
@@ -103,7 +106,8 @@ describe('Event recommendations with tag inputs:', function () {
     var tagsFromClient = {};
     tagsFromClient[tagB.tagname] = 1;
 
-    Event.getMatchingEvents(tagsFromClient, function (err, matches) {
+    Event.getMatchingEvents(tagsFromClient)
+    .then(function(matches){
       expect(matches).to.be.an('array');
       expect(matches).to.have.length(1);
       expect(matches[0]._node.properties.eventname).to.equal(eventA.eventname);
