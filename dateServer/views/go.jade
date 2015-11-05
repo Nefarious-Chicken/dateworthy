@@ -50,3 +50,7 @@ body.demo
 
     ga('create', 'UA-69706516-1', 'auto');
     ga('send', 'pageview');
+  script
+    $('iframe').on('mousewheel DOMMouseScroll', function(ev) {
+      ev.preventDefault();
+    });
