@@ -23,6 +23,13 @@ function getDateURL(date) {
   return '/dates/' + encodeURIComponent(date.datename);
 }
 
+exports.defaultIdeas = {
+  ideaArray: [
+    {idea: "Go to a fancy dinner at a fancy restaurant", event: "Go to a fancy dinner", eventId: 'd0001', venue: "fancy restaurant", venueId: 'default1', liked: 0, disliked: 0},
+    {idea: "Build a pillow fort and pretend you're hiding from pirates at home", eventId: 'd0002', event: "Build a pillow fort and pretend you're hiding from pirates", venue: 'home', venueId: 'default2', liked: 0, disliked: 0},
+    {idea: "Light a candle and make a smores at the park", event: "Light a candle and make a smores", eventId: 'd0003', venue: "park", venueId: 'default3', liked: 0, disliked: 0}
+  ]
+};
 
 /**
  * POST /events/:eventname {eventname, description...}
@@ -242,18 +249,23 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
         return Event.getMatchingEvents(tagSubset)
         .then(function(eventsToAdd){
           events = events.concat(eventsToAdd);
-          // events = [];
+          events = [];
           // give default options if we've looked over 10 time for events and there are none returned from neo4j
           if(events.length < limit && count > 10){
             var ideas = exports.defaultIdeas;
-            _.each(ideas.ideaArray, function(idea){
-              idea['location'] = {};
-              idea.location.lat = parseFloat(geo.split(',')[0]);
-              idea.location.lng = parseFloat(geo.split(',')[1]);
-              dateIdeaSQL.post(idea.idea, null, null)
-            })
-            res.status(200).send(ideas);
-            return;
+
+            return exports.createDefaults(ideas, myUser.id)
+            .then(function(){
+              console.log("IDEAS AFTER CREATE DEFAULTS");
+              console.log(ideas);
+              _.each(ideas.ideaArray, function(idea){
+                idea['location'] = {};
+                idea.location.lat = parseFloat(geo.split(',')[0]);
+                idea.location.lng = parseFloat(geo.split(',')[1]);
+              })
+              res.status(200).send(ideas);
+              return;
+            });
           }
           if(events.length >= limit){
             var promises = getEventTagPromises(events);
@@ -280,6 +292,10 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
               console.log("Tag Key Index: ", tagKeyIndex);
               var key = tagKeys[tagKeyIndex];
               fallbackTags[key] = tags[key];
+            }
+            if(Object.keys(fallbackTags).length === 0){
+              // If there are no more fallback tags, use a generic fallback tag
+              fallbackTags = { Day: 1 };
             }
             console.log("Fallback Tags: ", fallbackTags);
             getEvents(events, fallbackTags, count + 1);
@@ -527,13 +543,36 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
   return venuePromise;
 };
 
-exports.defaultIdeas = {
-  ideaArray: [
-    {idea: "Go to a fancy dinner at a fancy restaurant", event: "Go to a fancy dinner", venue: "fancy restaurant", liked: 0, disliked: 0},
-    {idea: "Build a pillow fort and pretend you're hiding from pirates at home", event: "Build a pillow fort and pretend you're hiding from pirates", liked: 0, disliked: 0},
-    {idea: "Light a candle and make a smores at the park", event: "Light a candle and make a smores", venue: "home",liked: 0, disliked: 0}
-  ]
-};
+exports.createDefaults = function(ideas, userID){
+  var defaultPromise = new Promise(function(resolve, reject){
+    var ideaArray = ideas.ideaArray;
+    var createIdea = function(ideaIndex){
+      var idea = ideaArray[ideaIndex];
+      console.log("IDEA AT INDEX: ", ideaIndex);
+      console.log(idea);
+      return venueSQL.post(idea.venueId, idea.venue)
+      .then(function(venue){
+        return EventSQL.post(idea.eventId, idea.event);
+      })
+      .then(function(event){
+        return dateIdeaSQL.post(idea.idea, event[0].dataValues.eventID, idea.venueId);
+      })
+      .then(function(dateIdea){
+        userPrefSQL.post(userID, dateIdea.id)
+        idea.dateIdeaID = dateIdea.id;
+        console.log("IDEA INDEX, ", ideaIndex);
+        if(ideaIndex < ideaArray.length - 1){
+          createIdea(ideaIndex+1);
+        } else {
+          resolve();
+        }
+      })
+    }
+    createIdea(0)
+  });
+
+  return defaultPromise
+}
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
