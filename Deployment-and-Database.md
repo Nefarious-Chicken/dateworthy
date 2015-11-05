@@ -78,7 +78,8 @@ For the remote database, please consult the [Google doc](https://docs.google.com
 
 ### Local Database
 1. Clear your local database by navigating to [http://neo4j:password@localhost:7474](http://neo4j:password@localhost:7474) and running this command in the Neo4j console: 
-	2. ```
+
+```
 MATCH(n) OPTIONAL MATCH(n)-[r]-() DELETE n, r;
 ```
 2. Make sure `dateServer/models/db.js` has the correct database in it (if you are developing locally, it should be `http://neo4j:password@localhost:7474`)
