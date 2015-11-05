@@ -1,6 +1,6 @@
 angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
 
-.controller('AppCtrl', [ '$state', '$scope', '$ionicModal', '$ionicPlatform', '$timeout', '$location', '$rootScope', '$cordovaGeolocation', 'DateData', 'UserData', 'ngFB', function($state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
+.controller('AppCtrl', ['$ionicHistory', '$state', '$scope', '$ionicModal', '$ionicPlatform', '$timeout', '$location', '$rootScope', '$cordovaGeolocation', 'DateData', 'UserData', 'ngFB', function($ionicHistory, $state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, ngFB) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -108,6 +108,12 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     $rootScope.history.push($location.$$path);
     $state.go('favorites');
   };
+
+  $scope.clearIonic = function(){
+    $ionicHistory.clearCache();
+    $ionicHistory.clearHistory();
+    console.log("clearing cache and hist")
+  }
 
   // Make sure $scope.userData is always loaded, even when page is refreshed
   $scope.$on('$stateChangeSuccess', function () {
