@@ -249,7 +249,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
         return Event.getMatchingEvents(tagSubset)
         .then(function(eventsToAdd){
           events = events.concat(eventsToAdd);
-          events = [];
+
           // give default options if we've looked over 10 time for events and there are none returned from neo4j
           if(events.length < limit && count > 10){
             var ideas = exports.defaultIdeas;
