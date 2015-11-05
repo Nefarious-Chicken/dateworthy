@@ -48,4 +48,4 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
     var lastPath = $rootScope.history.pop();
     $location.path(lastPath);
   }
-})
+}])
