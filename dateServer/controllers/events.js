@@ -371,7 +371,8 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logist
       ll: '37.8044,-122.2708',
       categoryId: events[indices[i]]._node.properties.fsCategory,
       intent: 'browse',
-      radius: radius
+      radius: radius,
+      limit: 10
     };
 
     if(_geoLocation){
@@ -448,6 +449,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
             // Alter the category id to be searched in the searchObj (passed into Foursquare)
             if(count > 5){
               searchObj.radius = 10000;
+              searchObj.limit = 20;
             }
             searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
             findVenue(searchObj, newIndex, events, count + 1);

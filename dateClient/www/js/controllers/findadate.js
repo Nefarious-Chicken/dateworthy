@@ -5,11 +5,10 @@ angular.module('dateworthy.findadate', [])
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user.
   $scope.mandatoryQuestions = [
-    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []},
-    //{question: "What time of day are you going?", type: "tag", field: "time", possibilities: ["Daytime", "Nighttime"], answerTags: ["Day", "Night"]},
-    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
     {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Sporty", "Goofy", "Creative", "Fancy"]},
-    {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]}
+    {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]},
+    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
+    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []}
   ];
 
   //Each questionairre will come with a single optional question chosen randomly from this list.
@@ -27,10 +26,10 @@ angular.module('dateworthy.findadate', [])
     var myQ = DateData.getOptionalQuestion();
     if(myQ === -1){
       var randomQ = Math.floor(Math.random() * $scope.optionalQuestions.length);
-      $scope.mandatoryQuestions.push($scope.optionalQuestions[randomQ]);
+      $scope.mandatoryQuestions.splice(2, 0, $scope.optionalQuestions[randomQ]);
       DateData.setOptionalQuestion(randomQ);
     } else {
-      $scope.mandatoryQuestions.push($scope.optionalQuestions[myQ]);
+      $scope.mandatoryQuestions.splice(2, 0, $scope.optionalQuestions[myQ]);
 
     }
   };
@@ -66,7 +65,7 @@ angular.module('dateworthy.findadate', [])
   };
 
   $scope.canSpin = function(){
-    console.log("Spin status: ", $scope.showSpinner);
+    //console.log("Spin status: ", $scope.showSpinner);
     return $scope.showSpinner;
   };
 
@@ -109,8 +108,8 @@ angular.module('dateworthy.findadate', [])
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
-    console.log("Length of questions: ", $scope.mandatoryQuestions.length);
-    console.log("nextQuestionID", nextQuestionId);
+    //console.log("Length of questions: ", $scope.mandatoryQuestions.length);
+    //console.log("nextQuestionID", nextQuestionId);
     //Update coordinates based off of google maps center location
     if ($scope.mandatoryQuestions[$scope.currentIndex].field === "location") {
       var center = $scope.map.getCenter();
@@ -123,9 +122,9 @@ angular.module('dateworthy.findadate', [])
     //If we are at the end of the question list, we will send the data to the server and get date ideas.
     if(nextQuestionId === $scope.mandatoryQuestions.length){
       $scope.showSpinner = true;
-      console.log("Doing stuff now!");
+      //console.log("Doing stuff now!");
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
-        console.log("Data sent to the server: ", DateData.getConcatenatedData());
+        //console.log("Data sent to the server: ", DateData.getConcatenatedData());
         $scope.showSpinner = false;
         DateData.setDateIdeas(data);
         $state.go('idea', {ideaId: 0});
@@ -143,8 +142,8 @@ angular.module('dateworthy.findadate', [])
   $scope.initMap = function() {
     var latitude;
     var longitude;
-    console.log("Latutude: ", latitude);
-    console.log("Initializing map");
+    //console.log("Latutude: ", latitude);
+    //console.log("Initializing map");
     var coordinates = DateData.getGeoLocation();
     if(coordinates){
       latitude = coordinates.lat || 37.8044;
@@ -215,7 +214,6 @@ angular.module('dateworthy.findadate', [])
       map.fitBounds(bounds);
     });
     $scope.map = map;
-    
   };
 
   $scope.showFavorites = function(){
@@ -243,7 +241,7 @@ angular.module('dateworthy.findadate', [])
   $scope.savedLikes = function() {
     $rootScope.history.push($location.$$path);
     $state.go('favorites');
-  }
+  };
 
 
   //allows user to tap a google maps autocomplete suggestion 
