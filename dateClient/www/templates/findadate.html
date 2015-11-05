@@ -7,7 +7,7 @@
     <ion-item class="item-text-wrap">
       <h2 class="question">{{currentQuestion.question}}</h2>
       <div class="card">
-        <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()">
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()"  ng-focus="disableTap()">
         <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
         <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-click="nextQuestion()" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
       </div>
