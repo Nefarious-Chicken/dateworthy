@@ -299,7 +299,7 @@ When writing any block of code that is logically subordinate to the line immedia
 
 ### Capital letters in variable names
 
-* Some people choose to use capitalization of the first letter in their variable names to indicate that they contain a [class](http://en.wikipedia.org/wiki/Class_(computer_science\)). This capitalized variable might contain a function, a prototype, or some other construct that acts as a representative for the whole class.
+* Some people choose to use capitalization of the first letter in their variable names to indicate that they contain a class. This capitalized variable might contain a function, a prototype, or some other construct that acts as a representative for the whole class.
 * Optionally, some people use a capital letter only on functions that are written to be run with the keyword `new`.
 * Do not use all-caps for any variables. Some people use this pattern to indicate an intended "constant" variable, but the language does not offer true constants, only mutable variables.
 
