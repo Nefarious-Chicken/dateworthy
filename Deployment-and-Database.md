@@ -91,10 +91,12 @@ MATCH(n) OPTIONAL MATCH(n)-[r]-() DELETE n, r;
 ### Remote Database
 
 1. Clear your local database by navigating to our remote Neo4j database and running this command in the Neo4j console: 
-	2. ```
+
+```
 MATCH(n) OPTIONAL MATCH(n)-[r]-() DELETE n, r;
 ```
-1. Make sure `dateServer/models.db.js` has the **remote** database URL in it in place of the local db in the url option. You can grab it from our [Google doc](https://docs.google.com/document/d/1hLsHVSTivqIZ6y1wY4a5Bix3MrffpOhbls-q7IvbhQA/edit#).
+
+2. Make sure `dateServer/models.db.js` has the **remote** database URL in it in place of the local db in the url option. You can grab it from our [Google doc](https://docs.google.com/document/d/1hLsHVSTivqIZ6y1wY4a5Bix3MrffpOhbls-q7IvbhQA/edit#).
 
 ```
 var db = new neo4j.GraphDatabase({
@@ -107,8 +109,8 @@ var db = new neo4j.GraphDatabase({
 });
 ```
 
-2. cd to `dateServer/data-helpers`
-3. run `node seedAllRemote.js`
-4. Verify that the nodes are connected by going to the Neo4j gui (you can find the link in the gdoc above) and clicking on the `is` tag under `Relationship Types`. You should be able to see events connected to tags. 
+3. cd to `dateServer/data-helpers`
+4. run `node seedAllRemote.js`
+5. Verify that the nodes are connected by going to the Neo4j gui (you can find the link in the gdoc above) and clicking on the `is` tag under `Relationship Types`. You should be able to see events connected to tags. 
 
 These steps were last verified to be working on 5 Nov 2015.
