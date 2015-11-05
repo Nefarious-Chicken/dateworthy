@@ -8,7 +8,7 @@ angular.module('dateworthy.findadate', [])
     {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []},
     //{question: "What time of day are you going?", type: "tag", field: "time", possibilities: ["Daytime", "Nighttime"], answerTags: ["Day", "Night"]},
     {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
-    {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Goofy", "Geeky"]},
+    {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Sporty", "Goofy", "Creative", "Fancy"]},
     {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]}
   ];
 
