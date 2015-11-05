@@ -13,7 +13,7 @@ var config = require('../secret/config');
 var dateIdeaSQL = require('../models/dateIdeaSQL');
 var userPrefSQL = require('../models/userPrefSQL');
 var venueSQL = require('../models/venueSQL');
-
+var _ = require('underscore');
 
 var clientID = process.env.FS_ID || config.clientID;
 var clientSecret = process.env.FS_SECRET || config.clientSecret;
@@ -23,6 +23,13 @@ function getDateURL(date) {
   return '/dates/' + encodeURIComponent(date.datename);
 }
 
+exports.defaultIdeas = {
+  ideaArray: [
+    {idea: "Go to a fancy dinner at a fancy restaurant", event: "Go to a fancy dinner", eventId: 'd0001', venue: "fancy restaurant", venueId: 'default1', liked: 0, disliked: 0},
+    {idea: "Build a pillow fort and pretend you're hiding from pirates at home", eventId: 'd0002', event: "Build a pillow fort and pretend you're hiding from pirates", venue: 'home', venueId: 'default2', liked: 0, disliked: 0},
+    {idea: "Light a candle and make a smores at the park", event: "Light a candle and make a smores", eventId: 'd0003', venue: "park", venueId: 'default3', liked: 0, disliked: 0}
+  ]
+};
 
 /**
  * POST /events/:eventname {eventname, description...}
@@ -237,11 +244,29 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
       var limit = 3;
       var events = [];
 
-      var getEvents = function(events, tags){
-        console.log("Searching for matching events: ", tags);
-        return Event.getMatchingEvents(tags)
+      var getEvents = function(events, tagSubset, count){
+        console.log("Searching for matching events: ", tagSubset);
+        return Event.getMatchingEvents(tagSubset)
         .then(function(eventsToAdd){
           events = events.concat(eventsToAdd);
+
+          // give default options if we've looked over 10 time for events and there are none returned from neo4j
+          if(events.length < limit && count > 10){
+            var ideas = exports.defaultIdeas;
+
+            return exports.createDefaults(ideas, myUser.id)
+            .then(function(){
+              console.log("IDEAS AFTER CREATE DEFAULTS");
+              console.log(ideas);
+              _.each(ideas.ideaArray, function(idea){
+                idea['location'] = {};
+                idea.location.lat = parseFloat(geo.split(',')[0]);
+                idea.location.lng = parseFloat(geo.split(',')[1]);
+              })
+              res.status(200).send(ideas);
+              return;
+            });
+          }
           if(events.length >= limit){
             var promises = getEventTagPromises(events);
             Promise.all(promises).then(
@@ -249,7 +274,7 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
                 console.log("Events length", events.length);
                 //Score the tags based on the scoring algorithm.
                 for(var i = 0; i < events.length; i ++){
-                  defineEventTagScore(events[i], tags, userTags);
+                  defineEventTagScore(events[i], tagSubset, userTags);
                 }
                 //Sort the events by Score
                 events.sort(compareEventScores);
@@ -268,12 +293,16 @@ exports.getMatchingEventsNoRest = function(tags, geo, logistics, req, res) {
               var key = tagKeys[tagKeyIndex];
               fallbackTags[key] = tags[key];
             }
+            if(Object.keys(fallbackTags).length === 0){
+              // If there are no more fallback tags, use a generic fallback tag
+              fallbackTags = { Day: 1 };
+            }
             console.log("Fallback Tags: ", fallbackTags);
-            getEvents(events, fallbackTags);
+            getEvents(events, fallbackTags, count + 1);
           }
         });
       }
-      getEvents([], tags);
+      getEvents([], tags, 1);
     });
   });
 };
@@ -372,54 +401,41 @@ exports.getFoursquareVenues = function(events, res, limit, _geoLocation, _logist
 exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
   var venuePromise = new Promise(function(resolve, reject) {
     var foursquareSearch = Promise.promisify(foursquare.venues.search)
-    var findVenue = function(searchObj, eventIndex, events){
+    var findVenue = function(searchObj, eventIndex, events, count){
       return foursquareSearch(searchObj)
       .then(function(result){
         var tempVenues = result.response.venues;
         console.log('The number of venues attached to this event is: ', tempVenues.length);
-
         // There should always at least be one venue before attempting to debunk
+        if(tempVenues.length < 1 && count > 6){
+          // If we've already tried getting venues 5 times, default to venueCategory instead
+          tempVenues = [{
+            id: events[eventIndex]._node.properties.fsCategory,
+            name: events[eventIndex]._node.properties.venueCategory,
+            stats: { checkinsCount: 100 }
+          }];
+        }
         if(tempVenues.length > 0){
           var venues = exports.removeBunkVenues(tempVenues);
           var venueIndex = Math.floor(Math.random() * venues.length);
           var venueId = venues[venueIndex].id;
           exports.getFourSquareVenueData(venueId, {})
           .then(function(venueData) {
-            var idea = {};
-            var venueID = venueData.id;
-            var venueName = venueData.name;
+            exports.createIdea(venues, venueData, venueIndex, eventIndex, events, userID)
+            .then(function(idea){
+              ideas.ideaArray.push(idea);
+              resolve(ideas);
+            })
+          })
+          .catch(function(err){
+            // If it gets to this error, it means we passed in a venueCategory instead of a venueId to search
+            // Because we had over 5 requests to foursquare without any venues returned, we defaulted to an idea
+            // with only a category, not a specific venue which causes foursquare to error
+            var venueData = venues[0];
+            var venueIndex = 0;
 
-            venueSQL.post(venueID, venueName)
-            .then(function(venue){
-              var eventActivity;
-              for (var key in venueData) {
-                idea[key] = venueData[key];
-              }
-              if (events[eventIndex]._node.properties.event.indexOf('&#44;') > -1) {
-                var commas = /&#44;/gi;
-                var tempEvent = events[eventIndex]._node.properties.event;
-                eventActivity = tempEvent.replace(commas, ',');
-              } else {
-                eventActivity = events[eventIndex]._node.properties.event;
-              }
-              if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
-                idea.idea = eventActivity + ' ' + venues[venueIndex].name;
-              } else {
-                idea.idea = eventActivity + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
-              }
-              idea.liked = 0;
-              idea.disliked = 0;
-              if (venueData.hasOwnProperty('bestPhoto')) {
-                idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
-              };
-              return venue;
-            })
-            .then(function(venue){
-              return dateIdeaSQL.post(idea.idea, events[eventIndex]._node._id, venueID)
-            })
-            .then(function(ideaSQL){
-              userPrefSQL.post(userID, ideaSQL.id);
-              idea.dateIdeaID = ideaSQL.id;
+            exports.createIdea(venues, venueData, venueIndex, eventIndex, events, userID)
+            .then(function(idea){
               ideas.ideaArray.push(idea);
               resolve(ideas);
             });
@@ -430,18 +446,68 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           var newIndex = Math.floor(Math.random() * events.length);
           EventSQL.post(events[newIndex]._node._id, events[newIndex]._node.properties.event).then(function(event){
             // Alter the category id to be searched in the searchObj (passed into Foursquare)
+            if(count > 5){
+              searchObj.radius = 10000;
+            }
             searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
-            findVenue(searchObj, newIndex, events);
+            findVenue(searchObj, newIndex, events, count + 1);
           });
         }
       });
     };
     // Initialize recursive call
-    findVenue(searchObj, eventIndex, events); 
+    findVenue(searchObj, eventIndex, events, 1); 
   });
   return venuePromise;
 };
 
+// This function creates each idea that belongs in ideas array
+exports.createIdea = function (venues, venueData, venueIndex, eventIndex, events, userID) {
+  var venuePromise = new Promise(function(resolve, reject){
+    var idea = {};
+    var venueID = venueData.id;
+    var venueName = venueData.name;
+
+    venueSQL.post(venueID, venueName)
+    .then(function(venue){
+      var eventActivity;
+      for (var key in venueData) {
+        idea[key] = venueData[key];
+      }
+      if (events[eventIndex]._node.properties.event.indexOf('&#44;') > -1) {
+        var commas = /&#44;/gi;
+        var tempEvent = events[eventIndex]._node.properties.event;
+        eventActivity = tempEvent.replace(commas, ',');
+      } else {
+        eventActivity = events[eventIndex]._node.properties.event;
+      }
+      if (events[eventIndex]._node.properties.preposition === 'null' || !events[eventIndex]._node.properties.hasOwnProperty('preposition')) {
+        idea.idea = eventActivity + ' ' + venues[venueIndex].name;
+      } else {
+        idea.idea = eventActivity + ' ' + events[eventIndex]._node.properties.preposition + ' ' + venues[venueIndex].name;
+      }
+      idea.liked = 0;
+      idea.disliked = 0;
+      if (venueData.hasOwnProperty('bestPhoto')) {
+        idea.imgUrl = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
+      };
+      return venue;
+    })
+    .then(function(venue){
+      // Make sure event is in DB
+      return EventSQL.post(events[eventIndex]._node._id, events[eventIndex]._node.properties.event)
+    })
+    .then(function(event){
+      return dateIdeaSQL.post(idea.idea, event[0].dataValues.eventID, venueID)
+    })
+    .then(function(ideaSQL){
+      userPrefSQL.post(userID, ideaSQL.id);
+      idea.dateIdeaID = ideaSQL.id;
+      resolve(idea);
+    });
+  });
+  return venuePromise;
+}
 
 // This function returns venues that have a checkinsCount of over 30.
 // This increases the chance that the venue will have a bestPhoto to show to the user.
@@ -477,6 +543,36 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
   return venuePromise;
 };
 
+exports.createDefaults = function(ideas, userID){
+  var defaultPromise = new Promise(function(resolve, reject){
+    var ideaArray = ideas.ideaArray;
+    var createIdea = function(ideaIndex){
+      var idea = ideaArray[ideaIndex];
+      console.log("IDEA AT INDEX: ", ideaIndex);
+      console.log(idea);
+      return venueSQL.post(idea.venueId, idea.venue)
+      .then(function(venue){
+        return EventSQL.post(idea.eventId, idea.event);
+      })
+      .then(function(event){
+        return dateIdeaSQL.post(idea.idea, event[0].dataValues.eventID, idea.venueId);
+      })
+      .then(function(dateIdea){
+        userPrefSQL.post(userID, dateIdea.id)
+        idea.dateIdeaID = dateIdea.id;
+        console.log("IDEA INDEX, ", ideaIndex);
+        if(ideaIndex < ideaArray.length - 1){
+          createIdea(ideaIndex+1);
+        } else {
+          resolve();
+        }
+      })
+    }
+    createIdea(0)
+  });
+
+  return defaultPromise
+}
 /*--------------------SQL---------------*/
 
 exports.createEventSQL = function(req, res, next){
@@ -491,6 +587,20 @@ exports.sendFoursquareVenueData = function(req, res, next){
   .then(function(venueData){
     res.status(200).send(venueData);
   })
+  .catch(function(err){
+    // If it catches an error, someone tried to get venueData for a category only idea
+    // Manually create venueData
+    dateIdeaSQL.get(req.query.dateIdeaName)
+    .then(function(dateIdea){
+      var venueData = {
+        id: req.query.venueId,
+        dateIdeaID: dateIdea.dataValues.id,
+        idea: req.query.dateIdeaName,
+        name: dateIdea.dataValues.venue.dataValues.venueName
+      }
+      res.status(200).send(venueData);
+    })
+  });
 }
 
 exports.addDateIdeas = function(ideas){};

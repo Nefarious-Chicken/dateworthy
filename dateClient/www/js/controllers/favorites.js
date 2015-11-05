@@ -9,7 +9,7 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
   });
 
   $scope.getDetails = function (index) {
-    DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, function(venueData){
+    DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, $scope.favorites[index].dateIdea.dateIdeaName, function(venueData){
       var idea = {};
       for(var key in venueData){
         idea[key] = venueData[key];
