@@ -14,7 +14,7 @@ exports.seedTags = function(env, callback) {
   var filename;
   console.log("I'm seeding tags, filename is", filename, "while env is", env);
   if (env === "remote") {
-    filename = "http://dateworthy.heroku.com/tags.csv";
+    filename = "http://dateworthy.heroku.com/app/tags.csv";
   } else if (env === "local") {
     filename = "file://" + __dirname + "/tags.csv";
   }

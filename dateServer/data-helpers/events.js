@@ -12,7 +12,7 @@ var Promise = require('bluebird');
 exports.seedEvents = function(env, callback) {
   var filename;
   if (env === "remote") {
-    filename = "http://dateworthy.heroku.com/events.csv";
+    filename = "http://dateworthy.heroku.com/app/events.csv";
   } else if (env === "local") {
     filename = "file://" + __dirname + "/events.csv";
   }
@@ -34,7 +34,7 @@ exports.seedEvents = function(env, callback) {
   ].join(' ');
 
   // General query for reading each line from the csv and creating an Event node based on line contents
-  // http://dateworthy.heroku.com/events.csv
+  // http://dateworthy.heroku.com/app/events.csv
   var loadLine = 'LOAD CSV WITH HEADERS FROM "' + filename + '" AS csvLine';
   var query = [
     loadLine,
