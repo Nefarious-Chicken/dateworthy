@@ -245,6 +245,19 @@ angular.module('dateworthy.findadate', [])
     $state.go('favorites');
   }
 
+
+  //allows user to tap a google maps autocomplete suggestion 
+  $scope.disableTap = function(){
+  
+    container = document.getElementsByClassName('pac-container');
+    // disable ionic data tab
+    angular.element(container).attr('data-tap-disabled', 'true');
+    // leave input field if google-address-entry is selected
+    angular.element(container).on("click", function(){
+        document.getElementById('pac-input').blur();
+    });
+  };
+
   $scope.loadState();
 
 
