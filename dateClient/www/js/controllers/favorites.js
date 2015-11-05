@@ -1,6 +1,6 @@
 angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
 
-.controller('FavoritesCtrl', function($state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, LikeADate, ngFB) {
+.controller('FavoritesCtrl',['$state', '$scope', '$ionicModal', '$ionicPlatform', '$timeout', '$location', '$rootScope', '$cordovaGeolocation', 'DateData', 'UserData', 'LikeADate', 'ngFB', function($state, $scope, $ionicModal, $ionicPlatform, $timeout, $location, $rootScope, $cordovaGeolocation, DateData, UserData, LikeADate, ngFB) {
   var userData = UserData.userData;
   $scope.$on('$stateChangeSuccess', function () {
     LikeADate.getLikedDates(function(results){
@@ -48,4 +48,4 @@ angular.module('dateworthy.favorites', ['ngOpenFB', 'ngCordova'])
     var lastPath = $rootScope.history.pop();
     $location.path(lastPath);
   }
-})
+}])
