@@ -1,6 +1,18 @@
-# Project Name
+# dateworthy [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-> Dateworthy
+Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
+
+## Table of Contents
+
+1. [Team](#team)
+1. [Usage](#Usage)
+1. [Requirements](#requirements)
+1. [Development](#development)
+    1. [Installing Dependencies](#installing-dependencies)
+1. [Product-Roadmap](#Product-Roadmap)
+1. [Contributing](#contributing)
+1. [Testing](#Testing)
+1. [Resources](#Resources)
 
 ## Team
 
@@ -8,27 +20,27 @@
   - __Scrum Master__: Alex Liotta
   - __Development Team Members__: Jing Pei, Jessica Chong
 
-## Table of Contents
-
-1. [Usage](#Usage)
-1. [Requirements](#requirements)
-1. [Development](#development)
-    1. [Installing Dependencies](#installing-dependencies)
-    1. [Tasks](#tasks)
-1. [Team](#team)
-1. [Contributing](#contributing)
-
 ## Usage
 
-npm install at the root to deploy all dependencies.  Ionic may be required.  npm start from the root will deploy the server
+- Please read the [deployment guide!](https://github.com/Nefarious-Chicken/dateworthy/blob/master/Deployment-and-Database.md) Even if you are not interested in deploying the app, there’s a tremendous amount of information on how to seed databases and get your local dateworthy up and running! 
+- Please read the contribution guide.  There’s a wealth of client and server tests at your disposal, and any pull request made to dateworthy must pass continuous integration tests before it can be merged.  
 
 ## Requirements
 
-- npm
+- neo4j v2.2.5
+- npm 2.14+
+- bower 1.6.5+
+
 
 ## Development
 
-You will need a populated neo4j database.  You can use node seedAll.js and point the server to your neo4j DB at dateServer/models/db.js to populate it with some seed data.
+You will need a populated neo4j database.  To seed your local neo4j database with dateworthy data, navigate from the root directory to /dateServer/data-helpers/ and run:
+
+```sh
+node seedAllLocal.js
+```
+
+Make sure to point the server to your local neo4j database at /dateServer/models/db.js to populate it with some seed data. The default local installation will start neo4j at port 7474. 
 
 ### Installing Dependencies
 
@@ -38,11 +50,32 @@ From within the root directory:
 sudo npm install
 ```
 
-### Roadmap
+From within the dateServer/ directory
+```sh
+sudo npm install
+```
+## Product-Roadmap
 
-View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
+This project was a labor of love and the dateworthy team, The Nefarious Chickens, are hoping to bring some of these features in the future:
 
+-A welcome back workflow to like dates you haven’t seen
+-Foursquare auth to avoid rate limitations on venues returned
+-The ability to submit ideas through the app
+-Date reviews and a date idea community
+-Infrastructure improvements, more tests, and other things we haven’t thought of!
 
 ## Contributing
 
 See [CONTRIBUTING.md](_CONTRIBUTING.md) for contribution guidelines.
+
+## Testing
+
+dateworthy uses test suites written in Mocha, Karma, Chai and Jasmine. On every pull request the tests are automatically run using Travis continuous integration. To run the test suites locally use the following command from your route directory:
+
+```javascript
+npm test
+```
+## Resources
+
+Some resources we found helpful that helped us start this project include:
+-Aseem Kishore’s [Node-Neo4j Template](https://github.com/aseemk/node-neo4j-template)
