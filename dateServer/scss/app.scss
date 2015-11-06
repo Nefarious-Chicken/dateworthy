@@ -40,6 +40,9 @@ a:hover {
 
 section {
   padding: 100px 0;
+  @media (max-width: 767px) {
+    padding: 40px 0;
+  }
 }
 .testimonials {
   background: darken($primary, 10%);
@@ -120,14 +123,7 @@ section {
 .icon i {
   // color: lighten($primary, 30%);
 }
-footer {
-  padding: 40px 0; 
-  a {
-    &:hover {
-      color: #fff;
-    }
-  }
-}
+
 a {
   color: #fff;
   &:hover {
@@ -217,6 +213,17 @@ h5 {
     }
   }
 }
+.home {
+  @media (max-width: 767px) {
+    h3 {
+      margin: 0
+    }
+    .jumbotron .text {
+      margin-top: 1em;
+      margin-bottom: 2em;
+    }
+  }
+}
 
 section {
   clear: both;
@@ -230,12 +237,16 @@ section {
   -webkit-border-radius: 0px;
 }
 
-footer {
+.footer {
   background: #222;
-  color: #fff;
-  padding-top: 2em;
+  padding: 2em 0 4em;
+  a {
+    color: lighten($primary, 10%);
+    &:hover {
+      color: #fff;
+    }
+  }
 }
-
 ul.footer-nav {
   list-style: none;
   margin: 40px 0 10px;
@@ -247,6 +258,9 @@ ul.footer-nav {
   }
 }
 
+.footer, .about footer p, footer p {
+  font-size: 13px;
+}
 h4 {
   font-weight: 200;
   font-style: italic;
@@ -255,6 +269,13 @@ h4 {
   margin-bottom: 32px;
 }
 
+h2 {
+  font-style: normal;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 2em;
+}
 .demo {
   background: #222;
   p.intro {
@@ -290,11 +311,24 @@ iframe {
 }
 
 .about {
+  p {
+    font-size: 17px;
+    line-height: 1.75;
+    @media (max-width: 767px) {
+      font-size: 15px;
+    }
+  }
   h3 {
     margin: 0;
   }
   .bios {
     padding: 80px 0 40px;
+    @media (max-width: 767px) {
+      padding: 40px 0;
+    }
+  }
+  a {
+    color: lighten($primary, 20%);
   }
 }
 .bios {
@@ -310,10 +344,9 @@ iframe {
   .text {
     @media (max-width: 767px) {
       padding-top: 1em;
-    }
-    p {
-      font-size: 17px;
-      line-height: 1.5;
+      h5 {
+        font-size: 18px;
+      }
     }
     h5 {
       font-size: 20px;
@@ -325,5 +358,25 @@ iframe {
     &:hover, &:active, &:focus {
       color: darken(#fff, 10%);
     }
+  }
+}
+
+.stack {
+  background: darken($primary, 10%);
+}
+
+
+
+.fork, .copy {
+  display: inline;
+  @media (max-width: 767px) {
+    display: block;
+  }
+}
+
+.fork {
+  margin-left: 10px;
+  @media (max-width: 767px) {
+    margin: 0;
   }
 }

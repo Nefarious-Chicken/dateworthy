@@ -9,7 +9,7 @@ head
   link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
   link(href="/public/css/app.css", rel="stylesheet", type="text/css")
   link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
-body.about
+body
   header
     nav.navbar.navbar-default
       .container
@@ -29,17 +29,18 @@ body.about
               a(href="http://goo.gl/forms/h6WCRZcyqR", target="_blank") Submit an idea
             li 
               a(href="about", class="current") About
-  .jumbotron
-    .container
-      .row
-        .col-sm-12
-          h3.text-center Privacy
-  section.bios
-    .container
-      .row
-        .col-sm-12
-          p We promise we won't give or sell your data to anyone. We only require Facebook logins so that you can have a better user experience. 
-  section
+  .wrapper.about
+    .jumbotron
+      .container
+        .row
+          .col-sm-12
+            h3.text-center Privacy
+    section.bios
+      .container
+        .row
+          .col-sm-12
+            p We promise we won't give or sell your data to anyone. We only require Facebook logins so that you can have a better user experience. 
+  section.footer
     .container
       .row
         .col-sm-8.col-sm-offset-2.text-center
@@ -56,7 +57,10 @@ body.about
             li
               a(href="mailto:thenefariouschicken@gmail.com")
                 | Email us
-          p &copy; 2015 dateworthy.
+          .copy
+            &copy; 2015 dateworthy. 
+          .fork
+            <i class="fa fa-code-fork"></i> <a href="https://github.com/Nefarious-Chicken/dateworthy">Fork this project on Github</a>
   script(src="/public/lib/jquery/dist/jquery.min.js")
   script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")
   script

@@ -14,15 +14,16 @@ body.demo
     .row
       .col-sm-12
         a(href="/", class="btn btn-lg") <span class="glyphicon glyphicon-chevron-left"></span> back to dateworthy.io
-  .container
-    .row
-      .col-sm-12
-        p.intro It looks like you're using this on a desktop! For an optimal experience, please visit <a href="http://dateworthy.io">dateworthy.io</a> on Safari on an iPhone, or the native browser on Android.
-    .row
-      .col-sm-12
-        .demo-wrapper
-          iframe(src="/app", width="287", height="511", frameborder="0")
-  footer
+  .wrapper.demo
+    .container
+      .row
+        .col-sm-12
+          p.intro It looks like you're using this on a desktop! For an optimal experience, please visit <a href="http://dateworthy.io">dateworthy.io</a> on Safari on an iPhone, or the native browser on Android.
+      .row
+        .col-sm-12
+          .demo-wrapper
+            iframe(src="/app", width="287", height="511", frameborder="0")
+  footer.footer
     .container
       .row
         .col-sm-8.col-sm-offset-2.text-center
@@ -39,7 +40,10 @@ body.demo
             li
               a(href="mailto:thenefariouschicken@gmail.com")
                 | Email us
-          p &copy; 2015 dateworthy.
+          .copy
+            &copy; 2015 dateworthy. 
+          .fork
+            <i class="fa fa-code-fork"></i> <a href="https://github.com/Nefarious-Chicken/dateworthy">Fork this project on Github</a>
   script(src="/public/lib/jquery/dist/jquery.min.js")
   script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")
   script
