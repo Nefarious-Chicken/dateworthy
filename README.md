@@ -7,7 +7,7 @@ Need a last-minute date idea? We've got you covered. Check it out at [dateworthy
 
 [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">
+[!<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">](http://dateworthy.io)
 
 ## Table of Contents
 
@@ -23,9 +23,9 @@ Need a last-minute date idea? We've got you covered. Check it out at [dateworthy
 
 ## Team
 
-  - __Product Owner__: Adam Hedgpeth
-  - __Scrum Master__: Alex Liotta
-  - __Development Team Members__: Jing Pei, Jessica Chong
+  - __Product Owner__: [Adam Hedgpeth](https://github.com/adamhedge)
+  - __Scrum Master__: [Alex Liotta](https://github.com/aliotta)
+  - __Development Team Members__: [Jing Pei](https://github.com/jingpei), [Jessica Chong](https://github.com/jessicalc)
 
 ## Usage
 
@@ -61,14 +61,18 @@ From within the dateServer/ directory
 ```sh
 sudo npm install
 ```
+
+Our `npm install` command also includes a postinstall script that runs `bower install`, so you don't need to manually run `bower install` yourself. 
+
 ## Product-Roadmap
 
-This project was a labor of love and the dateworthy team, The Nefarious Chickens, are hoping to bring some of these features in the future:
+This project was a labor of love. The dateworthy team, The Nefarious Chickens, are hoping to bring some of these features in the future:
 
-- A welcome back workflow to like dates you haven't seen
-- Foursquare auth to avoid rate limitations on venues returned
+- A welcome back workflow to like dates you've already seen
+- Foursquare auth to avoid rate limits on venues returned
 - The ability to submit ideas through the app
 - Date reviews and a date idea community
+- Troll mode to give people absurd date ideas
 - Infrastructure improvements, more tests, and other things we haven't thought of!
 
 ## Contributing
@@ -77,7 +81,7 @@ See [CONTRIBUTING.md](_CONTRIBUTING.md) for contribution guidelines.
 
 ## Testing
 
-dateworthy uses test suites written in Mocha, Karma, Chai and Jasmine. On every pull request the tests are automatically run using Travis continuous integration. To run the test suites locally use the following command from your route directory:
+Dateworthy uses test suites written in Mocha, Karma, Chai and Jasmine. On every pull request, the tests are automatically run using Travis continuous integration. To run the test suites locally, use the following command from your route directory:
 
 ```javascript
 npm test
@@ -85,5 +89,9 @@ npm test
 ## Resources
 
 Some resources that helped us start this project include:
+
 - Aseem Kishore's [Node-Neo4j Template](https://github.com/aseemk/node-neo4j-template)
 - Ionic's [Getting Started Guide](http://www.ionicframework.com/docs/guide/)
+- The [Foursquare API](https://developer.foursquare.com/) 
+- [Google Maps Javascript API](https://developers.google.com/maps/documentation/javascript/)
+- [@r-wettstaedt's](https://github.com/r-wettstaedt) [ngOpenFB Angular Module](https://github.com/r-wettstaedt/ngOpenFB)

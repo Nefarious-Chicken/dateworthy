@@ -45,28 +45,12 @@ Optionally, you can remove the commented-out `<script srcs>` in the `<head>` of 
 var clientID = process.env.FS_ID; //|| config.clientID;
 var clientSecret = process.env.FS_SECRET; // || config.clientSecret;
 ```
-### 4. Update the .gitignore from the project root
-In the .gitignore file, there are instructions to un-comment out four lines. Here's the part you want to comment out (except, of course, for the line with the instruction in it). 
-
-``` 
-# Uncomment out the following four lines when you are deploying.
-# dateServer/public/lib/bootstrap/dist/
-# !dateServer/public/lib/bootstrap/dist/*
-# dateServer/public/lib/jquery/dist/
-# !dateServer/public/lib/jquery/dist/*
-``` 
-### 5. Run the git push command 
+### 4. Run the git push command 
 
 `git push heroku feat/heroku_deploy_[YOURDATEHERE]:master -f`
 
 (You have to use -f to force it to override whatever is at heroku).
 
-
-
- 
-  
-   
-   
 ---
 
 
