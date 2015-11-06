@@ -12,7 +12,7 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     //console.log("Initiating Map...", latitude, longitude);
     var myLatlng = new google.maps.LatLng(latitude, longitude);
     var mapOptions = {
-        draggable: false,
+        draggable: true,
         scrollwheel: false,
         center: myLatlng,
         zoom: 16,
