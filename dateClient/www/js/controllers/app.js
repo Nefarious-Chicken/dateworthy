@@ -109,12 +109,6 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     $state.go('favorites');
   };
 
-  $scope.clearIonic = function(){
-    $ionicHistory.clearCache();
-    $ionicHistory.clearHistory();
-    console.log("clearing cache and hist")
-  }
-
   // Make sure $scope.userData is always loaded, even when page is refreshed
   $scope.$on('$stateChangeSuccess', function () {
     if(!$scope.userData || Object.keys($scope.userData).length === 0){

@@ -136,8 +136,6 @@ angular.module('dateworthy.idea', ['ngOpenFB', 'ngCordova'])
     $scope.ideas = [];
     $scope.currentIdea = 0;
     DateData.clearData();
-    $ionicHistory.clearCache();
-    $ionicHistory.clearHistory();
     $state.go('home');
   };
 
