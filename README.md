@@ -1,6 +1,13 @@
-# dateworthy [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
+<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy.png" width="225px">
+
+
+Need a last-minute date idea? We've got you covered. Check it out at [dateworthy.io](www.dateworthy.io)
+
+
+[![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
+
+<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">
 
 ## Table of Contents
 
@@ -22,8 +29,8 @@ Need a last-minute date idea? There's an app for that! Check it out at [datewort
 
 ## Usage
 
-- Please read the [deployment guide!](https://github.com/Nefarious-Chicken/dateworthy/blob/master/Deployment-and-Database.md) Even if you are not interested in deploying the app, there’s a tremendous amount of information on how to seed databases and get your local dateworthy up and running! 
-- Please read the contribution guide.  There’s a wealth of client and server tests at your disposal, and any pull request made to dateworthy must pass continuous integration tests before it can be merged.  
+- Please read the [deployment guide!](https://github.com/Nefarious-Chicken/dateworthy/blob/master/Deployment-and-Database.md) Even if you are not interested in deploying the app, there's a tremendous amount of information on how to seed databases and get your local dateworthy up and running! 
+- Please read the contribution guide.  There's a wealth of client and server tests at your disposal, and any pull request made to dateworthy must pass continuous integration tests before it can be merged.  
 
 ## Requirements
 
@@ -58,11 +65,11 @@ sudo npm install
 
 This project was a labor of love and the dateworthy team, The Nefarious Chickens, are hoping to bring some of these features in the future:
 
--A welcome back workflow to like dates you haven’t seen
--Foursquare auth to avoid rate limitations on venues returned
--The ability to submit ideas through the app
--Date reviews and a date idea community
--Infrastructure improvements, more tests, and other things we haven’t thought of!
+- A welcome back workflow to like dates you haven't seen
+- Foursquare auth to avoid rate limitations on venues returned
+- The ability to submit ideas through the app
+- Date reviews and a date idea community
+- Infrastructure improvements, more tests, and other things we haven't thought of!
 
 ## Contributing
 
@@ -77,5 +84,6 @@ npm test
 ```
 ## Resources
 
-Some resources we found helpful that helped us start this project include:
--Aseem Kishore’s [Node-Neo4j Template](https://github.com/aseemk/node-neo4j-template)
+Some resources that helped us start this project include:
+- Aseem Kishore's [Node-Neo4j Template](https://github.com/aseemk/node-neo4j-template)
+- Ionic's [Getting Started Guide](http://www.ionicframework.com/docs/guide/)
