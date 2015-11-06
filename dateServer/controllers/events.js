@@ -406,6 +406,7 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
       return foursquareSearch(searchObj)
       .then(function(result){
         var tempVenues = result.response.venues;
+        tempVenues = [];
         console.log('The number of venues attached to this event is: ', tempVenues.length);
         // There should always at least be one venue before attempting to debunk
         if(tempVenues.length < 1 && count > 6){
@@ -437,6 +438,11 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
 
             exports.createIdea(venues, venueData, venueIndex, eventIndex, events, userID)
             .then(function(idea){
+              var geolocation = searchObj.ll.split(',');
+              idea.location = {
+                lat: parseFloat(geolocation[0]),
+                lng: parseFloat(geolocation[1])
+              }
               ideas.ideaArray.push(idea);
               resolve(ideas);
             });
@@ -445,15 +451,15 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           // Get a new index to search according to the same weight scoring
           // Because there were no venues returned for the event category passed initially passed in
           var newIndex = Math.floor(Math.random() * events.length);
-          EventSQL.post(events[newIndex]._node._id, events[newIndex]._node.properties.event).then(function(event){
-            // Alter the category id to be searched in the searchObj (passed into Foursquare)
-            if(count > 5){
-              searchObj.radius = 10000;
-              searchObj.limit = 20;
-            }
-            searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
-            findVenue(searchObj, newIndex, events, count + 1);
-          });
+
+          if(count > 5){
+            searchObj.radius = 10000;
+            searchObj.limit = 20;
+          }
+
+          // Alter the category id to be searched in the searchObj (passed into Foursquare)
+          searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
+          findVenue(searchObj, newIndex, events, count + 1);
         }
       });
     };
@@ -598,8 +604,13 @@ exports.sendFoursquareVenueData = function(req, res, next){
         id: req.query.venueId,
         dateIdeaID: dateIdea.dataValues.id,
         idea: req.query.dateIdeaName,
-        name: dateIdea.dataValues.venue.dataValues.venueName
+        name: dateIdea.dataValues.venue.dataValues.venueName,
+        location: {
+          lat: req.query.lat || 37.8044,
+          lng: req.query.lng || -122.2708
+        }
       }
+
       res.status(200).send(venueData);
     })
   });
