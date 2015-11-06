@@ -11,9 +11,3 @@ dateClient/resources/
 node_modules/
 *.log
 dateServer/public/lib/*
-
-# Uncomment out the following four lines when you are deploying.
-# dateServer/public/lib/bootstrap/dist/
-# !dateServer/public/lib/bootstrap/dist/*
-# dateServer/public/lib/jquery/dist/
-# !dateServer/public/lib/jquery/dist/*
