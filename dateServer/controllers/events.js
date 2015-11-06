@@ -474,9 +474,6 @@ exports.createIdea = function (venues, venueData, venueIndex, eventIndex, events
     var idea = {};
     var venueID = venueData.id;
     var venueName = venueData.name;
-
-    console.log("venue name " + venueName);
-    console.log("event name " + events[eventIndex]._node.properties.event);
     
     venueSQL.post(venueID, venueName)
     .then(function(venue){
@@ -559,8 +556,7 @@ exports.createDefaults = function(ideas, userID){
     var ideaArray = ideas.ideaArray;
     var createIdea = function(ideaIndex){
       var idea = ideaArray[ideaIndex];
-      console.log("IDEA AT INDEX: ", ideaIndex);
-      console.log(idea);
+
       return venueSQL.post(idea.venueId, idea.venue)
       .then(function(venue){
         return EventSQL.post(idea.eventId, idea.event);
@@ -571,7 +567,7 @@ exports.createDefaults = function(ideas, userID){
       .then(function(dateIdea){
         userPrefSQL.post(userID, dateIdea.id)
         idea.dateIdeaID = dateIdea.id;
-        console.log("IDEA INDEX, ", ideaIndex);
+
         if(ideaIndex < ideaArray.length - 1){
           createIdea(ideaIndex+1);
         } else {
