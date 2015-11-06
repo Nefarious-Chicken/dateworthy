@@ -9,7 +9,8 @@ angular.module('dateworthy.favorites', [])
   });
 
   $scope.getDetails = function (index) {
-    DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, $scope.favorites[index].dateIdea.dateIdeaName, function(venueData){
+    var geolocation = DateData.getGeoLocation();
+    DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, $scope.favorites[index].dateIdea.dateIdeaName, geolocation.lat, geolocation.long, function(venueData){
       var idea = {};
       for(var key in venueData){
         idea[key] = venueData[key];
@@ -25,7 +26,6 @@ angular.module('dateworthy.favorites', [])
       DateData.setFavorite(idea)
       $rootScope.history.push($location.$$path);
       $state.go('favorite-single', {ideaId: index})
-      // $location.path('/favorites/' + index);
     });
   }
 

@@ -252,11 +252,12 @@ angular.module('dateworthy.services', [])
       this.logistics = {};
       this.dateIdeas = {};
     },
-    getVenueData: function (venueId, dateIdeaName, callback) {
+    getVenueData: function (venueId, dateIdeaName, lat, lng, callback) {
+
       return $http({
         method: 'GET',
         url: '/venues/venueDetails',
-        params: { venueId: venueId, dateIdeaName: dateIdeaName }
+        params: { venueId: venueId, dateIdeaName: dateIdeaName, lat: lat, lng: lng }
       })
       .then(function (resp) {
         callback(resp.data);

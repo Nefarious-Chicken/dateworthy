@@ -437,6 +437,11 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
 
             exports.createIdea(venues, venueData, venueIndex, eventIndex, events, userID)
             .then(function(idea){
+              var geolocation = searchObj.ll.split(',');
+              idea.location = {
+                lat: parseFloat(geolocation[0]),
+                lng: parseFloat(geolocation[1])
+              }
               ideas.ideaArray.push(idea);
               resolve(ideas);
             });
@@ -445,15 +450,15 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
           // Get a new index to search according to the same weight scoring
           // Because there were no venues returned for the event category passed initially passed in
           var newIndex = Math.floor(Math.random() * events.length);
-          EventSQL.post(events[newIndex]._node._id, events[newIndex]._node.properties.event).then(function(event){
-            // Alter the category id to be searched in the searchObj (passed into Foursquare)
-            if(count > 5){
-              searchObj.radius = 10000;
-              searchObj.limit = 20;
-            }
-            searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
-            findVenue(searchObj, newIndex, events, count + 1);
-          });
+
+          if(count > 5){
+            searchObj.radius = 10000;
+            searchObj.limit = 20;
+          }
+
+          // Alter the category id to be searched in the searchObj (passed into Foursquare)
+          searchObj.categoryId = events[newIndex]._node.properties.fsCategory;
+          findVenue(searchObj, newIndex, events, count + 1);
         }
       });
     };
@@ -469,13 +474,14 @@ exports.createIdea = function (venues, venueData, venueIndex, eventIndex, events
     var idea = {};
     var venueID = venueData.id;
     var venueName = venueData.name;
-
+    
     venueSQL.post(venueID, venueName)
     .then(function(venue){
       var eventActivity;
       for (var key in venueData) {
         idea[key] = venueData[key];
       }
+
       if (events[eventIndex]._node.properties.event.indexOf('&#44;') > -1) {
         var commas = /&#44;/gi;
         var tempEvent = events[eventIndex]._node.properties.event;
@@ -550,8 +556,7 @@ exports.createDefaults = function(ideas, userID){
     var ideaArray = ideas.ideaArray;
     var createIdea = function(ideaIndex){
       var idea = ideaArray[ideaIndex];
-      console.log("IDEA AT INDEX: ", ideaIndex);
-      console.log(idea);
+
       return venueSQL.post(idea.venueId, idea.venue)
       .then(function(venue){
         return EventSQL.post(idea.eventId, idea.event);
@@ -562,7 +567,7 @@ exports.createDefaults = function(ideas, userID){
       .then(function(dateIdea){
         userPrefSQL.post(userID, dateIdea.id)
         idea.dateIdeaID = dateIdea.id;
-        console.log("IDEA INDEX, ", ideaIndex);
+
         if(ideaIndex < ideaArray.length - 1){
           createIdea(ideaIndex+1);
         } else {
@@ -598,8 +603,13 @@ exports.sendFoursquareVenueData = function(req, res, next){
         id: req.query.venueId,
         dateIdeaID: dateIdea.dataValues.id,
         idea: req.query.dateIdeaName,
-        name: dateIdea.dataValues.venue.dataValues.venueName
+        name: dateIdea.dataValues.venue.dataValues.venueName,
+        location: {
+          lat: req.query.lat || 37.8044,
+          lng: req.query.lng || -122.2708
+        }
       }
+
       res.status(200).send(venueData);
     })
   });
