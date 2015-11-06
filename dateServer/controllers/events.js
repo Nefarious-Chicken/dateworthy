@@ -406,7 +406,6 @@ exports.venueSearch = function (searchObj, eventIndex, events, ideas, userID) {
       return foursquareSearch(searchObj)
       .then(function(result){
         var tempVenues = result.response.venues;
-        tempVenues = [];
         console.log('The number of venues attached to this event is: ', tempVenues.length);
         // There should always at least be one venue before attempting to debunk
         if(tempVenues.length < 1 && count > 6){
@@ -476,12 +475,16 @@ exports.createIdea = function (venues, venueData, venueIndex, eventIndex, events
     var venueID = venueData.id;
     var venueName = venueData.name;
 
+    console.log("venue name " + venueName);
+    console.log("event name " + events[eventIndex]._node.properties.event);
+    
     venueSQL.post(venueID, venueName)
     .then(function(venue){
       var eventActivity;
       for (var key in venueData) {
         idea[key] = venueData[key];
       }
+
       if (events[eventIndex]._node.properties.event.indexOf('&#44;') > -1) {
         var commas = /&#44;/gi;
         var tempEvent = events[eventIndex]._node.properties.event;
