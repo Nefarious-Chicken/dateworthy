@@ -253,7 +253,7 @@ angular.module('dateworthy.services', [])
       this.dateIdeas = {};
     },
     getVenueData: function (venueId, dateIdeaName, lat, lng, callback) {
-      console.log("GEOLOCATION PASSED IN ", lat, lng);
+
       return $http({
         method: 'GET',
         url: '/venues/venueDetails',
