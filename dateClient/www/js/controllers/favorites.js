@@ -8,6 +8,7 @@ angular.module('dateworthy.favorites', [])
     });
   });
 
+  // Gets Foursquare venue data for the date idea. 
   $scope.getDetails = function (index) {
     var geolocation = DateData.getGeoLocation();
     DateData.getVenueData($scope.favorites[index].dateIdea.venueVenueID, $scope.favorites[index].dateIdea.dateIdeaName, geolocation.lat, geolocation.long, function(venueData){
@@ -18,7 +19,6 @@ angular.module('dateworthy.favorites', [])
       idea['idea'] = $scope.favorites[index].dateIdea.dateIdeaName;
       if(idea.bestPhoto){
         idea['imgUrl'] = venueData.bestPhoto.prefix + venueData.bestPhoto.width + 'x' + venueData.bestPhoto.height + venueData.bestPhoto.suffix;
-        //console.log(idea.imgUrl);
       } else {
         idea['imgUrl'] = "./img/placeholder.jpg";
       }
@@ -29,6 +29,7 @@ angular.module('dateworthy.favorites', [])
     });
   }
 
+  // Returns a boolean about whether or not the view should show favorites. 
   $scope.showFavorites = function(){
     if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
       return false;
@@ -37,6 +38,9 @@ angular.module('dateworthy.favorites', [])
     }
   };
   
+  // Returns a boolean about whether or not the user has favorite dates.
+  // If the user doesn't have favorite dates, then it'll show them a message telling them
+  // how to add dates to their favorites.
   $scope.hasDates = function() {
     if ($scope.favorites == undefined || $scope.favorites.length == 0) {
       return false;
@@ -44,6 +48,8 @@ angular.module('dateworthy.favorites', [])
       return true;
     }
   }
+
+  // Lets the user go back.
   $scope.goBack = function () {
     var lastPath = $rootScope.history.pop();
     $location.path(lastPath);
