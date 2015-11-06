@@ -30,14 +30,14 @@ angular.module('dateworthy.findadate', [])
       possibilities: []}
   ];
 
-  //Each questionairre will come with a single optional question chosen randomly from this list.
+  // Each questionairre will come with a single optional question chosen randomly from this list.
   $scope.optionalQuestions = [
     {question: "Is this a first date?", type: "tag", field: "firstDate", optional: true,
       possibilities: [
         {label: "First-date", string: "Yes"},
         {label: "NONE", string: "No"}
       ]
-    },//, answerTags: ["First-date", "NONE"]},
+    },
     {question: 'Are you in an indoors-y or outdoors-y mood?', type: "tag", field: "indoorsOutdoors", optional: true, 
       possibilities: [
         {label: "Indoor"}, 
@@ -55,7 +55,7 @@ angular.module('dateworthy.findadate', [])
        {label: "Visual", string: "Sit back and enjoy the show"}, 
        {label: "Creative", string: "Jump in and get involved"}
       ]
-    }// , answerTags: ["Visual", "Creative"]}
+    }
   ];
   $scope.data = {};
 
@@ -104,17 +104,13 @@ angular.module('dateworthy.findadate', [])
   };
 
   $scope.canSpin = function(){
-    //console.log("Spin status: ", $scope.showSpinner);
     return $scope.showSpinner;
   };
 
-  //creates and formats an object so that the factory can append the data
+  // Creates and formats an object so that the factory can append the data
   $scope.createQuestionObject = function (question){
-    // console.log("Current Question: ", question);
-    //console.log(question.possibilities.indexOf(question.chosenOption));
     var obj = {};
     var key = question.field;
-    // console.log("The question.chosenOption is", question.chosenOption);
     if (question.chosenOption === "NONE"){
       obj[key] = "NONE";
     } else {
@@ -123,12 +119,11 @@ angular.module('dateworthy.findadate', [])
     return obj;
   };
 
-  //generates a question answer key value pair and sends it to the data factory.
-  //will skip a question if no tag is provided, IE, a yes or no question to a single tag.
+  // Generates a question answer key value pair and sends it to the data factory.
+  // Will skip a question if no tag is provided, IE, a yes or no question to a single tag.
   var submitSoFar = function() {
     var currentQuestion = $scope.currentQuestion;
     var questionObject = $scope.createQuestionObject(currentQuestion);
-    // console.log("QuestionObject", questionObject);
     if(questionObject[$scope.currentQuestion.field]){
       if (currentQuestion.type === "logistics") {
         DateData.appendLogistics(questionObject);
@@ -138,34 +133,26 @@ angular.module('dateworthy.findadate', [])
     }
   };
 
-  // This function determines what should be the next URL that
-  // the user navigates to and saves data from current survey.
+  // Determines what should be the next URL that the user navigates to and
+  // saves data from current survey.
   $scope.nextQuestion = function(){
-    // console.log("Next question called");
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
-    //console.log("Length of questions: ", $scope.mandatoryQuestions.length);
-    //console.log("nextQuestionID", nextQuestionId);
-    //Update coordinates based off of google maps center location
+    // Updates coordinates based off of google maps center location
+    // Sends data to the server to get date ideas if we've hit the end of the questions list.
     if ($scope.mandatoryQuestions[$scope.currentIndex].field === "location") {
       var center = $scope.map.getCenter();
       var lat = center.lat();
       var lng = center.lng();
       DateData.setGeoLocation(lat, lng);
       $scope.showSpinner = true;
-      //console.log("Doing stuff now!");
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
-        //console.log("Data sent to the server: ", DateData.getConcatenatedData());
         $scope.showSpinner = false;
         DateData.setDateIdeas(data);
         $state.go('idea', {ideaId: 0});
         $scope.loadState();
       });
-    }
-    //If we are at the end of the question list, we will send the data to the server and get date ideas.
-    if(nextQuestionId === $scope.mandatoryQuestions.length){
-    //else we will go to the next question.
     } else {
       $state.go('findadate', {questionId: nextQuestionId});
       $scope.loadState();
@@ -177,8 +164,6 @@ angular.module('dateworthy.findadate', [])
   $scope.initMap = function() {
     var latitude;
     var longitude;
-    //console.log("Latutude: ", latitude);
-    //console.log("Initializing map");
     var coordinates = DateData.getGeoLocation();
     if(coordinates){
       latitude = coordinates.lat || 37.8044;
@@ -192,20 +177,20 @@ angular.module('dateworthy.findadate', [])
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    // Create the search box and link it to the UI element.
+    // Creates the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
 
     var searchBox = new google.maps.places.SearchBox(input);
     //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-    // Bias the SearchBox results towards current map's viewport.
+    // Biases the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
     });
 
     var markers = [];
     // [START region_getplaces]
-    // Listen for the event fired when the user selects a prediction and retrieve
+    // Listens for the event fired when the user selects a prediction and retrieve
     // more details for that place.
     searchBox.addListener('places_changed', function() {
       var places = searchBox.getPlaces();
@@ -214,7 +199,7 @@ angular.module('dateworthy.findadate', [])
         return;
       }
 
-      // Clear out the old markers.
+      // Clears out the old markers.
       markers.forEach(function(marker) {
         marker.setMap(null);
       });
@@ -231,7 +216,7 @@ angular.module('dateworthy.findadate', [])
           scaledSize: new google.maps.Size(25, 25)
         };
 
-        // Create a marker for each place.
+        // Creates a marker for each place.
         markers.push(new google.maps.Marker({
           map: map,
           icon: icon,
@@ -251,6 +236,7 @@ angular.module('dateworthy.findadate', [])
     $scope.map = map;
   };
 
+  // Returns a boolean about whether or not the view should show favorites. 
   $scope.showFavorites = function(){
     if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
       return false;
@@ -258,14 +244,12 @@ angular.module('dateworthy.findadate', [])
       return true;
     }
   };
-  //Determines if the question being loaded requires the map control.
+
+  // Determines if the question being loaded requires the map control.
   $scope.loadMapCheck = function (_decrement) {
     if(!_decrement){
-      //console.log("Decrement exists!");
       _decrement = 0;
     }
-    //console.log("Current Index", +$scope.currentIndex);
-    //console.log("Field: ", $scope.mandatoryQuestions[+$scope.currentIndex].field);
     if ($scope.mandatoryQuestions[+$scope.currentIndex].field === "location"){//$scope.currentIndex === $scope.mandatoryQuestions.length - 1 - _decrement + ""){ //$scope.currentIndex === '0'){  //set to first for debegugging//$scope.currentIndex === $scope.questions.length - 1 + ""){
       return true;
     } else {
@@ -273,19 +257,19 @@ angular.module('dateworthy.findadate', [])
     }
   };
 
+  // Takes a user to the 'favorites' view, where they can see all their saved like ideas.
   $scope.savedLikes = function() {
     $rootScope.history.push($location.$$path);
     $state.go('favorites');
   };
 
 
-  //allows user to tap a google maps autocomplete suggestion 
+  // Allows user to tap a google maps autocomplete suggestion 
   $scope.disableTap = function(){
-  
     container = document.getElementsByClassName('pac-container');
-    // disable ionic data tab
+    // Disables ionic data tab
     angular.element(container).attr('data-tap-disabled', 'true');
-    // leave input field if google-address-entry is selected
+    // Leaves input field if google-address-entry is selected
     angular.element(container).on("click", function(){
         document.getElementById('pac-input').blur();
     });
