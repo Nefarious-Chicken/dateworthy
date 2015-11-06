@@ -117,21 +117,6 @@ describe('Event models:', function () {
 
     // Single event CRUD:
 
-    it('List initial events', function (next) {
-        this.timeout = 10000;
-        Event.getAll(function (err, events) {
-            if (err) return next(err);
-
-            expect(events).to.be.an('array');
-            events.forEach(function (event) {
-                expectEvent(event);
-            });
-
-            INITIAL_EVENTS = events;
-            return next();
-        });
-    });
-
     it('Create event A', function (next) {
         var eventname = 'testEventA';
         Event.create({eventname: eventname}, function (err, event) {
