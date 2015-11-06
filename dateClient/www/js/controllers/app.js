@@ -13,12 +13,11 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
   // FACEBOOK LOGIN!
   //------------------------------------------------------------//
   // Creds: https://ccoenraets.github.io/ionic-tutorial/ionic-facebook-integration.html
-  // PLEASE NOTE, in the original code, the scope key value pair had the string 
-  // 'email,read_stream,publish_actions' as the value, but it was returning errors. 
+  // PLEASE NOTE, in the original code, the scope key value pair had the string
+  // 'email,read_stream,publish_actions' as the value, but it was returning errors.
 
 
-  //once the main controller loads grab users coordinates
-  
+  //Once the main controller loads, this function grabs the users coordinates
   $scope.fbLogin = function () {
 
     //console.log("You're logging into facebook?");
@@ -33,7 +32,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     })
     .then(function(response) {
       // Makes call to Facebook Graph API /me to get data about the user who logged in.
-      // We'll take the response from that and add it to our database. 
+      // We'll take the response from that and add it to our database.
       var obj = {
         path: '/me',
         params: {
@@ -43,15 +42,18 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
       };
       return ngFB.api(obj);
     })
+    //once we are logged in, we update the userdata factory to persist user information.
     .then(function(response) {
       UserData.updateUserData(response);
       getUserData();
     });
   };
 
+  //when the page is loaded, we will get your geolocation and confirm your login status.
   $ionicPlatform.ready(function() {
     DateData.setGeoLocation();
     myUser = UserData.getUserData();
+    //thenefariousChicken@gmail.com is the organization's email address and the default address for anonymous users
     if(myUser.email !== "thenefariouschicken@gmail.com"){
       ngFB.getLoginStatus()
       .then(function(response){
@@ -69,6 +71,8 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     $scope.userData = UserData.getUserData();
   };
 
+  //A controller that will tell the template whether or not to show the favorites button.
+  //an anonymous user cannot favorite date ideas.
   $scope.showFavorites = function(){
     if($scope.userData && $scope.userData.email === "thenefariouschicken@gmail.com"){
       return false;
@@ -77,6 +81,8 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     }
   };
 
+  //When a change occurs to the user's data, we will push it to the factory,
+  //and confirm the facebook login token.
   var updateUserData = function(anonymous) {
     var myUser = UserData.getUserData();
     var obj = {
@@ -96,6 +102,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     }
   };
 
+  //When a user clicks, "Just give me a date idea, already!" we log them in as an anonymous user.
   $scope.noLogin = function(){
     //console.log("Don't log into facebook!");
     UserData.updateUserData({name: "date seeker~", split: "~", email: "thenefariouschicken@gmail.com"});
@@ -104,6 +111,7 @@ angular.module('dateworthy.app', ['ngOpenFB', 'ngCordova', 'angularSpinner'])
     //$state.go('login');
   };
 
+  //Scope navigation to your saved date ideas.
   $scope.savedLikes = function() {
     $rootScope.history.push($location.$$path);
     $state.go('favorites');
