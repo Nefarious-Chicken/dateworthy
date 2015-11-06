@@ -1,13 +1,13 @@
 
-<img src="https://raw.githubusercontent.com/jingpei/date-app/master/dateServer/public/images/dateworthy.png" width="225px">
+<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy.png" width="225px">
 
 
-Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
+Need a last-minute date idea? We've got you covered. Check it out at [dateworthy.io](www.dateworthy.io)
 
 
 [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-<img src="https://raw.githubusercontent.com/jingpei/date-app/doc/documentation/dateServer/public/images/dateworthy-site.png">
+<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">
 
 ## Table of Contents
 
