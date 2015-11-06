@@ -2,24 +2,23 @@
 
 > Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
 
+## Table of Contents
+
+1. [Team](#team)
+1. [Usage](#Usage)
+1. [Requirements](#requirements)
+1. [Development](#development)
+    1. [Installing Dependencies](#installing-dependencies)
+1. [Product-Roadmap](#Product-Roadmap)
+1. [Contributing](#contributing)
+1. [Testing](#Testing)
+1. [Resources](#Resources)
 
 ## Team
 
   - __Product Owner__: Adam Hedgpeth
   - __Scrum Master__: Alex Liotta
   - __Development Team Members__: Jing Pei, Jessica Chong
-
-## Table of Contents
-
-1. [Usage](#Usage)
-1. [Requirements](#requirements)
-1. [Development](#development)
-    1. [Installing Dependencies](#installing-dependencies)
-    1. [Tasks](#tasks)
-1. [Team](#team)
-1. [Contributing](#contributing)
-1. [Testing](#Testing)
-1. [Resources](#Resources)
 
 ## Usage
 
@@ -55,7 +54,7 @@ From within the dateServer/ directory
 ```sh
 sudo npm install
 ```
-## Product Roadmap
+## Product-Roadmap
 
 This project was a labor of love and the dateworthy team, The Nefarious Chickens, are hoping to bring some of these features in the future:
 
