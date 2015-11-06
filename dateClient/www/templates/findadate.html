@@ -9,10 +9,11 @@
       <div class="card">
         <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-if="loadMapCheck()"  ng-focus="disableTap()">
         <div id="map" ng-if="loadMapCheck()" ng-init="initMap()"></div>
-        <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility" ng-click="nextQuestion()" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility}}</ion-radio>
+        <ion-radio name="{{currentQuestion.field}}" ng-repeat="possibility in currentQuestion.possibilities" ng-value="possibility.label" ng-click="nextQuestion()" ng-model="currentQuestion.chosenOption" tabIndex={{$index}}>{{possibility.string ? possibility.string : possibility.label}}</ion-radio>
       </div>
       <div class="padding">
-        <button class="button button-block button-positive button-outline" type="submit" ng-click="nextQuestion()">{{currentQuestion.field == 'location' ? 'Next' : currentIndex == mandatoryQuestions.length - 1 ? 'Show me the date ideas' : 'Skip'}} <i class="ion-ios-arrow-forward"></i></button>
+        <button class="button button-block button-positive button-outline" type="submit" ng-click="nextQuestion()">{{currentQuestion.field == 'location' ? 'Show me the date ideas' : 'Skip'}} 
+        <i class="ion-ios-arrow-forward"></i></button>
       </div>
     </ion-item>
   </ion-content>
