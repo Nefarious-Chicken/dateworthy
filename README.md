@@ -1,6 +1,6 @@
 # dateworthy [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-> Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
+Need a last-minute date idea? There's an app for that! Check it out at [dateworthy.io](www.dateworthy.io)
 
 ## Table of Contents
 
