@@ -190,7 +190,7 @@ angular.module('dateworthy.services', [])
 
     appendTags: function (tags){
       for (var tag in tags){
-        if (tag !== "undefined" && !this.tags.hasOwnProperty(tag)){
+        if (tag !== "undefined"){
           this.tags[tag] = tags[tag];
         }
       }
@@ -242,7 +242,9 @@ angular.module('dateworthy.services', [])
       var tagsArray = [];
       for (var key in this.tags) {
         if (this.tags[key] !== undefined) {
-          tagsArray.push(this.tags[key])
+          if (this.tags[key] !== "NONE") {
+            tagsArray.push(this.tags[key]);
+          }
         }
       };
       return {userName: data.email, tags: tagsArray, logistics: this.logistics, geoLocation: this.geoLocation};

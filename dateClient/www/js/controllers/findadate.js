@@ -5,18 +5,57 @@ angular.module('dateworthy.findadate', [])
 
   // Populate the Find a Date questionnaire with Questions. These should be sorted in the order in which they appear to the user.
   $scope.mandatoryQuestions = [
-    {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre", possibilities: ["Intellectual", "Romantic", "Sporty", "Goofy", "Creative", "Fancy"]},
-    {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel", possibilities: ["Loud", "Quiet"]},
-    {question: "What's your mode of transportation?", type: "logistics", field: "transportation", possibilities:["I'm walking", "I'm taking a cab", "I'm driving", "Public trans, baby!"]},
-    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location", possibilities: []}
+    {question: "What type of date do you enjoy in general?", type: "tag", field: "dateGenre",
+      possibilities: [
+        {label: "Intellectual"}, 
+        {label: "Romantic"}, 
+        {label: "Sporty"}, 
+        {label: "Goofy"}, 
+        {label: "Creative"}, 
+        {label: "Fancy"}
+      ]},
+    {question: "What kind of ambience are you looking for?", type: "tag", field: "noiseLevel",
+      possibilities: [
+        {label: "Loud"},
+        {label: "Quiet"}
+      ]},
+    {question: "What's your mode of transportation?", type: "logistics", field: "transportation",
+      possibilities: [
+        {label: "I'm walking"},
+        {label: "I'm taking a cab"},
+        {label: "I'm driving"},
+        {label: "Public trans, baby!"}
+      ]},
+    {question: "Type in the city or location for your desired date location.", type: "logistics", field: "location",
+      possibilities: []}
   ];
 
   //Each questionairre will come with a single optional question chosen randomly from this list.
   $scope.optionalQuestions = [
-    {question: "Is this a first date?", type: "tag", field: "noiseLevel", optional: true, possibilities: ["Yes", "No"], answerTags: ["First-date", "NONE"]},
-    {question: 'Are you in an indoors-y or outdoors-y mood?', type: "tag", field: "indoorsOutdoors", optional: true,  possibilities: ["Indoor", "Outdoor"]},
-    {question: 'Do you want to get some fresh air?', type: "tag", field: "nature", optional: true,  possibilities: ["Yes, let's get to nature", "No, let's hit up the town"], answerTags: ["Nature", "NONE"]},
-    {question: 'Take it all in, or get your hands dirty?', type: "tag", field: "creative", optional: true,  possibilities: ["Take it all in", "Get my hands dirty"], answerTags: ["Visual", "Creative"]}
+    {question: "Is this a first date?", type: "tag", field: "firstDate", optional: true,
+      possibilities: [
+        {label: "First-date", string: "Yes"},
+        {label: "NONE", string: "No"}
+      ]
+    },//, answerTags: ["First-date", "NONE"]},
+    {question: 'Are you in an indoors-y or outdoors-y mood?', type: "tag", field: "indoorsOutdoors", optional: true, 
+      possibilities: [
+        {label: "Indoor"}, 
+        {label: "Outdoor"}
+      ]
+    },
+    {question: 'Do you want to get some fresh air?', type: "tag", field: "nature", optional: true, 
+      possibilities: [
+        {label: "Nature", string: "Yes, let's get to nature"},
+        {label: "NONE", string: "No, let's hit up the town"}
+      ]
+    },
+    {question: 'Sit back and enjoy the show, or jump in and get involved?', type: "tag", field: "creative", optional: true, 
+      possibilities: [
+       {label: "Visual", string: "Sit back and enjoy the show"}, 
+       {label: "Creative", string: "Jump in and get involved"}
+      ]
+    }// , answerTags: ["Visual", "Creative"]}
   ];
   $scope.data = {};
 
@@ -71,16 +110,13 @@ angular.module('dateworthy.findadate', [])
 
   //creates and formats an object so that the factory can append the data
   $scope.createQuestionObject = function (question){
-    console.log("Current Question: ", question);
+    // console.log("Current Question: ", question);
     //console.log(question.possibilities.indexOf(question.chosenOption));
     var obj = {};
     var key = question.field;
-    if(question.answerTags){
-      if(question.answerTags[question.possibilities.indexOf(question.chosenOption)] === "NONE"){
-        return null;
-      } else {
-        obj[key] = question.answerTags[question.possibilities.indexOf(question.chosenOption)];
-      }
+    // console.log("The question.chosenOption is", question.chosenOption);
+    if (question.chosenOption === "NONE"){
+      obj[key] = "NONE";
     } else {
       obj[key] = question.chosenOption;
     }
@@ -92,7 +128,8 @@ angular.module('dateworthy.findadate', [])
   var submitSoFar = function() {
     var currentQuestion = $scope.currentQuestion;
     var questionObject = $scope.createQuestionObject(currentQuestion);
-    if(questionObject !== null){
+    // console.log("QuestionObject", questionObject);
+    if(questionObject[$scope.currentQuestion.field]){
       if (currentQuestion.type === "logistics") {
         DateData.appendLogistics(questionObject);
       } else {
@@ -104,7 +141,7 @@ angular.module('dateworthy.findadate', [])
   // This function determines what should be the next URL that
   // the user navigates to and saves data from current survey.
   $scope.nextQuestion = function(){
-    console.log("Next question called");
+    // console.log("Next question called");
     submitSoFar();
     var tag;
     var nextQuestionId = Number($scope.currentIndex) + 1;
@@ -116,11 +153,6 @@ angular.module('dateworthy.findadate', [])
       var lat = center.lat();
       var lng = center.lng();
       DateData.setGeoLocation(lat, lng);
-      $state.go('findadate', {questionId: nextQuestionId});
-      $scope.loadState();
-    }
-    //If we are at the end of the question list, we will send the data to the server and get date ideas.
-    if(nextQuestionId === $scope.mandatoryQuestions.length){
       $scope.showSpinner = true;
       //console.log("Doing stuff now!");
       FindADate.sendDateData(DateData.getConcatenatedData(), function(data){
@@ -130,6 +162,9 @@ angular.module('dateworthy.findadate', [])
         $state.go('idea', {ideaId: 0});
         $scope.loadState();
       });
+    }
+    //If we are at the end of the question list, we will send the data to the server and get date ideas.
+    if(nextQuestionId === $scope.mandatoryQuestions.length){
     //else we will go to the next question.
     } else {
       $state.go('findadate', {questionId: nextQuestionId});
