@@ -3,8 +3,10 @@
     <h1 class="title">Error</h1>
   </ion-header-bar>
   <ion-content ng-controller="AppCtrl">
-    <div class="item item-text-wrap">
-      <p>Sorry, there was an error loading your request. Please try again.</p>
+    <div class="item item-text-wrap error-msg">
+      <p>Sorry, there was an error loading your request.</p>
+      <p>Most likely this error occurred because we hit our Foursquare API limit.</p>
+      <p>Please try our app again in an hour. In the meantime, why don't you go on a date? ;)</p>
       <a ng-click="clearIonic()" ui-sref='home' class="button button-positive button-outline button-block">Home</a>
     </div>
   </ion-content>

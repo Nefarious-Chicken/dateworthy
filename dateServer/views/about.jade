@@ -9,7 +9,7 @@ head
   link(href="/public/lib/bootstrap/dist/css/bootstrap.min.css", rel="stylesheet", type="text/css")
   link(href="/public/css/app.css", rel="stylesheet", type="text/css")
   link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet", type="text/css")
-body.about
+body
   header
     nav.navbar.navbar-default
       .container
@@ -29,44 +29,60 @@ body.about
               a(href="http://goo.gl/forms/h6WCRZcyqR", target="_blank") Submit an idea
             li 
               a(href="about", class="current") About
-  .jumbotron
-    .container
-      .row
-        .col-sm-12
-          h3.text-center about the dateworthy.io team
-  section.bios
-    .container
-      .row
-        .col-sm-12
-          .row.bio
-            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
-              img.img-responsive(src="public/images/adam.jpg")
-            .col-xs-12.col-sm-10
-              .text
-                h5 Adam Hedgpeth
-                p Tinkerer from Texas who is always looking for better date ideas for him and his lovely wife. Thinks of code like legos and thrives on making complex systems work together.  Loves guitar and mountains. You can find him on <a href="https://www.linkedin.com/in/adamhedgpeth">LinkedIn</a> and <a href="https://github.com/adamhedge">Github</a>.
-          .row.bio
-            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
-              img.img-responsive(src="public/images/alex.jpg")
-            .col-xs-12.col-sm-10
-              .text
-                h5 Alex Liotta
-                p Renewable energy fanatic. Loves full-stack engineering, NoSQL databases, card games, discovering new foods, and dancing the night away. Find him on <a href="https://www.linkedin.com/in/alexliotta">LinkedIn</a>.
-          .row.bio
-            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
-              img.img-responsive(src="public/images/jing.jpg")
-            .col-xs-12.col-sm-10
-              .text
-                h5 Jing Pei 
-                p  Loves photography, scrapbooking, board games, baking macarons, pogo-sticking, and rock climbing. Loves promises and bluebirds. Find her on <a href="https://www.linkedin.com/in/jingjpei">LinkedIn</a>
-          .row.bio
-            .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
-              img.img-responsive(src="public/images/jess.jpg")
-            .col-xs-12.col-sm-10
-              .text
-                h5 Jessica Chong 
-                p Maker of things and stringer-together of words from Hong Kong. Loves drawing exquisite corpses and spying on other people's dogs. Find her on <a href="https://twitter.com/crocophant">Twitter</a>, <a href="https://instagram.com/crocophant">Instagram</a>, or <a href="https://www.linkedin.com/in/jessicalaurenchong">LinkedIn</a>. Sometimes she <a href="http://github.com/jessicalc">commits code on Github</a>. 
-  footer
+  .wrapper.about
+    .jumbotron
+      .container
+        .row
+          .col-sm-12
+            h3.text-center about dateworthy.io
+    section.bios
+      .container
+        .row
+          .col-sm-12
+            h2.text-center Team
+            .row.bio
+              .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+                img.img-responsive(src="public/images/adam.jpg")
+              .col-xs-12.col-sm-10
+                .text
+                  h5 Adam Hedgpeth
+                  p Tinkerer from Texas who is always looking for better date ideas for him and his lovely wife. Thinks of code like legos and thrives on making complex systems work together.  Loves guitar and mountains. You can find him on <a href="https://www.linkedin.com/in/adamhedgpeth">LinkedIn</a> and <a href="https://github.com/adamhedge">Github</a>.
+            .row.bio
+              .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+                img.img-responsive(src="public/images/alex.jpg")
+              .col-xs-12.col-sm-10
+                .text
+                  h5 Alex Liotta
+                  p Renewable energy fanatic. Loves full-stack engineering, NoSQL databases, card games, discovering new foods, and dancing the night away. Find him on <a href="https://www.linkedin.com/in/alexliotta">LinkedIn</a>.
+            .row.bio
+              .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+                img.img-responsive(src="public/images/jess.jpg")
+              .col-xs-12.col-sm-10
+                .text
+                  h5 Jessica Chong 
+                  p Maker of things and stringer-together of words from Hong Kong. Loves drawing exquisite corpses and spying on other people's dogs. Has been <a href="http://jessicachong.com">building websites</a> since 1999 (she had a WWF fan site filled with Chris Jericho wallpapers). Find her on <a href="https://twitter.com/crocophant">Twitter</a>, <a href="https://instagram.com/crocophant">Instagram</a>, or <a href="https://www.linkedin.com/in/jessicalaurenchong">LinkedIn</a>. 
+            .row.bio
+              .col-xs-6.col-xs-offset-3.col-sm-2.col-sm-offset-0.img.img-rounded
+                img.img-responsive(src="public/images/jing.jpg")
+              .col-xs-12.col-sm-10
+                .text
+                  h5 Jing Pei 
+                  p  Enjoys photography, scrapbooking, board games, baking macarons, pogo-sticking, and rock climbing. Loves promises and bluebirds. Find her on <a href="https://www.linkedin.com/in/jingjpei">LinkedIn</a>.
+    section.stack
+      .container
+        .row
+          .col-sm-12
+            h2.text-center Under the hood
+            p Dateworthy is made up of two main components: a graph database and a date finding algorithm. 
+            p
+              strong Graph database: 
+              | We keep a graph of all the important metadata about good date ideas—for example, time of day, ambience, cost, genre, and so on.
+            p
+              strong Date-finding algorithm: 
+              | We wrote an algorithm that takes into account a) your answers to a small quizlet, and b) previous date ideas that you’ve liked. With this algorithm, we cross-reference with our graph database to serve you the best date ideas possible. We use Foursquare’s API to tie date ideas to real venues near you. 
+            p <strong>dateworthy.io</strong> was built with <a href="http://www.ionicframework.com">ionic</a>, and is powered by a <a href="https://nodejs.org">Node.js</a> / <a href="http://expressjs.com/">Express.js</a>, and MySQL and <a href="http://neo4j.com">Neo4j</a> databases. 
+            p You can find it on github <a href="https://github.com/Nefarious-Chicken/dateworthy">here</a>.
+  footer.footer
     .container
       .row
         .col-sm-8.col-sm-offset-2.text-center
@@ -83,7 +99,10 @@ body.about
             li
               a(href="mailto:thenefariouschicken@gmail.com")
                 | Email us
-          p &copy; 2015 dateworthy.
+          .copy
+            &copy; 2015 dateworthy. 
+          .fork
+            <i class="fa fa-code-fork"></i> <a href="https://github.com/Nefarious-Chicken/dateworthy">Fork this project on Github</a>
   script(src="/public/lib/jquery/dist/jquery.min.js")
   script(src="/public/lib/bootstrap/dist/js/bootstrap.min.js")
   script

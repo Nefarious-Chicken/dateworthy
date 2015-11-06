@@ -301,3 +301,12 @@ a {
 .login h2 {
   margin: 1em 0 2em;
 }
+
+.error-msg {
+  p {
+    margin-bottom: 10px !important;
+  }
+  .button {
+    margin-top: 20px;
+  }
+}
