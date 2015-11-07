@@ -3,17 +3,18 @@
     <button class="button button-small button-clear" type="submit" ng-click="goBack()"><i class="ion-ios-arrow-back"></i></button>
     <div class="h1 title"><i class="ion-bookmark"></i> Favorite Dates</div>
   </ion-header-bar>
-  <ion-content>
+  <ion-content ng-cloak>
     <ion-item class="item-text-wrap">
-      <div ng-if="!hasDates()" ng-cloak>
+      <div class="card" ng-if="hasDatesInFavorites">
+        <ion-radio ng-repeat="favorite in favorites" ng-click="getDetails($index)" tabIndex={{$index}}>{{favorite.dateIdea.dateIdeaName}}</ion-radio>
+      </div>
+      <div ng-if="!hasDatesInFavorites" ng-cloak>
         <h2>It looks like you haven't saved any date ideas. You can save the date ideas that you like by tapping on the heart icon on each date idea.</h2>
         <div class="like-demo">
           <img src="./img/like-demo.jpg" />
         </div>
       </div>
-      <div class="card" ng-if="hasDates()">
-        <ion-radio ng-repeat="favorite in favorites" ng-click="getDetails($index)" tabIndex={{$index}}>{{favorite.dateIdea.dateIdeaName}}</ion-radio>
-      </div>
+
     </ion-item>
   </ion-content>
 </ion-view>
