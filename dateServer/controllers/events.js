@@ -551,6 +551,8 @@ exports.getFourSquareVenueData = function (venueId, searchObj) {
   return venuePromise;
 };
 
+//When we cannot find corresponding date ideas for a survey after a certain number of tries,
+//We will generate a set of default date ideas to get to the user in this function.
 exports.createDefaults = function(ideas, userID){
   var defaultPromise = new Promise(function(resolve, reject){
     var ideaArray = ideas.ideaArray;
@@ -565,7 +567,7 @@ exports.createDefaults = function(ideas, userID){
         return dateIdeaSQL.post(idea.idea, event[0].dataValues.eventID, idea.venueId);
       })
       .then(function(dateIdea){
-        userPrefSQL.post(userID, dateIdea.id)
+        userPrefSQL.post(userID, dateIdea.id);
         idea.dateIdeaID = dateIdea.id;
 
         if(ideaIndex < ideaArray.length - 1){
@@ -573,15 +575,16 @@ exports.createDefaults = function(ideas, userID){
         } else {
           resolve();
         }
-      })
-    }
-    createIdea(0)
+      });
+    };
+    createIdea(0);
   });
 
-  return defaultPromise
-}
+  return defaultPromise;
+};
 /*--------------------SQL---------------*/
 
+//Pushes an event to the SQL table.
 exports.createEventSQL = function(req, res, next){
   EventSQL.post(req.body.eventID, req.body.eventName)
   .then(function(event){
@@ -608,14 +611,11 @@ exports.sendFoursquareVenueData = function(req, res, next){
           lat: req.query.lat || 37.8044,
           lng: req.query.lng || -122.2708
         }
-      }
-
+      };
       res.status(200).send(venueData);
-    })
+    });
   });
-}
-
-exports.addDateIdeas = function(ideas){};
+};
 
 
 

@@ -8,7 +8,7 @@ require('./constraints');
  */
 var Tag = module.exports = function Tag(_node) {
     this._node = _node;
-}
+};
 
 Tag.VALIDATION_INFO = {
   'tagname': {
@@ -31,7 +31,7 @@ Tag.get = function (tagname, callback) {
     var query = [
         'MATCH (tag:Tag {tagname: {tagname}})',
         'RETURN tag',
-    ].join('\n')
+    ].join('\n');
 
     var params = {
         tagname: tagname,
@@ -51,6 +51,9 @@ Tag.get = function (tagname, callback) {
     });
 };
 
+/**
+ * Gets all tags in neo4j
+ */
 Tag.getAll = function (callback) {
   var query = [
     'MATCH (tag:Tag)',
@@ -102,34 +105,7 @@ Tag.create = function (props, callback) {
 
         callback(null, tag);
     });
-}
-
-// var query = [
-//   'CREATE (user:User {props})',
-//   'RETURN user',
-// ].join('\n');
-
-// var params = {
-//   props: props //validate(props)
-// };
-
-// db.cypher({
-//   query: query,
-//   params: params,
-// }, function (err, results) {
-//   if (isConstraintViolation(err)) {
-//     // TODO: This assumes username is the only relevant constraint.
-//     // We could parse the constraint property out of the error message,
-//     // but it'd be nicer if Neo4j returned this data semantically.
-//     // Alternately, we could tweak our query to explicitly check first
-//     // whether the username is taken or not.
-//     err = new errors.ValidationError(
-//       'The username ‘' + props.username + '’ is taken.');
-//   }
-//   if (err) return callback(err);
-//   var user = new User(results[0]['user']);
-//   callback(null, user);
-// });
+};
 
 Tag.prototype.del = function (callback) {
     // Use a Cypher query to delete both this user and his/her following
@@ -145,12 +121,6 @@ Tag.prototype.del = function (callback) {
     var params = {
         tagname: this.tagname,
     };
-
-    // console.log('Param to pass into query:');
-    // console.log(params);
-
-    // console.log('Constructed Query:');
-    // console.log(query);
 
     db.cypher({
         query: query,

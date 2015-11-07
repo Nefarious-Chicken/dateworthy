@@ -6,9 +6,10 @@ var errors = require('../models/errors');
 var User = require('../models/user');
 var Tag = require('../models/tag');
 var Event = require('../models/event');
-var userAuthSQL = require('../models/userAuthSQL')
-var userPrefsSQL = require('../models/userPrefSQL')
+var userAuthSQL = require('../models/userAuthSQL');
+var userPrefsSQL = require('../models/userPrefSQL');
 
+//returns the URL for a user
 function getUserURL(user) {
   return '/users/' + encodeURIComponent(user.username);
 }
@@ -289,15 +290,17 @@ exports.getTagWeight = function(req, res, next) {
 }
 
 
-//given a user to tag relationship, increase the weight of that relationships.
-//this is used to gauge the weight of date recommendations.
+/**
+ * Given a user to tag relationship, increase the weight of that relationships.
+ * this is used to gauge the weight of date recommendations.
+ */
 exports.increaseWeight = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
     // TODO: Gracefully handle "no such user" error somehow.
     // This is the source user, so e.g. 404 page?
 
     if (err) return next(err);
-    Tag.get(req.body.tagname, function(err, tag) {      
+    Tag.get(req.body.tagname, function(err, tag) {
 
       // TODO: Gracefully handle "no such user" error somehow.
       // This is the target user, so redirect back to the source user w/
@@ -306,14 +309,16 @@ exports.increaseWeight = function(req, res, next) {
       if (err) return next(err);
       user.increaseWeight(tag, function(err, results) {
         if (err) return next(err);
-        res.send(results)
+        res.send(results);
       });
     });
   });
-}
+};
 
-//given a user to tag relationship, decrease the weight of that relationships.
-//this is used to gauge the weight of date recommendations.
+/**
+ * Given a user to tag relationship, decrease the weight of that relationships.
+ * this is used to gauge the weight of date recommendations.
+ */
 exports.decreaseWeight = function(req, res, next) {
   User.get(req.params.username, function(err, user) {
     // TODO: Gracefully handle "no such user" error somehow.
@@ -329,41 +334,41 @@ exports.decreaseWeight = function(req, res, next) {
       if (err) return next(err);
       user.decreaseWeight(tag, function(err, results) {
         if (err) return next(err);
-        res.send(results)
+        res.send(results);
       });
     });
   });
-}
+};
 
 
-/*--------------------SQL---------------*/
+/*--------------------SQL get/set functions---------------*/
 
 exports.signupUserSQL = function(req, res, next){
   userAuthSQL.post(req.body.userID, req.body.userName)
   .then(function(user){
     res.status(201).send(user);
   });
-}
+};
 
 exports.getUserID = function(req, res, next){
   userAuthSQL.get(req.query.userName)
   .then(function(user){
     res.status(200).send(user);
-  })
-}
+  });
+};
 
 exports.createUserPrefsSQL = function(req, res, next){
   userPrefsSQL.post(req.body.userID, req.body.dateIdeaID, req.body.likeDislike)
   .then(function(user){
     res.status(201).send(user);
   });
-}
+};
 
 exports.getUserPrefsSQL = function(req, res, next){
   console.log("GOT THE USER ID: " + req.query.userID);
   userPrefsSQL.get(req.query.userID)
   .then(function(userPrefs){
     res.status(200).send(userPrefs);
-  })
-}
+  });
+};
 

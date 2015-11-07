@@ -52,7 +52,7 @@ var dateBlacklist = sequelize.define('dateBlacklist', {
 },
 {
   timestamps: false
-})
+});
 
 var venues = sequelize.define('venues', {
   venueID: { type: Sequelize.STRING, primaryKey: true, unique: true},

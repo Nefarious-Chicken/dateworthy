@@ -18,9 +18,9 @@ module.exports = {
     })
     .then(function(venue) {
       return venue;
-    })
+    });
   },
-  
+
   post: function (venueID, venueName, venueHours, venueLongitude, venueLatitude, venueAddress, venueCityStateZip) {
     return seqVenues.sync()
     .then(function(){

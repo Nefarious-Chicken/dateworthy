@@ -146,6 +146,7 @@ Event.getAll = function (callback) {
   });
 };
 
+//Creates an event in NEO4j
 Event.create = function (props, callback) {
     var query = [
         'CREATE (event:Event {props})',
