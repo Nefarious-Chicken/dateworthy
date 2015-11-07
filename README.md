@@ -7,7 +7,7 @@ Need a last-minute date idea? We've got you covered. Check it out at [dateworthy
 
 [![Build Status](https://travis-ci.org/Nefarious-Chicken/dateworthy.svg?branch=master)](https://travis-ci.org/Nefarious-Chicken/dateworthy)
 
-[!<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">](http://dateworthy.io)
+[<img src="https://raw.githubusercontent.com/Nefarious-Chicken/dateworthy/master/dateServer/public/images/dateworthy-site.png">](http://dateworthy.io)
 
 ## Table of Contents
 
