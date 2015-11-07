@@ -5,6 +5,12 @@ angular.module('dateworthy.favorites', [])
   $scope.$on('$stateChangeSuccess', function () {
     LikeADate.getLikedDates(function(results){
       $scope.favorites = results;
+      // sets hasDatesInFavorites to true by default - but if there are no favorites
+      // then the user will see a different screen prompting them to start liking dates.
+      $scope.hasDatesInFavorites = true;
+      if ($scope.favorites.length === 0 || $scope.favorites === undefined) {
+        $scope.hasDatesInFavorites = false;
+      }
     });
   });
 
@@ -37,17 +43,6 @@ angular.module('dateworthy.favorites', [])
       return true;
     }
   };
-  
-  // Returns a boolean about whether or not the user has favorite dates.
-  // If the user doesn't have favorite dates, then it'll show them a message telling them
-  // how to add dates to their favorites.
-  $scope.hasDates = function() {
-    if ($scope.favorites == undefined || $scope.favorites.length == 0) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
   // Lets the user go back.
   $scope.goBack = function () {
