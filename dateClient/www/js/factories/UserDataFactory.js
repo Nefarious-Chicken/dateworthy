@@ -2,6 +2,8 @@ angular.module('dateworthy.services')
 .factory('UserData', ['$http', '$location', '$window', '$state', function ($http, $location, $window, $state) {
   return {
     userData: {},
+
+    //Creates a user in the Neo4j Database using name data retrieved from facebook Auth
     updateUserData: function(obj) {
       for (var prop in obj) {
         if (prop === "name") {
@@ -13,8 +15,6 @@ angular.module('dateworthy.services')
         }
         this.userData[prop] = obj[prop];
       }
-      console.log("Current user Data: ", this.userData);
-      console.log("Attempting to push data to SQL");
       return $http({
         method: 'POST',
         url: '/users/',

@@ -1,5 +1,8 @@
 angular.module('dateworthy.services')
 .factory('DateData', ['$http', '$location', '$window', '$cordovaGeolocation', 'UserData',function ($http, $location, $window, $cordovaGeolocation, UserData){
+  
+  //This factory contains getters and setters used to 
+  //store data user inputs when filling out survey and liking dates
   return {
 
     tags: {},
@@ -38,6 +41,9 @@ angular.module('dateworthy.services')
       return this.logistics;
     },
 
+    // Sets the latitude and logitude for where the date is to start
+    // _lat and _long are option parameters. If unused the coordinates will 
+    // be set using the GPS coordinates retrieved from cordova
     setGeoLocation: function (_lat, _long){
       if(_lat && _long){
         this.geoLocation = {lat: _lat, long: _long};
@@ -78,13 +84,14 @@ angular.module('dateworthy.services')
       };
       return {userName: data.email, tags: tagsArray, logistics: this.logistics, geoLocation: this.geoLocation};
     },
+
     clearData: function () {
       this.tags = {};
       this.logistics = {};
       this.dateIdeas = {};
     },
-    getVenueData: function (venueId, dateIdeaName, lat, lng, callback) {
 
+    getVenueData: function (venueId, dateIdeaName, lat, lng, callback) {
       return $http({
         method: 'GET',
         url: '/venues/venueDetails',
@@ -94,9 +101,9 @@ angular.module('dateworthy.services')
         callback(resp.data);
       })
     },
+    
     setFavorite: function(idea){
       this.favorite = idea;
-      console.log("Favorite is now: " + this.favorite);
     }
 
   };

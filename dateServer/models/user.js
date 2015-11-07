@@ -302,26 +302,17 @@ User.prototype.increaseWeight = function(tag, callback) {
     'SET rel.weight = rel.weight + 1'
   ].join('\n');
 
-  var params = {
-    thisUsername: this.username,
-    targetTagname: tag.tagname,
-  };
-
-  db.cypher({
-    query: query,
-    params: params,
-  }, function(err) {
-    callback(err);
-  });
-};
-
-//decrease the weight property on the user preference tag
-User.prototype.decreaseWeight = function(tag, callback) {
-  var query = [
+  var query1 = [
     'MATCH (user:User {username: {thisUsername}})',
     'MATCH (tag:Tag {tagname: {targetTagname}})',
     'MATCH (user) -[rel:prefers]-> (tag)',
-    'SET rel.weight= rel.weight - 1'
+    'RETURN rel.weight'
+  ].join('\n');
+
+  var query2 = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'CREATE (user) -[rel:prefers{weight: 1}]-> (tag)',
   ].join('\n');
 
   var params = {
@@ -330,11 +321,82 @@ User.prototype.decreaseWeight = function(tag, callback) {
   };
 
   db.cypher({
-    query: query,
-    params: params,
-  }, function(err) {
-    callback(err);
-  });
+    query: query1,
+    params: params
+  }, function(err, results){
+    console.log("~~~~~~~~~~~",results)
+    if(err || results.length === 0){
+      db.cypher({
+        query: query2,
+        params: params,
+      }, function(err) {
+        console.log("HERE model2", err)
+        callback(err);
+      });
+    } else {
+      db.cypher({
+        query: query,
+        params: params,
+      }, function(err) {
+        console.log("HERE model blank")
+        callback(err);
+      });
+    }
+  })
+
+  
+};
+
+//decrease the weight property on the user preference tag
+User.prototype.decreaseWeight = function(tag, callback) {
+  var query = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'SET rel.weight = rel.weight -1'
+  ].join('\n');
+
+  var query1 = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'MATCH (user) -[rel:prefers]-> (tag)',
+    'RETURN rel.weight'
+  ].join('\n');
+
+  var query2 = [
+    'MATCH (user:User {username: {thisUsername}})',
+    'MATCH (tag:Tag {tagname: {targetTagname}})',
+    'CREATE (user) -[rel:prefers{weight: 0}]-> (tag)',
+  ].join('\n');
+
+  var params = {
+    thisUsername: this.username,
+    targetTagname: tag.tagname,
+  };
+
+  db.cypher({
+    query: query1,
+    params: params
+  }, function(err, results){
+    console.log("~~~~~~~~~~~",results)
+    if(err || results.length === 0){
+      db.cypher({
+        query: query2,
+        params: params,
+      }, function(err) {
+        console.log("HERE model2", err)
+        callback(err);
+      });
+    } else {
+      db.cypher({
+        query: query,
+        params: params,
+      }, function(err) {
+        console.log("HERE model blank")
+        callback(err);
+      });
+    }
+  })
 };
 
 

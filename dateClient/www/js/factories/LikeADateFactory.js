@@ -1,6 +1,7 @@
 angular.module('dateworthy.services')
 .factory('LikeADate', ['$http', '$state','$location', '$window', 'UserData', 'DateData', function ($http, $state,$location, $window, UserData, DateData) {
   return {
+    //Returns all date ideas a user has liked
     getLikedDates: function(callback){
       return $http({
         method: 'GET',
@@ -18,6 +19,11 @@ angular.module('dateworthy.services')
         callback(resp.data);
       });
     },
+
+    // Increases the weight between a User-Tag relationship so that 
+    // future ideas returned weigh more heavily on this tag.
+      // IE: 'USERA' liked an 'Intellectual' date so in the future show more
+      // dates that are intellectual
     increaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
       var likeData = {tagname: tagname};
@@ -30,6 +36,11 @@ angular.module('dateworthy.services')
         callback(resp.data);
       });
     },
+
+    // Decreases the weight between a User-Tag relationship so that 
+    // future ideas returned weigh less heavily on this tag.
+      // IE: 'USERA' disliked an 'Intellectual' date so in the future show less
+      // dates that are intellectual
     decreaseTagWeight: function(tagname, callback){
       var userName = UserData.getUserData().email;
       var disLikeData = {tagname: tagname};
@@ -42,6 +53,9 @@ angular.module('dateworthy.services')
         callback(resp.data);
       });
     },
+
+    // Establishes a 'prefers' relationship between user and tag
+      // IE: 'UserA' prefers dates that are 'Intellectual'
     tag: function(currentIdeaIndex, _tagname, callback){
       var userName = UserData.getUserData().email;
       var index = currentIdeaIndex;
@@ -59,6 +73,8 @@ angular.module('dateworthy.services')
         $state.go('error');
       });
     },
+
+    // Adds like and dislike data to the SQL database
     markLikeDislike: function(dateIdeaID, likeDislikeFlag){
       var preferences = {
         dateIdeaID: dateIdeaID,
@@ -80,7 +96,6 @@ angular.module('dateworthy.services')
         })
       })
       .then(function(resp){
-        console.log('Updated user prefs for dateIdeaID ' + dateIdeaID);
       });
     }
   };

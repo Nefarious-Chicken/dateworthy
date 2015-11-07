@@ -5,6 +5,9 @@ angular.module('dateworthy.services')
     flagDate: function(dateIdeaID, callback) {
       this.showAlert(dateIdeaID, callback);
     },
+
+    // This asks the user if they really when to flag a date and if so 
+    // sends a response to the server that the date idea should be black listed
     showAlert: function(dateIdeaID, callback) {
       var confirmPopup = $ionicPopup.confirm({
        title: 'Are you sure?',
